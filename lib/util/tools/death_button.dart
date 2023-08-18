@@ -20,37 +20,38 @@ class _DeathButtonState extends State<DeathButton> {
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                  actions: [
-                    IconButton(
-                        onPressed: () async {
-                          for (var entery in list) {
-                            if (entery.path.contains(".hive") ||
-                                entery.path.contains(".lock")) {
-                              await entery.delete();
-                            }
+                actions: [
+                  IconButton(
+                      onPressed: () async {
+                        for (var entery in list) {
+                          if (entery.path.contains(".hive") ||
+                              entery.path.contains(".lock")) {
+                            await entery.delete();
                           }
-                          await DataBase().init();
-                          if (mounted) {
-                            showDialog(
-                              context: context,
-                              builder: (context) => const AlertDialog(
-                                content: Text("Done"),
-                              ),
-                            );
-                          }
-                        },
-                        icon: const Icon(
-                          Icons.delete,
-                          color: Colors.red,
-                        ))
-                  ],
-                  content: ListView.builder(
-                    itemCount: list.length,
-                    itemBuilder: (context, index) => Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(list[index].toString()),
-                    ),
-                  )),
+                        }
+                        await DataBase().init();
+                        if (mounted) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => const AlertDialog(
+                              content: Text("Done"),
+                            ),
+                          );
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ))
+                ],
+                content: ListView.builder(
+                  itemCount: list.length,
+                  itemBuilder: (context, index) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(list[index].toString()),
+                  ),
+                ),
+              ),
             );
           }
         },
