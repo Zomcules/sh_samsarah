@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1073917965870",
+    "project_id": "sh-samsarah",
+    "storage_bucket": "sh-samsarah.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1073917965870:android:19b38225799661157b91bf",
+        "android_client_info": {
+          "package_name": "com.shomous.samsarah"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1073917965870-ak5acmjfn59lbgpuliki6viashk06a94.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6AUr8R0WSSfTXCoASIVejthhGMxWQcJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1073917965870-ak5acmjfn59lbgpuliki6viashk06a94.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1073917965870-lrf1ffgjhvr1fgeq026oa76j8s4r9tcq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.samsarah"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
