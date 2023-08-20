@@ -129,6 +129,15 @@ class ProductInfo extends HiveObject {
         size: Random().nextInt(99999),
         certified: Random().nextBool());
   }
+
+  factory ProductInfo.blank() {
+    return ProductInfo(
+        accountInfoGlobalId: "",
+        geopoint: GeoPoint(latitude: 0, longitude: 0),
+        price: 0,
+        dateTime: DateTime.now(),
+        globalId: "");
+  }
 }
 
 List<ProductInfo> getDummyProductInfos({int number = 20}) {

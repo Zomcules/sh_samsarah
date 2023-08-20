@@ -49,6 +49,10 @@ class AccountInfo extends HiveObject {
         username: "Dummy ${globalId ?? ran}",
         productIds: []);
   }
+
+  factory AccountInfo.blank() {
+    return AccountInfo(username: "", globalId: "", productIds: []);
+  }
 }
 
 List<AccountInfo> getDummyAccountInfos({int? n = 20}) {

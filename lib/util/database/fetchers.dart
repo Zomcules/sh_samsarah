@@ -15,7 +15,7 @@ FutureOr<AccountInfo> fetchAccount(String id) async {
       return list.first;
     }
   }
-  return await Internet().getAccount(id);
+  return await Internet().getAccount(id) ?? AccountInfo.blank();
 }
 
 FutureOr<ProductInfo> fetchProduct(String id) async {
@@ -27,7 +27,7 @@ FutureOr<ProductInfo> fetchProduct(String id) async {
       return list.first;
     }
   }
-  return await Internet().getProduct(id);
+  return await Internet().getProduct(id) ?? ProductInfo.blank();
 }
 
 Future<List<ProductInfo>> fetchMultipleProducts(List<String> ids) async {
