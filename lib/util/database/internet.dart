@@ -3,12 +3,21 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:samsarah/util/account/account_info.dart';
 import 'package:samsarah/util/product_info/product_info.dart';
 
 class Internet {
-  var accountCollection = FirebaseFirestore.instance.collection("Accounts");
-  var productCollection = FirebaseFirestore.instance.collection("Products");
+  Future<void> init() async {
+    await Firebase.initializeApp();
+    var instance = FirebaseFirestore.instance;
+    instance.settings = const Settings(persistenceEnabled: false);
+    accountCollection = FirebaseFirestore.instance.collection("Accounts");
+    productCollection = FirebaseFirestore.instance.collection("Products");
+  }
+
+  late CollectionReference<Map<String, dynamic>> accountCollection;
+  late CollectionReference<Map<String, dynamic>> productCollection;
 
   Future<AccountInfo?> getAccount(String id) async {
     var docData = (await accountCollection.doc(id).get()).data();
