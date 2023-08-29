@@ -19,9 +19,7 @@ class ZoneField extends StatefulWidget {
 
 class _ZoneFieldState extends State<ZoneField>
     with AutomaticKeepAliveClientMixin {
-  bool agricultural = false;
-  bool industrial = false;
-  bool residential = true;
+  late ZoneType zone;
 
   List<Widget> getChildren() {
     List<Widget> temp = [
@@ -29,51 +27,48 @@ class _ZoneFieldState extends State<ZoneField>
         GestureDetector(
           onTap: widget.info == null
               ? () {
-                  agricultural = true;
-                  industrial = false;
-                  residential = false;
-                  setState(() {});
+                  setState(() {
+                    zone = ZoneType.agricultural;
+                  });
                 }
               : null,
           child: MyText(
             text: "زراعية",
-            color: agricultural ? Colors.green : Colors.grey,
+            color: zone == ZoneType.agricultural ? Colors.green : Colors.grey,
             size: 20,
           ),
         ),
         GestureDetector(
           onTap: widget.info == null
               ? () {
-                  agricultural = false;
-                  industrial = true;
-                  residential = false;
-                  setState(() {});
+                  setState(() {
+                    zone = ZoneType.industrial;
+                  });
                 }
               : null,
           child: MyText(
             text: "صناعية",
-            color: industrial ? Colors.orange : Colors.grey,
+            color: zone == ZoneType.industrial ? Colors.orange : Colors.grey,
             size: 20,
           ),
         ),
         GestureDetector(
           onTap: widget.info == null
               ? () {
-                  agricultural = false;
-                  industrial = false;
-                  residential = true;
-                  setState(() {});
+                  setState(() {
+                    zone = ZoneType.residential;
+                  });
                 }
               : null,
           child: MyText(
             text: "سكنية",
-            color: residential ? Colors.blue : Colors.grey,
+            color: zone == ZoneType.residential ? Colors.blue : Colors.grey,
             size: 20,
           ),
         )
       ])
     ];
-    if (industrial) {
+    if (zone == ZoneType.industrial) {
       temp.addAll([
         MyCheckbox(
             type: widget.type,
@@ -86,7 +81,7 @@ class _ZoneFieldState extends State<ZoneField>
             product: widget.info,
             controller: widget.pc),
       ]);
-    } else if (residential) {
+    } else if (zone == ZoneType.residential) {
       temp.addAll([
         TwoChoices(
             type: widget.type,
@@ -141,9 +136,7 @@ class _ZoneFieldState extends State<ZoneField>
   void initState() {
     super.initState();
     if (widget.info != null) {
-      agricultural = widget.info?.agricultural ?? widget.pc.agricultural;
-      industrial = widget.info?.industrial ?? widget.pc.industrial;
-      residential = widget.info?.residential ?? widget.pc.residential;
+      zone = widget.info!.zone;
     }
   }
 
@@ -152,9 +145,7 @@ class _ZoneFieldState extends State<ZoneField>
     super.build(context);
     return FormField(
       onSaved: (_) {
-        widget.pc.agricultural = agricultural;
-        widget.pc.industrial = industrial;
-        widget.pc.residential = residential;
+        widget.pc.zone = zone;
       },
       builder: (_) => Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,

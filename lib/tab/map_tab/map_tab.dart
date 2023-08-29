@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:samsarah/util/database/database.dart';
+import 'package:samsarah/util/database/internet.dart';
 import 'package:samsarah/util/product_info/product_info.dart';
 
 import 'geopoint_preview.dart';
@@ -65,8 +66,8 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
   @override
   initState() {
     super.initState();
-    if (db.activeBox().isNotEmpty) {
-      for (ProductInfo info in db.savedProducts().values) {
+    if (Net().auth.currentUser != null) {
+      for (ProductInfo info in db.savedProducts.values) {
         mapController.addMarker(info.geopoint);
       }
     }
@@ -77,6 +78,34 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
     super.build(context);
     return Stack(children: [
       OSMFlutter(
+        osmOption: OSMOption(
+          zoomOption: const ZoomOption(
+            initZoom: 18,
+            maxZoomLevel: 18,
+            stepZoom: 1.0,
+          ),
+          userLocationMarker: UserLocationMaker(
+            personMarker: const MarkerIcon(
+              icon: Icon(
+                Icons.pin_drop,
+                color: Colors.blue,
+                size: 60,
+              ),
+            ),
+            directionArrowMarker: const MarkerIcon(
+              icon: Icon(
+                Icons.double_arrow,
+                size: 48,
+              ),
+            ),
+          ),
+          roadConfiguration: const RoadOption(
+            roadColor: Colors.yellowAccent,
+          ),
+          markerOption: MarkerOption(
+            defaultMarker: const MarkerIcon(icon: Icon(Icons.circle)),
+          ),
+        ),
         //enableRotationByGesture: true,
         onGeoPointClicked: (geoPoint) {
           Navigator.push(
@@ -85,31 +114,6 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
                   builder: (context) => GeoPointPreview(geoPoint: geoPoint)));
         },
         controller: mapController,
-        initZoom: 18,
-        maxZoomLevel: 18,
-        stepZoom: 1.0,
-        userLocationMarker: UserLocationMaker(
-          personMarker: const MarkerIcon(
-            icon: Icon(
-              Icons.pin_drop,
-              color: Colors.blue,
-              size: 60,
-            ),
-          ),
-          directionArrowMarker: const MarkerIcon(
-            icon: Icon(
-              Icons.double_arrow,
-              size: 48,
-            ),
-          ),
-        ),
-        roadConfiguration: const RoadOption(
-          roadColor: Colors.yellowAccent,
-        ),
-
-        markerOption: MarkerOption(
-          defaultMarker: const MarkerIcon(icon: Icon(Icons.circle)),
-        ),
       ),
       Positioned(
         right: 0,

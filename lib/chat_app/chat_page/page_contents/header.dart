@@ -31,7 +31,7 @@ class ChatHeader extends StatelessWidget {
                 children: [
                   const Icon(Icons.arrow_back),
                   GetImage(
-                    accountInfo: reciever,
+                    imagePath: reciever.imagePath ?? "",
                     size: 20,
                   )
                 ],

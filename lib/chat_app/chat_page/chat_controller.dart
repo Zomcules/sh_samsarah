@@ -39,7 +39,7 @@ class ChatController {
             appendedProductsIds: []));
       }
       reciever.delete();
-      db.accountInfos().add(reciever);
+      db.accountInfos.add(reciever);
     }
     appendedProducts.clear();
     textController.clear();

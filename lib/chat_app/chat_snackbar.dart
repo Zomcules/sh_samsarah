@@ -73,7 +73,7 @@ class _ChatSnackBarState extends State<ChatSnackBar> {
         widget.refreshParent();
       },
       leading: GetImage(
-        accountInfo: widget.accountInfo,
+        imagePath: widget.accountInfo.imagePath ?? "",
         size: 35,
       ),
       title: Text(widget.accountInfo.username),

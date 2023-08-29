@@ -1,31 +1,27 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import '../account/account_info.dart';
+
+import '../database/internet.dart';
 
 class GetImage extends StatelessWidget {
-  final AccountInfo? accountInfo;
+  final String imagePath;
   final int size;
-  const GetImage({super.key, required this.accountInfo, required this.size});
-
-  FileImage? getFile() {
-    if (accountInfo != null) {
-      if (accountInfo!.imagePath != null) {
-        return FileImage(File(accountInfo!.imagePath!));
-      }
-    }
-    return null;
-  }
+  GetImage({super.key, required this.imagePath, required this.size});
+  final net = Net();
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: size / 1,
-      foregroundImage: getFile(),
-      child: Icon(
-        Icons.person,
-        size: size.toDouble(),
-        color: const Color.fromARGB(255, 153, 153, 153),
-      ),
-    );
+    return StreamBuilder(
+        stream: net.auth.userChanges(),
+        builder: (context, snapshot) => snapshot.hasData
+            ? CircleAvatar(
+                radius: size / 1,
+                foregroundImage: NetworkImage(snapshot.data!.photoURL ?? ""),
+                child: Icon(
+                  Icons.person,
+                  size: size.toDouble(),
+                  color: const Color.fromARGB(255, 153, 153, 153),
+                ),
+              )
+            : const CircularProgressIndicator());
   }
 }

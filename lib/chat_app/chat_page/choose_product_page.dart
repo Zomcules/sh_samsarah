@@ -17,7 +17,7 @@ class ChooseProductPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [Divider(), Text("عروضي"), Divider()],
       ));
-      for (ProductInfo product in db.userProducts()) {
+      for (ProductInfo product in db.userProducts) {
         temp.add(ProductSnackBar(
           productInfo: product,
           onTap: () => onTap(context, product),
@@ -27,7 +27,7 @@ class ChooseProductPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [Divider(), Text("العروض المحفوظة"), Divider()],
       ));
-      for (ProductInfo product in db.otherProducts()) {
+      for (ProductInfo product in db.otherProducts) {
         temp.add(ProductSnackBar(
           productInfo: product,
           onTap: () => onTap(context, product),

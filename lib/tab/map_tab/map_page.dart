@@ -24,16 +24,20 @@ class _MapPageState extends State<MapPage> {
     return Scaffold(
       appBar: AppBar(),
       body: OSMFlutter(
+        osmOption: OSMOption(
+          zoomOption: const ZoomOption(
+            initZoom: 16,
+          ),
+          staticPoints: [
+            StaticPositionGeoPoint(
+                "",
+                const MarkerIcon(
+                  icon: Icon(Icons.location_on),
+                ),
+                [widget.geopoint])
+          ],
+        ),
         controller: controller,
-        initZoom: 16,
-        staticPoints: [
-          StaticPositionGeoPoint(
-              "",
-              const MarkerIcon(
-                icon: Icon(Icons.location_on),
-              ),
-              [widget.geopoint])
-        ],
       ),
     );
   }

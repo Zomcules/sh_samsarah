@@ -30,11 +30,9 @@ class _MessagesPageState extends State<MessagesPage> {
             Expanded(
                 child: ListView.builder(
                     physics: const BouncingScrollPhysics(),
-                    itemCount: db.accountInfos().length,
+                    itemCount: db.accountInfos.length,
                     itemBuilder: (context, index) => ChatSnackBar(
-                          accountInfo: db
-                              .accountInfos()
-                              .values
+                          accountInfo: db.accountInfos.values
                               .toList()
                               .reversed
                               .elementAt(index),
@@ -45,7 +43,7 @@ class _MessagesPageState extends State<MessagesPage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             var info = AccountInfo.dummy();
-            db.accountInfos().add(info);
+            db.accountInfos.add(info);
             await db.openMessages();
             //setState(() {});
           },

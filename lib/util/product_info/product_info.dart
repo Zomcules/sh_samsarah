@@ -1,7 +1,9 @@
 import 'dart:math';
 
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart' as osm;
 import 'package:hive/hive.dart';
+import 'package:samsarah/util/database/internet.dart';
 
 class ProductInfo extends HiveObject {
   final String accountInfoGlobalId;
@@ -21,11 +23,9 @@ class ProductInfo extends HiveObject {
   bool? groundFloor;
   bool? wholeHouse;
   bool? nasiah;
-  bool residential;
-  bool agricultural;
-  bool industrial;
+  ZoneType zone;
   String? imagePath;
-  GeoPoint geopoint;
+  osm.GeoPoint geopoint;
 
   ProductInfo(
       {required this.accountInfoGlobalId,
@@ -44,9 +44,7 @@ class ProductInfo extends HiveObject {
       this.roomsNum,
       this.wholeHouse,
       this.withFurniture,
-      this.agricultural = false,
-      this.industrial = false,
-      this.residential = false,
+      this.zone = ZoneType.residential,
       required this.dateTime,
       required this.globalId,
       this.certified});
@@ -68,9 +66,7 @@ class ProductInfo extends HiveObject {
       "groundFloor": groundFloor,
       "wholeHouse": wholeHouse,
       "nasiah": nasiah,
-      "residential": residential,
-      "agricultural": agricultural,
-      "industrial": industrial,
+      "zoneIndex": zone.index,
       "imagePath": imagePath,
       "geopointMap": geopoint.toMap(),
       "dateTime": dateTime.toIso8601String(),
@@ -95,11 +91,9 @@ class ProductInfo extends HiveObject {
         groundFloor: map["groundFloor"],
         wholeHouse: map["wholeHouse"],
         nasiah: map["nasiah"],
-        residential: map["residential"],
-        agricultural: map["agricultural"],
-        industrial: map["industrial"],
+        zone: ZoneType.values[map["zoneIndex"]],
         imagePath: map["imagePath"],
-        geopoint: GeoPoint.fromMap(map["geopointMap"]),
+        geopoint: osm.GeoPoint.fromMap(map["geopointMap"]),
         dateTime: DateTime.parse(map["dateTime"]),
         certified: map["certified"]);
   }
@@ -118,25 +112,30 @@ class ProductInfo extends HiveObject {
         withFurniture: Random().nextBool(),
         price: Random().nextInt(99999999),
         comments: [],
-        agricultural: Random().nextBool(),
         built: Random().nextBool(),
-        geopoint: GeoPoint(latitude: 0.0, longitude: 0.0),
+        geopoint: osm.GeoPoint(latitude: 0.0, longitude: 0.0),
         imagePath: "",
-        industrial: Random().nextBool(),
         producerComment: "wnsmyebdnimw?",
-        residential: Random().nextBool(),
         services: Random().nextBool(),
         size: Random().nextInt(99999),
-        certified: Random().nextBool());
+        certified: Random().nextBool(),
+        zone: ZoneType.values[Random().nextInt(ZoneType.values.length)]);
   }
 
   factory ProductInfo.blank() {
     return ProductInfo(
         accountInfoGlobalId: "",
-        geopoint: GeoPoint(latitude: 0, longitude: 0),
+        geopoint: osm.GeoPoint(latitude: 0, longitude: 0),
         price: 0,
         dateTime: DateTime.now(),
         globalId: "");
+  }
+
+  Future<void> saveToNetwork() async {
+    await Net()
+        .productCollection
+        .doc(globalId)
+        .set(this, SetOptions(merge: true));
   }
 }
 
@@ -147,3 +146,5 @@ List<ProductInfo> getDummyProductInfos({int number = 20}) {
   }
   return temp;
 }
+
+enum ZoneType { agricultural, residential, industrial }

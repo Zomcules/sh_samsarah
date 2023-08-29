@@ -14,10 +14,13 @@ class _TestHomeState extends State<TestHome> {
   @override
   void initState() {
     super.initState();
-    collection = FirebaseFirestore.instance.collection("TestCollection");
+    var instance = FirebaseFirestore.instance;
+    instance.settings = const Settings(persistenceEnabled: false);
+    collection = instance.collection("TestCollection");
   }
 
   var controller = TextEditingController();
+  var scroller = ScrollController();
 
   void validate() {
     if (controller.value.text != "") {
@@ -62,14 +65,20 @@ class _TestHomeState extends State<TestHome> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   return ListView.builder(
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (context, index) => Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(snapshot.data!.docs[index].data().toString()),
-                    ),
-                  );
+                      controller: scroller,
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) => Dismissible(
+                            key: UniqueKey(),
+                            onDismissed: (direction) =>
+                                snapshot.data!.docs[index].reference.delete(),
+                            child: ListTile(
+                              title: Text(
+                                  snapshot.data!.docs[index].data().toString()),
+                            ),
+                          ));
                 }
-                return const CircularProgressIndicator();
+                return const SizedBox(
+                    width: 60, height: 60, child: CircularProgressIndicator());
               },
             ),
           ),
@@ -78,7 +87,7 @@ class _TestHomeState extends State<TestHome> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {}),
-        child: Icon(Icons.refresh),
+        child: const Icon(Icons.refresh),
       ),
     );
   }

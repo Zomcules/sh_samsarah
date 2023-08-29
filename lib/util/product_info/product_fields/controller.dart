@@ -4,10 +4,12 @@ import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:samsarah/util/database/database.dart';
 import 'package:samsarah/util/product_info/product_info.dart';
 
+import '../../database/internet.dart';
+
 class ProductController {
   var db = DataBase();
 
-  late GeoPoint geopoint;
+  GeoPoint geopoint = GeoPoint(latitude: 0, longitude: 0);
 
   bool forSale = false;
 
@@ -17,11 +19,7 @@ class ProductController {
 
   bool certified = true;
 
-  bool agricultural = false;
-
-  bool industrial = false;
-
-  bool residential = false;
+  ZoneType zone = ZoneType.residential;
 
   int roomsNum = 0;
 
@@ -41,21 +39,20 @@ class ProductController {
 
   bool nasiah = false;
 
-  void save() {
+  Future<void> save() async {
     var x = Random().nextInt(9999).toString();
+    final net = Net();
     var temp = ProductInfo(
-      accountInfoGlobalId: db.userActiveAccount()!.globalId,
+      accountInfoGlobalId: net.uid!,
       geopoint: geopoint,
       forSale: forSale,
       price: price,
       dateTime: DateTime.now(),
-      globalId: "${db.userActiveAccount()!.globalId}-$x",
+      globalId: "${net.uid}-$x",
       services: services,
       certified: certified,
       //////////
-      agricultural: agricultural,
-      industrial: industrial,
-      residential: residential,
+      zone: zone,
 ///////////////////////
       roomsNum: roomsNum,
       wholeHouse: wholeHouse,
@@ -66,7 +63,8 @@ class ProductController {
       nasiah: nasiah,
       size: size,
     );
-    db.savedProducts().add(temp);
+    db.savedProducts.add(temp);
+    await temp.saveToNetwork();
   }
 
   getSearchFieldsMap() {}

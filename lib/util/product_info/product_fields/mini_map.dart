@@ -25,8 +25,10 @@ Future<GeoPoint?> chooseGeoPoint(BuildContext context) async {
         content: SizedBox(
           height: MediaQuery.of(context).size.width * 4 / 5,
           child: OSMFlutter(
+            osmOption: const OSMOption(
+              isPicker: true,
+            ),
             controller: controller,
-            isPicker: true,
           ),
         ),
         actions: [

@@ -60,10 +60,10 @@ class _UAccountListTileState extends State<UAccountListTile> {
       title: Text(widget.info.username),
       onTap: () async {
         Navigator.pop(context);
-        await db.changeActiveAccount(info: widget.info);
+
         widget.info.delete();
       },
-      leading: GetImage(accountInfo: widget.info, size: 30),
+      leading: GetImage(imagePath: widget.info.imagePath ?? "", size: 30),
       trailing: IconButton(
           onPressed: () => confirmDelete(context),
           icon: const Icon(

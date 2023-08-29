@@ -5,7 +5,7 @@ import 'package:samsarah/util/database/settings.dart';
 import 'package:samsarah/util/product_info/product_info.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 
-class SettingsAdapter extends TypeAdapter<AppData> {
+class AppDataAdapter extends TypeAdapter<AppData> {
   @override
   AppData read(BinaryReader reader) {
     return AppData(activeAccountIndex: reader.read());
@@ -28,7 +28,8 @@ class AccountAdapter extends TypeAdapter<AccountInfo> {
         globalId: reader.read(),
         imagePath: reader.read(),
         lastMessage: reader.read(),
-        productIds: reader.read().cast<String>());
+        productIds: reader.read().cast<String>(),
+        currency: reader.read());
   }
 
   @override
@@ -41,6 +42,7 @@ class AccountAdapter extends TypeAdapter<AccountInfo> {
     writer.write(obj.imagePath);
     writer.write(obj.lastMessage);
     writer.write(obj.productIds);
+    writer.write(obj.currency);
   }
 }
 
@@ -53,17 +55,15 @@ class ProductAdapter extends TypeAdapter<ProductInfo> {
       price: reader.read(),
       dateTime: reader.read(),
       globalId: reader.read(),
-      agricultural: reader.read(),
+      zone: ZoneType.values[reader.read()],
       built: reader.read(),
       comments: reader.read(),
       floorsNum: reader.read(),
       forSale: reader.read(),
       geopoint: reader.read(),
       imagePath: reader.read(),
-      industrial: reader.read(),
       nasiah: reader.read(),
       producerComment: reader.read(),
-      residential: reader.read(),
       roomsNum: reader.read(),
       services: reader.read(),
       size: reader.read(),
@@ -83,17 +83,15 @@ class ProductAdapter extends TypeAdapter<ProductInfo> {
     writer.write(obj.price);
     writer.write(obj.dateTime);
     writer.write(obj.globalId);
-    writer.write(obj.agricultural);
+    writer.write(obj.zone.index);
     writer.write(obj.built);
     writer.write(obj.comments);
     writer.write(obj.floorsNum);
     writer.write(obj.forSale);
     writer.write(obj.geopoint);
     writer.write(obj.imagePath);
-    writer.write(obj.industrial);
     writer.write(obj.nasiah);
     writer.write(obj.producerComment);
-    writer.write(obj.residential);
     writer.write(obj.roomsNum);
     writer.write(obj.services);
     writer.write(obj.size);

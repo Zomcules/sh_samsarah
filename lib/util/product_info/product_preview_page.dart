@@ -58,9 +58,9 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
   }
 
   void messageProducer(AccountInfo info) async {
-    if (db.activeBox().isNotEmpty) {
+    if (db.activeBox.isNotEmpty) {
       if (!info.isInBox) {
-        await db.accountInfos().add(info);
+        await db.accountInfos.add(info);
       }
       await db.openMessages();
       if (mounted) {
@@ -78,16 +78,18 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
     widget.info!.save();
   }
 
-  void saveProduct() {
+  Future<void> saveProduct() async {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
-      pc.save();
-      showDialog(
-        context: context,
-        builder: (context) => const AlertDialog(
-          content: Text("Success"),
-        ),
-      );
+      await pc.save();
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => const AlertDialog(
+            content: Text("Success"),
+          ),
+        );
+      }
     } else {
       showDialog(
         context: context,
@@ -161,10 +163,10 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
     });
   }
 
-  onPressed(AsyncSnapshot<AccountInfo> snapshot) {
+  onPressed(AsyncSnapshot<AccountInfo> snapshot) async {
     switch (widget.type) {
       case PPPType.createNew:
-        saveProduct();
+        await saveProduct();
         break;
       case PPPType.search:
         searchProduct();

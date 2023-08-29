@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:samsarah/util/account/account_preview.dart';
-import 'package:samsarah/util/account/choose_account.dart';
 import 'package:samsarah/util/database/database.dart';
+import 'package:samsarah/util/database/internet.dart';
 import 'package:samsarah/util/tools/get_image.dart';
+import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
 class AccountHeader extends StatefulWidget {
   final Function setstate;
@@ -13,16 +13,16 @@ class AccountHeader extends StatefulWidget {
 }
 
 class _AccountHeaderState extends State<AccountHeader> {
-  var db = DataBase();
+  final db = DataBase();
+  final net = Net();
   @override
   Widget build(BuildContext context) {
-    if (db.userActiveAccount() != null) {
+    if (net.isSignedIn) {
       return GestureDetector(
-        onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AccountPreviewPage(),
-            )).then((value) {
+        onTap: () async => pushNamed(
+          context,
+          net.isSignedIn ? "/profile" : "/sign-in",
+        ).then((value) {
           setState(() {});
           widget.setstate();
         }),
@@ -32,9 +32,10 @@ class _AccountHeaderState extends State<AccountHeader> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              GetImage(accountInfo: db.userActiveAccount()!, size: 50),
+              GetImage(
+                  imagePath: net.auth.currentUser?.photoURL ?? "", size: 50),
               Text(
-                db.userActiveAccount()!.username,
+                net.auth.currentUser?.displayName ?? "",
                 style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -49,8 +50,14 @@ class _AccountHeaderState extends State<AccountHeader> {
         child:
             Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
           Container(
-              margin: const EdgeInsets.all(10),
-              child: GetImage(accountInfo: db.userActiveAccount(), size: 50)),
+            margin: const EdgeInsets.all(10),
+            child: StreamBuilder(
+                stream: net.auth.userChanges(),
+                builder: (context, snapshot) => snapshot.hasData
+                    ? GetImage(
+                        imagePath: snapshot.data!.photoURL ?? "", size: 20)
+                    : const CircularProgressIndicator()),
+          ),
           Container(
             decoration: BoxDecoration(
                 boxShadow: const [
@@ -62,11 +69,9 @@ class _AccountHeaderState extends State<AccountHeader> {
                 borderRadius: BorderRadius.circular(50),
                 color: const Color.fromARGB(255, 0, 125, 228)),
             child: IconButton(
-                onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ChooseAccount(),
-                        )).then((value) {
+                onPressed: () async =>
+                    pushNamed(context, net.isSignedIn ? "/profile" : "/sign-in")
+                        .then((value) {
                       setState(() {});
                       widget.setstate();
                     }),

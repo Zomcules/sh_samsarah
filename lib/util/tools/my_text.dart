@@ -57,17 +57,6 @@ List<Widget> getAttributes(ProductInfo productInfo) {
     }
   }
 
-  if (productInfo.withFurniture != null) {
-    if (productInfo.withFurniture == true) {
-      temp.add(const MyText(text: "مفروش"));
-    }
-  }
-
-  if (productInfo.agricultural) {
-    temp.add(const MyText(text: "زراعي"));
-  }
-  if (productInfo.industrial) {
-    temp.add(const MyText(text: "نجاري"));
-  }
+  temp.add(MyText(text: productInfo.zone.name));
   return temp;
 }
