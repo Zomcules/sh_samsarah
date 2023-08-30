@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:samsarah/util/database/database.dart';
 import 'package:samsarah/util/product_info/product_info.dart';
@@ -65,16 +66,39 @@ class ProductController {
     await temp.saveToDisk();
   }
 
-  Future<void> search() async {
-    var map = {};
-    if (price != 0) {
-      map["price"] = price;
+  Future<List<ProductInfo>> search(BuildContext context) async {
+    var searchMap = {};
+    if (price != null) {
+      searchMap["price"] = price;
     }
-    if (price != 0) {
-      map["price"] = price;
+    if (forSale != null) {
+      searchMap["forSale"] = forSale;
     }
-    if (price != 0) {
-      map["price"] = price;
+    if (wholeHouse != null) {
+      searchMap["wholeHouse"] = wholeHouse;
     }
+    if (withFurniture != null) {
+      searchMap["withFurniture"] = withFurniture;
+    }
+    if (geopoint != null) {
+      searchMap["geopointMap"] = geopoint!.toMap();
+    }
+
+    var docs = (await Net().productCollection.get()).docs;
+
+    var allProducts =
+        List<ProductInfo>.generate(docs.length, (index) => docs[index].data());
+
+    var qualifyingProducts = allProducts.where((element) {
+      var elMap = element.toMap();
+      bool theOne = true;
+      for (var searchEntery in searchMap.entries) {
+        if (elMap[searchEntery.key] != searchEntery.value) {
+          theOne = false;
+        }
+      }
+      return theOne;
+    });
+    return qualifyingProducts.toList();
   }
 }

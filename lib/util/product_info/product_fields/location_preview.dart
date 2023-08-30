@@ -129,12 +129,6 @@ class LocationPreviewData {
             iconData: Icons.edit,
             title: "تغيير الموقع",
             onTap: onTap);
-      case PPPType.search:
-        return LocationPreviewData(
-            color: Colors.blue,
-            iconData: Icons.location_on,
-            title: "تغيير الموقع",
-            onTap: onTap);
       case PPPType.viewExternal:
         return LocationPreviewData(
             color: Colors.green,

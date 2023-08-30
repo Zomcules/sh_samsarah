@@ -47,15 +47,14 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
     switch (widget.type) {
       case PPPType.createNew:
         return const Text("انشاء عرض جديد");
-      case PPPType.search:
-        return const Text("البحث عن عرض");
       case PPPType.viewExternal:
         return snapshot.connectionState == ConnectionState.done
             ? snapshot.data!.globalId == net.uid
                 ? const Text(
                     "أنت",
                     style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.green),
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 0, 146, 5)),
                   )
                 : Text(snapshot.data!.username)
             : const CircularProgressIndicator();
@@ -67,18 +66,19 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
   }
 
   void messageProducer(AccountInfo info) async {
-    if (db.activeBox.isNotEmpty) {
+    if (db.activeBox.isNotEmpty && info.globalId != net.uid) {
       if (!info.isInBox) {
         await db.accountInfos.add(info);
       }
       await db.openMessages();
       if (mounted) {
         Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  ChatPage(reciever: info, appendedProduct: widget.info),
-            ));
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                ChatPage(reciever: info, appendedProduct: widget.info),
+          ),
+        );
       }
     }
   }
@@ -110,10 +110,10 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
   }
 
   void searchProduct() {
-    pc.search();
+    pc.search(context);
   }
 
-  List<Widget> getFields() {
+  List<Widget> get fields {
     var temp = [
       const SizedBox(
         height: 50,
@@ -177,9 +177,6 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
       case PPPType.createNew:
         await saveProduct();
         break;
-      case PPPType.search:
-        searchProduct();
-        break;
       case PPPType.viewExternal:
         snapshot.connectionState == ConnectionState.done
             ? messageProducer(snapshot.data!)
@@ -199,8 +196,8 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
                 key: formKey,
                 child: ListView.separated(
                   addAutomaticKeepAlives: true,
-                  itemCount: getFields().length,
-                  itemBuilder: (context, index) => getFields()[index],
+                  itemCount: fields.length,
+                  itemBuilder: (context, index) => fields[index],
                   separatorBuilder: (context, index) => const SizedBox(
                     height: 50,
                   ),
