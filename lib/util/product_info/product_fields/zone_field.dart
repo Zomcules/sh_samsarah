@@ -29,6 +29,7 @@ class _ZoneFieldState extends State<ZoneField>
               ? () {
                   setState(() {
                     zone = ZoneType.agricultural;
+                    widget.pc.zone = zone;
                   });
                 }
               : null,
@@ -43,6 +44,7 @@ class _ZoneFieldState extends State<ZoneField>
               ? () {
                   setState(() {
                     zone = ZoneType.industrial;
+                    widget.pc.zone = zone;
                   });
                 }
               : null,
@@ -57,6 +59,7 @@ class _ZoneFieldState extends State<ZoneField>
               ? () {
                   setState(() {
                     zone = ZoneType.residential;
+                    widget.pc.zone = zone;
                   });
                 }
               : null,
@@ -135,9 +138,7 @@ class _ZoneFieldState extends State<ZoneField>
   @override
   void initState() {
     super.initState();
-    if (widget.info != null) {
-      zone = widget.info!.zone;
-    }
+    zone = (widget.info?.zone ?? widget.pc.zone) ?? ZoneType.residential;
   }
 
   @override

@@ -1,12 +1,12 @@
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart' as osm;
 import 'package:hive/hive.dart';
+import 'package:samsarah/util/database/database.dart';
 import 'package:samsarah/util/database/internet.dart';
 
 class ProductInfo extends HiveObject {
-  final String accountInfoGlobalId;
+  final String producerId;
   final String globalId;
   int price;
   final DateTime dateTime;
@@ -28,7 +28,7 @@ class ProductInfo extends HiveObject {
   osm.GeoPoint geopoint;
 
   ProductInfo(
-      {required this.accountInfoGlobalId,
+      {required this.producerId,
       required this.geopoint,
       this.imagePath,
       this.built = true,
@@ -51,7 +51,7 @@ class ProductInfo extends HiveObject {
 
   Map<String, dynamic> toMap() {
     return {
-      "accountInfoGlobalId": accountInfoGlobalId,
+      "producerId": producerId,
       "globalId": globalId,
       "price": price,
       "producerComment": producerComment,
@@ -76,7 +76,7 @@ class ProductInfo extends HiveObject {
 
   factory ProductInfo.fromMap(Map<String, dynamic> map) {
     return ProductInfo(
-        accountInfoGlobalId: map["accountInfoGlobalId"],
+        producerId: map["producerId"],
         globalId: map["globalId"],
         price: map["price"],
         producerComment: map["producerComment"],
@@ -103,7 +103,7 @@ class ProductInfo extends HiveObject {
         globalId: globalId ?? Random().nextInt(99999).toString(),
         dateTime: DateTime.now(),
         forSale: Random().nextBool(),
-        accountInfoGlobalId: Random().nextInt(2147000000).toString(),
+        producerId: Random().nextInt(2147000000).toString(),
         floorsNum: Random().nextInt(5),
         groundFloor: Random().nextBool(),
         nasiah: Random().nextBool(),
@@ -124,7 +124,7 @@ class ProductInfo extends HiveObject {
 
   factory ProductInfo.blank() {
     return ProductInfo(
-        accountInfoGlobalId: "",
+        producerId: "",
         geopoint: osm.GeoPoint(latitude: 0, longitude: 0),
         price: 0,
         dateTime: DateTime.now(),
@@ -132,10 +132,11 @@ class ProductInfo extends HiveObject {
   }
 
   Future<void> saveToNetwork() async {
-    await Net()
-        .productCollection
-        .doc(globalId)
-        .set(this, SetOptions(merge: true));
+    await Net().productCollection.doc(globalId).set(this);
+  }
+
+  Future<void> saveToDisk() async {
+    await DataBase().savedProducts.add(this);
   }
 }
 

@@ -24,9 +24,7 @@ class _MessagesPageState extends State<MessagesPage> {
         ),
         body: Column(
           children: [
-            AccountHeader(
-              setstate: () => setState(() {}),
-            ),
+            const AccountHeader(),
             Expanded(
                 child: ListView.builder(
                     physics: const BouncingScrollPhysics(),

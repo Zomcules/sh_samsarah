@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:samsarah/util/database/database.dart';
 import 'package:samsarah/util/product_info/product_info.dart';
@@ -9,63 +7,74 @@ import '../../database/internet.dart';
 class ProductController {
   var db = DataBase();
 
-  GeoPoint geopoint = GeoPoint(latitude: 0, longitude: 0);
+  GeoPoint? geopoint;
 
-  bool forSale = false;
+  bool? forSale;
 
-  int price = 0;
+  int? price;
 
-  bool services = true;
+  bool? services;
 
-  bool certified = true;
+  bool? certified;
 
-  ZoneType zone = ZoneType.residential;
+  ZoneType? zone;
 
-  int roomsNum = 0;
+  int? roomsNum;
 
-  bool wholeHouse = false;
+  bool? wholeHouse;
 
-  bool withFurniture = false;
+  bool? withFurniture;
 
-  int size = 0;
+  int? size;
 
-  bool built = true;
+  bool? built;
 
-  bool multifloor = false;
+  bool? multifloor;
 
-  int floorsNum = 1;
+  int? floorsNum;
 
-  bool groundFloor = true;
+  bool? groundFloor;
 
-  bool nasiah = false;
+  bool? nasiah;
 
   Future<void> save() async {
-    var x = Random().nextInt(9999).toString();
+    String x = DateTime.now().toIso8601String();
     final net = Net();
     var temp = ProductInfo(
-      accountInfoGlobalId: net.uid!,
-      geopoint: geopoint,
-      forSale: forSale,
-      price: price,
+      producerId: net.uid!,
+      geopoint: geopoint ?? GeoPoint(latitude: 0, longitude: 0),
+      forSale: forSale ?? false,
+      price: price ?? 0,
       dateTime: DateTime.now(),
       globalId: "${net.uid}-$x",
-      services: services,
-      certified: certified,
+      services: services ?? true,
+      certified: certified ?? true,
       //////////
-      zone: zone,
+      zone: zone ?? ZoneType.residential,
 ///////////////////////
-      roomsNum: roomsNum,
-      wholeHouse: wholeHouse,
-      withFurniture: withFurniture,
-      built: built,
-      floorsNum: floorsNum,
-      groundFloor: groundFloor,
-      nasiah: nasiah,
-      size: size,
+      roomsNum: roomsNum ?? 1,
+      wholeHouse: wholeHouse ?? false,
+      withFurniture: withFurniture ?? false,
+      built: built ?? true,
+      floorsNum: floorsNum ?? 1,
+      groundFloor: groundFloor ?? true,
+      nasiah: nasiah ?? false,
+      size: size ?? 0,
     );
-    db.savedProducts.add(temp);
     await temp.saveToNetwork();
+    await temp.saveToDisk();
   }
 
-  getSearchFieldsMap() {}
+  Future<void> search() async {
+    var map = {};
+    if (price != 0) {
+      map["price"] = price;
+    }
+    if (price != 0) {
+      map["price"] = price;
+    }
+    if (price != 0) {
+      map["price"] = price;
+    }
+  }
 }

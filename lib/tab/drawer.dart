@@ -20,27 +20,43 @@ class _MyDrawerState extends State<MyDrawer> {
   var db = DataBase();
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-        child: ListView(
-      children: getChildren(),
-    ));
-  }
-
-  List<Widget> getChildren() {
-    var temp = [
-      const SizedBox(
-        height: 50,
-      ),
-      AccountHeader(setstate: () => setState(() {})),
-    ];
-    if (Net().auth.currentUser != null) {
-      temp.addAll([
-        const DrawerTile(
-            title: "المنتجات المحفوظة", icon: Icons.discount_sharp),
-      ]);
-    }
-    temp.add(const DeathButton());
-    return temp;
+    return StreamBuilder(
+      stream: Net().auth.userChanges(),
+      builder: (context, snapshot) {
+        return Drawer(
+          child: snapshot.hasData
+              ? ListView(
+                  children: const [
+                    SizedBox(
+                      height: 50,
+                    ),
+                    AccountHeader(),
+                    DrawerTile(
+                        title: "المنتجات المحفوظة", icon: Icons.discount_sharp),
+                    DeathButton()
+                  ],
+                )
+              : Center(
+                  child: GestureDetector(
+                    onTap: () => pushNamed(context, "/sign-in"),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Text(
+                          "تسجيل الدخول",
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+        );
+      },
+    );
   }
 }
 

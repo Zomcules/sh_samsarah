@@ -15,7 +15,7 @@ void main() async {
   runApp(const MyApp());
 }
 
-var net = Net();
+final net = Net();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

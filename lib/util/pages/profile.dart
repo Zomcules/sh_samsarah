@@ -21,6 +21,8 @@ class _MyProfileState extends State<MyProfile> {
     future = Net().currentAccount;
   }
 
+  final net = Net();
+
   List<Widget> get children => [
         Expanded(
           child: SizedBox(
@@ -33,19 +35,24 @@ class _MyProfileState extends State<MyProfile> {
         ),
         Padding(
           padding: const EdgeInsets.all(10),
-          child: FutureBuilder(
-            future: future,
-            builder: (context, snapshot) =>
-                snapshot.connectionState == ConnectionState.done
-                    ? Text(snapshot.data!.toMap().toString())
-                    : const CircularProgressIndicator(),
+          child: StreamBuilder(
+            stream: net.accountCollection.doc(net.uid).snapshots(),
+            builder: (context, snapshot) => snapshot.hasData
+                ? Text(snapshot.data!.data()?.toMap().toString() ?? "")
+                : const CircularProgressIndicator(),
           ),
         )
       ];
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: children,
+    return WillPopScope(
+      onWillPop: () {
+        net.syncUser();
+        return Future.value(true);
+      },
+      child: ListView(
+        children: children,
+      ),
     );
   }
 }

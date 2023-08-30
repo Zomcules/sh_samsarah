@@ -30,17 +30,20 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
   @override
   void initState() {
     super.initState();
-    producer = fetchAccount(widget.info?.accountInfoGlobalId ?? "")
-        as Future<AccountInfo>;
+    if (widget.type != PPPType.viewExternal) {
+      producer = net.currentAccount;
+    } else {
+      producer = fetchAccount(widget.info!.producerId) as Future<AccountInfo>;
+    }
   }
 
-  late Future<AccountInfo> producer;
+  late Future<AccountInfo?> producer;
   final db = DataBase();
   final pc = ProductController();
   final formKey = GlobalKey<FormState>();
   bool showMore = false;
 
-  Widget title(AsyncSnapshot<AccountInfo> snapshot) {
+  Widget title(AsyncSnapshot<AccountInfo?> snapshot) {
     switch (widget.type) {
       case PPPType.createNew:
         return const Text("انشاء عرض جديد");
@@ -48,7 +51,13 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
         return const Text("البحث عن عرض");
       case PPPType.viewExternal:
         return snapshot.connectionState == ConnectionState.done
-            ? Text(snapshot.data!.username)
+            ? snapshot.data!.globalId == net.uid
+                ? const Text(
+                    "أنت",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.green),
+                  )
+                : Text(snapshot.data!.username)
             : const CircularProgressIndicator();
       case PPPType.viewInternal:
         return const Text("تعديل العرض");
@@ -101,7 +110,7 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
   }
 
   void searchProduct() {
-    pc.getSearchFieldsMap();
+    pc.search();
   }
 
   List<Widget> getFields() {
@@ -163,7 +172,7 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
     });
   }
 
-  onPressed(AsyncSnapshot<AccountInfo> snapshot) async {
+  onPressed(AsyncSnapshot<AccountInfo?> snapshot) async {
     switch (widget.type) {
       case PPPType.createNew:
         await saveProduct();

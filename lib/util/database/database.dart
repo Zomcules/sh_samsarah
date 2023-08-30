@@ -67,12 +67,12 @@ class DataBase {
       Hive.box<ProductInfo>("${net.uid}productInfos");
 
   List<ProductInfo> get userProducts => savedProducts.values
-      .where((element) => element.accountInfoGlobalId == net.uid)
+      .where((element) => element.producerId == net.uid)
       .toList();
 
   List<ProductInfo> get otherProducts {
     return savedProducts.values
-        .where((element) => element.accountInfoGlobalId != net.uid)
+        .where((element) => element.producerId != net.uid)
         .toList();
   }
 

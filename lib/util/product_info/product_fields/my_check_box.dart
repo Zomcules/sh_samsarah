@@ -71,7 +71,7 @@ class _Data {
         return _Data(
             editable: pppType != PPPType.viewExternal,
             title: "مبني",
-            initialValue: info?.built ?? controller.built,
+            initialValue: (info?.built ?? controller.built) ?? true,
             onSaved: (bool value) {
               controller.built = value;
             });
@@ -79,7 +79,7 @@ class _Data {
         return _Data(
             editable: pppType != PPPType.viewExternal,
             title: "طابق أرضي",
-            initialValue: info?.groundFloor ?? controller.groundFloor,
+            initialValue: (info?.groundFloor ?? controller.groundFloor) ?? true,
             onSaved: (bool value) {
               controller.groundFloor = value;
             });
@@ -88,7 +88,7 @@ class _Data {
         return _Data(
             editable: pppType != PPPType.viewExternal,
             title: "شهادات متوفرة",
-            initialValue: info?.certified ?? controller.certified,
+            initialValue: (info?.certified ?? controller.certified) ?? true,
             onSaved: (bool value) {
               controller.certified = value;
             });
@@ -96,7 +96,7 @@ class _Data {
         return _Data(
             editable: pppType != PPPType.viewExternal,
             title: "ناصية",
-            initialValue: info?.nasiah ?? controller.nasiah,
+            initialValue: (info?.nasiah ?? controller.nasiah) ?? false,
             onSaved: (bool value) {
               controller.nasiah = value;
             });
@@ -104,7 +104,7 @@ class _Data {
         return _Data(
             editable: pppType != PPPType.viewExternal,
             title: "خدمات",
-            initialValue: info?.services ?? controller.services,
+            initialValue: (info?.services ?? controller.services) ?? true,
             onSaved: (bool value) {
               controller.services = value;
             });
@@ -112,7 +112,8 @@ class _Data {
         return _Data(
             editable: pppType != PPPType.viewExternal,
             title: "مفروش",
-            initialValue: info?.withFurniture ?? controller.withFurniture,
+            initialValue:
+                (info?.withFurniture ?? controller.withFurniture) ?? false,
             onSaved: (bool value) {
               controller.withFurniture = value;
             });

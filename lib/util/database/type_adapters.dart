@@ -51,7 +51,7 @@ class ProductAdapter extends TypeAdapter<ProductInfo> {
   ProductInfo read(BinaryReader reader) {
     return ProductInfo(
       groundFloor: reader.read(),
-      accountInfoGlobalId: reader.read(),
+      producerId: reader.read(),
       price: reader.read(),
       dateTime: reader.read(),
       globalId: reader.read(),
@@ -79,7 +79,7 @@ class ProductAdapter extends TypeAdapter<ProductInfo> {
   @override
   void write(BinaryWriter writer, ProductInfo obj) {
     writer.write(obj.groundFloor);
-    writer.write(obj.accountInfoGlobalId);
+    writer.write(obj.producerId);
     writer.write(obj.price);
     writer.write(obj.dateTime);
     writer.write(obj.globalId);

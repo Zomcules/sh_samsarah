@@ -32,9 +32,9 @@ class _TwoChoicesState extends State<TwoChoices>
   void initState() {
     super.initState();
     if (widget.tcType == TwoChoicesType.saleRent) {
-      value = widget.productInfo?.forSale ?? widget.pc.forSale;
+      value = (widget.productInfo?.forSale ?? widget.pc.forSale) ?? false;
     } else if (widget.tcType == TwoChoicesType.wholeHouse) {
-      value = widget.productInfo?.wholeHouse ?? widget.pc.wholeHouse;
+      value = (widget.productInfo?.wholeHouse ?? widget.pc.wholeHouse) ?? false;
     }
 
     data = _Data.fromType(widget.tcType, widget.productInfo, widget.pc);
