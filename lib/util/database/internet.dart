@@ -82,22 +82,3 @@ class Net {
     await productCollection.doc(info.globalId).set(info);
   }
 }
-
-// class MockBase {
-//   Future<Map<String, dynamic>> getAccountMap(String id) async {
-//     return await AccountInfo.dummy().toMap();
-//   }
-
-//   Future<Map<String, dynamic>> getProductMap(String id) async {
-//     return await ProductInfo.dummy(DataBase().savedProducts().values.toList())
-//         .toMap();
-//   }
-
-//   Future<Map<String, dynamic>> getMessageMap(String id) async {
-//     return await MessageData(
-//         fromUser: Random().nextBool(),
-//         content: "content",
-//         dateTime: DateTime.now(),
-//         appendedProductsIds: []).toMap();
-//   }
-// }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:samsarah/util/product_info/product_fields/controller.dart';
-import 'package:samsarah/util/product_info/product_fields/ppp_floating_button.dart';
 import 'package:samsarah/util/product_info/product_info.dart';
+
+import '../controller.dart';
+import 'ppp_floating_button.dart';
 
 class MyCheckbox extends StatefulWidget {
   final PPPType type;

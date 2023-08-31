@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:samsarah/tab/map_tab/map_page.dart';
-
-import '../../tools/poppers_and_pushers.dart';
+import 'package:samsarah/util/product_info/product_preview_page/controller.dart';
+import '../../../tools/poppers_and_pushers.dart';
 import 'ppp_floating_button.dart';
-import 'controller.dart';
 import 'mini_map.dart';
 
 class LocationPreview extends StatefulWidget {

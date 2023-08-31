@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:samsarah/util/product_info/product_fields/ppp_floating_button.dart';
-import 'package:samsarah/util/product_info/product_fields/two_choices.dart';
 import 'package:samsarah/util/product_info/product_info.dart';
 import 'package:samsarah/util/tools/my_text_form_field.dart';
-import 'package:samsarah/util/product_info/product_fields/controller.dart';
-import '../../tools/my_text.dart';
+import '../../../tools/my_text.dart';
+import '../controller.dart';
 import 'my_check_box.dart';
+import 'ppp_floating_button.dart';
+import 'two_choices.dart';
 
 class ZoneField extends StatefulWidget {
   final ProductInfo? info;

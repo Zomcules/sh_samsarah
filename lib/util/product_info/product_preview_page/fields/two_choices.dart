@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:samsarah/util/product_info/product_fields/ppp_floating_button.dart';
 
-import '../../tools/my_text.dart';
-import '../product_info.dart';
-import 'controller.dart';
+import '../../../tools/my_text.dart';
+import '../../product_info.dart';
+import '../controller.dart';
+import 'ppp_floating_button.dart';
 
 class TwoChoices extends StatefulWidget {
   final ProductInfo? productInfo;

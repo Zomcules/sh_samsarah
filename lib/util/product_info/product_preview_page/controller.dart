@@ -2,17 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:samsarah/util/database/database.dart';
 import 'package:samsarah/util/product_info/product_info.dart';
+import 'package:samsarah/util/tools/extensions.dart';
+import 'package:samsarah/util/tools/two_points.dart';
 
 import '../../database/internet.dart';
 
 class ProductController {
   var db = DataBase();
 
+  double? radius;
+
   GeoPoint? geopoint;
 
   bool? forSale;
 
   int? price;
+  int? maxPrice;
+  int? minPrice;
 
   bool? services;
 
@@ -68,9 +74,6 @@ class ProductController {
 
   Future<List<ProductInfo>> search(BuildContext context) async {
     var searchMap = {};
-    if (price != null) {
-      searchMap["price"] = price;
-    }
     if (forSale != null) {
       searchMap["forSale"] = forSale;
     }
@@ -80,25 +83,39 @@ class ProductController {
     if (withFurniture != null) {
       searchMap["withFurniture"] = withFurniture;
     }
-    if (geopoint != null) {
-      searchMap["geopointMap"] = geopoint!.toMap();
-    }
 
     var docs = (await Net().productCollection.get()).docs;
 
-    var allProducts =
+    var products =
         List<ProductInfo>.generate(docs.length, (index) => docs[index].data());
 
-    var qualifyingProducts = allProducts.where((element) {
-      var elMap = element.toMap();
-      bool theOne = true;
-      for (var searchEntery in searchMap.entries) {
-        if (elMap[searchEntery.key] != searchEntery.value) {
-          theOne = false;
+    products = products.where(
+      (element) {
+        var elMap = element.toMap();
+        bool addProduct = true;
+        for (var searchEntery in searchMap.entries) {
+          if (elMap[searchEntery.key] != searchEntery.value) {
+            addProduct = false;
+          }
         }
-      }
-      return theOne;
-    });
-    return qualifyingProducts.toList();
+        return addProduct;
+      },
+    ).toList();
+    if (geopoint != null) {
+      products = products
+          .where((element) =>
+              TwoPoints(first: geopoint!, second: element.geopoint)
+                  .closerThan(radius ?? 50))
+          .toList();
+    }
+    products = products
+        .where(
+          (element) => element.price.isInRangeOf(
+            minPrice ?? 0,
+            maxPrice ?? double.infinity,
+          ),
+        )
+        .toList();
+    return products;
   }
 }

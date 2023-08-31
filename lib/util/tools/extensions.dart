@@ -11,4 +11,7 @@ extension IntTools on int {
     }
     return newString;
   }
+
+  bool isInRangeOf(num first, num second) =>
+      (this <= first && this >= second) || (this <= second && this >= first);
 }

@@ -3,10 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:samsarah/tab/Discovery_tab/discovery_header.dart';
 import 'package:samsarah/util/product_info/product_preview_page.dart';
-import 'package:samsarah/util/product_info/product_fields/ppp_floating_button.dart';
 import 'package:samsarah/util/tools/my_text.dart';
 import 'package:samsarah/util/tools/extensions.dart';
 import 'package:samsarah/util/product_info/product_info.dart';
+
+import '../../util/product_info/product_preview_page/fields/ppp_floating_button.dart';
 
 List<Widget> getDummyProductSnackbars() {
   List<ProductInfo> tempp = getDummyProductInfos();

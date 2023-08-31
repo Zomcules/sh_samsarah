@@ -1,19 +1,19 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:samsarah/util/product_info/product_fields/more_button.dart';
-import 'package:samsarah/util/product_info/product_fields/my_check_box.dart';
-import 'package:samsarah/util/product_info/product_fields/ppp_floating_button.dart';
 import 'package:samsarah/util/account/account_info.dart';
 import 'package:samsarah/util/database/fetchers.dart';
-import 'package:samsarah/util/product_info/product_fields/controller.dart';
+import 'package:samsarah/util/product_info/product_preview_page/controller.dart';
 import 'package:samsarah/util/database/database.dart';
-import 'package:samsarah/util/product_info/product_fields/two_choices.dart';
 import 'package:samsarah/util/product_info/product_info.dart';
 import '../../chat_app/chat_page/chat_page.dart';
-import 'product_fields/location_preview.dart';
-import 'product_fields/zone_field.dart';
 import '../tools/my_text_form_field.dart';
+import 'product_preview_page/fields/location_preview.dart';
+import 'product_preview_page/fields/more_button.dart';
+import 'product_preview_page/fields/my_check_box.dart';
+import 'product_preview_page/fields/ppp_floating_button.dart';
+import 'product_preview_page/fields/two_choices.dart';
+import 'product_preview_page/fields/zone_field.dart';
 
 class ProductPreviewPage extends StatefulWidget {
   final PPPType type;
