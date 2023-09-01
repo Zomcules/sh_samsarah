@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/chat_service.dart';
-import 'package:samsarah/services/firestore_service.dart';
 import 'package:samsarah/modules/account_info.dart';
 import 'package:samsarah/util/database/fetchers.dart';
 import 'package:samsarah/util/product_info/product_preview_page/controller.dart';
@@ -35,7 +34,7 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
   void initState() {
     super.initState();
     if (widget.type != PPPType.viewExternal) {
-      producer = auth.currentAccount;
+      producer = _auth.currentAccount;
     } else {
       producer = fetchAccount(widget.info!.producerId);
     }
@@ -43,8 +42,8 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
 
   late Future<AccountInfo?> producer;
   final db = DataBase();
-  final auth = AuthService();
-  final store = FireStoreService();
+  final _auth = AuthService();
+  final msg = ChatService();
   final pc = ProductController();
   final formKey = GlobalKey<FormState>();
   bool showMore = false;
@@ -55,7 +54,7 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
         return const Text("انشاء عرض جديد");
       case PPPType.viewExternal:
         return snapshot.connectionState == ConnectionState.done
-            ? snapshot.data!.globalId == auth.uid
+            ? snapshot.data!.globalId == _auth.uid
                 ? const Text(
                     "أنت",
                     style: TextStyle(
@@ -72,21 +71,27 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
   }
 
   void messageProducer(AccountInfo info) async {
-    if (auth.isSignedIn && info.globalId != auth.uid) {
-      if (mounted) {
-        push(
-          context,
-          ChatPage(
-              service: ChatService(reciever: info),
-              appendedProduct: widget.info),
-        );
+    if (_auth.isSignedIn && info.globalId != _auth.uid) {
+      if (!(await _auth.currentAccount)!.chatters.contains(info.globalId)) {
+        await msg.initiateNewChat(info.globalId);
+        if (mounted) {
+          push(
+            context,
+            ChatPage(reciever: info.globalId, appendedProduct: widget.info),
+          );
+        }
+      } else {
+        if (mounted) {
+          push(
+            context,
+            ChatPage(reciever: info.globalId, appendedProduct: widget.info),
+          );
+        }
       }
     }
   }
 
-  void saveEditing() {
-    widget.info!.save();
-  }
+  void saveEditing() {}
 
   Future<void> saveProduct() async {
     if (formKey.currentState!.validate()) {

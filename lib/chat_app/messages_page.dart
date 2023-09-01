@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:samsarah/chat_app/chat_snackbar.dart';
+import 'package:samsarah/services/chat_service.dart';
 import 'package:samsarah/util/account/account_header.dart';
-import 'package:samsarah/util/database/database.dart';
 import 'package:samsarah/util/database/fetchers.dart';
 
 class MessagesPage extends StatefulWidget {
@@ -12,8 +12,7 @@ class MessagesPage extends StatefulWidget {
 }
 
 class _MessagesPageState extends State<MessagesPage> {
-  var db = DataBase();
-  late Future future;
+  final msg = ChatService();
 
   @override
   Widget build(BuildContext context) {
@@ -27,29 +26,27 @@ class _MessagesPageState extends State<MessagesPage> {
           children: [
             const AccountHeader(),
             Expanded(
-              child: FutureBuilder(
-                future: auth.chatRoomsOfUser(),
-                builder: (context, rooms) => rooms.connectionState ==
-                        ConnectionState.done
-                    ? ListView.builder(
-                        itemCount: rooms.data!.length,
-                        itemBuilder: (context, index) => FutureBuilder(
-                          future: fetchAccount(rooms.data![index]
-                              .data()
-                              .chatters
-                              .where((element) => element != auth.uid)
-                              .first),
-                          builder: (context, account) =>
-                              account.connectionState == ConnectionState.done
+              child: StreamBuilder(
+                  stream: msg.userChatRooms,
+                  builder: (context, rooms) {
+                    return rooms.hasData
+                        ? ListView.builder(
+                            itemCount: rooms.data!.size,
+                            itemBuilder: (context, index) => StreamBuilder(
+                              stream: store.accountStreamOf(
+                                  (rooms.data!.docs[index].data()["chatters"]
+                                          as List<String>)
+                                      .firstWhere(
+                                          (element) => element != auth.uid)),
+                              builder: (context, account) => account.hasData
                                   ? ChatSnackBar(
-                                      room: rooms.data![index].data(),
-                                      accountInfo: account.data!,
+                                      chatter: account.data!.data()!.globalId,
                                       refreshParent: () => setState(() {}))
                                   : const CircularProgressIndicator(),
-                        ),
-                      )
-                    : const CircularProgressIndicator(),
-              ),
+                            ),
+                          )
+                        : const CircularProgressIndicator();
+                  }),
             ),
           ],
         ),

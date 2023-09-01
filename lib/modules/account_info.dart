@@ -7,7 +7,7 @@ class AccountInfo extends HiveObject {
   String globalId;
   List<String> productIds;
   List<String> savedProducts;
-  List<String> chatRooms;
+  List<String> chatters;
   int currency;
 
   AccountInfo(
@@ -17,7 +17,7 @@ class AccountInfo extends HiveObject {
       required this.productIds,
       required this.currency,
       required this.savedProducts,
-      required this.chatRooms});
+      required this.chatters});
 
   factory AccountInfo.firestoreWierdo(Map<String, dynamic> map) {
     return AccountInfo(
@@ -27,7 +27,7 @@ class AccountInfo extends HiveObject {
         productIds: map["productIds"].cast<String>().toList(),
         currency: 0,
         savedProducts: map["savedProducts"],
-        chatRooms: []);
+        chatters: []);
   }
 
   factory AccountInfo.firestoreUser(Map<String, dynamic> map) {
@@ -38,7 +38,7 @@ class AccountInfo extends HiveObject {
         productIds: map["productIds"].cast<String>().toList(),
         currency: map["currency"],
         savedProducts: map["savedProducts"],
-        chatRooms: map["chatRooms"]);
+        chatters: map["chatRooms"]);
   }
 
   Map<String, dynamic> toMap() {
@@ -49,7 +49,7 @@ class AccountInfo extends HiveObject {
       "productIds": productIds,
       "currency": currency,
       "savedProducts": savedProducts,
-      "chatRooms": chatRooms
+      "chatRooms": chatters
     };
   }
 
@@ -61,7 +61,7 @@ class AccountInfo extends HiveObject {
         productIds: [],
         currency: 0,
         savedProducts: [],
-        chatRooms: []);
+        chatters: []);
   }
 
   factory AccountInfo.blank() {
@@ -71,7 +71,7 @@ class AccountInfo extends HiveObject {
         productIds: [],
         currency: 0,
         savedProducts: [],
-        chatRooms: []);
+        chatters: []);
   }
 }
 

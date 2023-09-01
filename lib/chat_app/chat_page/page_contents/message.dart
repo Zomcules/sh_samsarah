@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:samsarah/services/auth_service.dart';
 
 import '../../../modules/message_data.dart';
 import '../message_products_preview.dart';
@@ -13,6 +14,7 @@ class Message extends StatefulWidget {
 
 class _MessageState extends State<Message> {
   late List<String> ids;
+  final auth = AuthService();
   @override
   initState() {
     super.initState();
@@ -44,7 +46,7 @@ class _MessageState extends State<Message> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: widget.data.fromUser
+      mainAxisAlignment: widget.data.from == auth.uid
           ? MainAxisAlignment.end
           : MainAxisAlignment.start,
       children: [
@@ -54,20 +56,20 @@ class _MessageState extends State<Message> {
           margin: const EdgeInsets.only(top: 4, bottom: 4, right: 20, left: 20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
-                topLeft: widget.data.fromUser
+                topLeft: widget.data.from == auth.uid
                     ? const Radius.circular(12)
                     : Radius.zero,
                 topRight: const Radius.circular(12),
                 bottomLeft: const Radius.circular(12),
-                bottomRight: !widget.data.fromUser
+                bottomRight: widget.data.from != auth.uid
                     ? const Radius.circular(12)
                     : Radius.zero),
-            color: widget.data.fromUser ? Colors.green : Colors.blue,
+            color: widget.data.from == auth.uid ? Colors.green : Colors.blue,
           ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
-              crossAxisAlignment: !widget.data.fromUser
+              crossAxisAlignment: widget.data.from != auth.uid
                   ? CrossAxisAlignment.start
                   : CrossAxisAlignment.end,
               children: getContent(),

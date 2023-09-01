@@ -4,13 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive/hive.dart';
 
 class MessageData extends HiveObject {
-  final bool fromUser;
+  final String from;
   final String content;
   bool isRead;
   final Timestamp timeStamp;
   final List<String> appendedProductsIds;
   MessageData(
-      {required this.fromUser,
+      {required this.from,
       required this.content,
       required this.timeStamp,
       this.isRead = false,
@@ -18,7 +18,7 @@ class MessageData extends HiveObject {
 
   factory MessageData.fromMap(Map map) {
     return MessageData(
-        fromUser: map["fromUser"],
+        from: map["fromUser"],
         content: map["content"],
         timeStamp: map["timeStamp"],
         appendedProductsIds: map["appendedProductsIds"]);
@@ -26,7 +26,7 @@ class MessageData extends HiveObject {
 
   Map<String, dynamic> toMap() {
     return {
-      "fromUser": fromUser,
+      "fromUser": from,
       "content": content,
       "timeStamp": timeStamp,
       "isRead": isRead,

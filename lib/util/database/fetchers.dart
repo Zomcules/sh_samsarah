@@ -9,11 +9,11 @@ import '../../modules/account_info.dart';
 final store = FireStoreService();
 final auth = AuthService();
 Future<AccountInfo> fetchAccount(String id) async {
-  return await store.getAccount(id) ?? AccountInfo.blank();
+  return await store.getAccount(id);
 }
 
 FutureOr<ProductInfo> fetchProduct(String id) async {
-  return await store.getProduct(id) ?? ProductInfo.blank();
+  return await store.getProduct(id);
 }
 
 Future<List<ProductInfo>> fetchMultipleProducts(List<String> ids) async {

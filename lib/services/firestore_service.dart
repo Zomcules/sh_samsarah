@@ -24,25 +24,23 @@ class FireStoreService {
             toFirestore: (value, options) => value.toMap(),
           );
 
-  Future<ProductInfo?> getProduct(String id) async {
-    return (await productCollection.doc(id).get()).data();
+  Future<ProductInfo> getProduct(String id) async {
+    return (await productCollection.doc(id).get()).data() ??
+        ProductInfo.blank();
   }
 
-  Future<void> saveProduct(ProductInfo info) async {
-    await productCollection.doc(info.globalId).set(info);
+  Future<AccountInfo> getAccount(String id) async {
+    return (await accountCollection.doc(id).get()).data() ??
+        AccountInfo.blank();
   }
 
-  Future<AccountInfo?> getAccount(String id) async {
-    return (await accountCollection.doc(id).get()).data();
-  }
-
-  Future<List<String>> _getProductIdsOf(String uid) async {
+  Future<List<String>> getProductIdsOf(String uid) async {
     return (await accountCollection.doc(uid).get()).data()?.productIds ?? [];
   }
 
   Future<List<ProductInfo>> getProductsOf(String uid) async {
     var temp = <ProductInfo>[];
-    for (String id in await _getProductIdsOf(uid)) {
+    for (String id in await getProductIdsOf(uid)) {
       var data = (await productCollection.doc(id).get()).data();
       if (data != null) {
         temp.add(data);
@@ -52,6 +50,9 @@ class FireStoreService {
   }
 
   Future<List<String>> savedProductsIdsOf(String uid) async {
-    return (await getAccount(uid))?.savedProducts ?? [];
+    return (await getAccount(uid)).savedProducts;
   }
+
+  Stream<DocumentSnapshot<AccountInfo>> accountStreamOf(String uid) =>
+      accountCollection.doc(uid).snapshots();
 }

@@ -3,20 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:samsarah/chat_app/chat_page/choose_product_page.dart';
 import 'package:samsarah/modules/message_data.dart';
 import 'package:samsarah/chat_app/chat_page/page_contents/product_appendix.dart';
+import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/chat_service.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
 import '../../../modules/product_info.dart';
 
 class ChatFooter extends StatefulWidget {
-  final ChatService service;
-  const ChatFooter({super.key, required this.service});
+  final String reciever;
+  const ChatFooter({super.key, required this.reciever});
 
   @override
   State<ChatFooter> createState() => _ChatFooterState();
 }
 
 class _ChatFooterState extends State<ChatFooter> {
+  final msg = ChatService();
+  final auth = AuthService();
   final textController = TextEditingController();
   List<ProductInfo> appendedProducts = [];
   List<Widget> get footer {
@@ -90,12 +93,21 @@ class _ChatFooterState extends State<ChatFooter> {
   void trySendMessage() async {
     if (textController.text != "" || appendedProducts.isNotEmpty) {
       final data = MessageData(
-          fromUser: true,
+          from: auth.uid!,
           content: textController.text,
           timeStamp: Timestamp.now(),
           appendedProductsIds: List<String>.generate(appendedProducts.length,
               (index) => appendedProducts[index].globalId));
-      await widget.service.sendMessage(data);
+      if (!(await msg.sendMessage(data, widget.reciever))) {
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (context) => const AlertDialog(
+              content: Text("Network Issue!"),
+            ),
+          );
+        }
+      }
     }
   }
 }

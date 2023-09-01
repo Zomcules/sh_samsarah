@@ -5,8 +5,6 @@ import 'package:samsarah/util/database/app_data.dart';
 import 'package:samsarah/modules/product_info.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 
-import '../../modules/chat_room.dart';
-
 class AppDataAdapter extends TypeAdapter<AppData> {
   @override
   AppData read(BinaryReader reader) {
@@ -32,7 +30,7 @@ class AccountAdapter extends TypeAdapter<AccountInfo> {
         productIds: reader.read().cast<String>(),
         currency: reader.read(),
         savedProducts: reader.read(),
-        chatRooms: []);
+        chatters: []);
   }
 
   @override
@@ -46,7 +44,7 @@ class AccountAdapter extends TypeAdapter<AccountInfo> {
     writer.write(obj.productIds);
     writer.write(obj.currency);
     writer.write(obj.savedProducts);
-    writer.write(obj.chatRooms);
+    writer.write(obj.chatters);
   }
 }
 
@@ -109,7 +107,7 @@ class MessageAdapter extends TypeAdapter<MessageData> {
   @override
   MessageData read(BinaryReader reader) {
     return MessageData(
-      fromUser: reader.read(),
+      from: reader.read(),
       content: reader.read(),
       isRead: reader.read(),
       timeStamp: reader.read(),
@@ -122,7 +120,7 @@ class MessageAdapter extends TypeAdapter<MessageData> {
 
   @override
   void write(BinaryWriter writer, MessageData obj) {
-    writer.write(obj.fromUser);
+    writer.write(obj.from);
     writer.write(obj.content);
     writer.write(obj.isRead);
     writer.write(obj.timeStamp);
@@ -143,25 +141,5 @@ class GeoPointAdapter extends TypeAdapter<GeoPoint> {
   void write(BinaryWriter writer, GeoPoint obj) {
     writer.write(obj.latitude);
     writer.write(obj.longitude);
-  }
-}
-
-class ChatRoomAdapter extends TypeAdapter<ChatRoom> {
-  @override
-  ChatRoom read(BinaryReader reader) {
-    return ChatRoom(
-        lastMessage: reader.read(),
-        lastUpdated: reader.read(),
-        chatters: reader.read());
-  }
-
-  @override
-  int get typeId => 5;
-
-  @override
-  void write(BinaryWriter writer, ChatRoom obj) {
-    writer.write(obj.chatters);
-    writer.write(obj.lastMessage);
-    writer.write(obj.lastUpdated);
   }
 }

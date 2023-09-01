@@ -4,19 +4,20 @@ import 'package:samsarah/chat_app/chat_page/page_contents/message.dart';
 import '../../../services/chat_service.dart';
 
 class ChatBody extends StatefulWidget {
-  final ChatService service;
-  const ChatBody({super.key, required this.service});
+  final String reciever;
+  const ChatBody({super.key, required this.reciever});
 
   @override
   State<ChatBody> createState() => _ChatBodyState();
 }
 
 class _ChatBodyState extends State<ChatBody> {
+  final msg = ChatService();
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: StreamBuilder(
-        stream: widget.service.messages,
+        stream: msg.messagesStreamOf(widget.reciever),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Text("error!");
