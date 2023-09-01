@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:samsarah/util/tools/extensions.dart';
 
-import '../../../util/product_info/product_info.dart';
+import '../../../modules/product_info.dart';
 
 class ProductAppendix extends StatelessWidget {
   final List<ProductInfo> infos;

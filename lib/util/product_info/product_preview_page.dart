@@ -1,13 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:samsarah/util/account/account_info.dart';
+import 'package:samsarah/services/auth_service.dart';
+import 'package:samsarah/services/chat_service.dart';
+import 'package:samsarah/services/firestore_service.dart';
+import 'package:samsarah/modules/account_info.dart';
 import 'package:samsarah/util/database/fetchers.dart';
 import 'package:samsarah/util/product_info/product_preview_page/controller.dart';
 import 'package:samsarah/util/database/database.dart';
-import 'package:samsarah/util/product_info/product_info.dart';
+import 'package:samsarah/modules/product_info.dart';
 import '../../chat_app/chat_page/chat_page.dart';
 import '../tools/my_text_form_field.dart';
+import '../tools/poppers_and_pushers.dart';
 import 'product_preview_page/fields/location_preview.dart';
 import 'product_preview_page/fields/more_button.dart';
 import 'product_preview_page/fields/my_check_box.dart';
@@ -31,14 +35,16 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
   void initState() {
     super.initState();
     if (widget.type != PPPType.viewExternal) {
-      producer = net.currentAccount;
+      producer = auth.currentAccount;
     } else {
-      producer = fetchAccount(widget.info!.producerId) as Future<AccountInfo>;
+      producer = fetchAccount(widget.info!.producerId);
     }
   }
 
   late Future<AccountInfo?> producer;
   final db = DataBase();
+  final auth = AuthService();
+  final store = FireStoreService();
   final pc = ProductController();
   final formKey = GlobalKey<FormState>();
   bool showMore = false;
@@ -49,7 +55,7 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
         return const Text("انشاء عرض جديد");
       case PPPType.viewExternal:
         return snapshot.connectionState == ConnectionState.done
-            ? snapshot.data!.globalId == net.uid
+            ? snapshot.data!.globalId == auth.uid
                 ? const Text(
                     "أنت",
                     style: TextStyle(
@@ -61,23 +67,18 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
       case PPPType.viewInternal:
         return const Text("تعديل العرض");
       default:
-        return const Text("");
+        return const Placeholder();
     }
   }
 
   void messageProducer(AccountInfo info) async {
-    if (db.activeBox.isNotEmpty && info.globalId != net.uid) {
-      if (!info.isInBox) {
-        await db.accountInfos.add(info);
-      }
-      await db.openMessages();
+    if (auth.isSignedIn && info.globalId != auth.uid) {
       if (mounted) {
-        Navigator.push(
+        push(
           context,
-          MaterialPageRoute(
-            builder: (context) =>
-                ChatPage(reciever: info, appendedProduct: widget.info),
-          ),
+          ChatPage(
+              service: ChatService(reciever: info),
+              appendedProduct: widget.info),
         );
       }
     }
@@ -109,23 +110,24 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
     }
   }
 
-  void searchProduct() {
-    pc.search(context);
-  }
-
   List<Widget> get fields {
     var temp = [
       const SizedBox(
         height: 50,
       ),
       LocationPreview(
-          pc: pc, geopoint: widget.info?.geopoint, type: widget.type),
+        pc: pc,
+        geopoint: widget.info?.geopoint,
+        type: widget.type,
+        validator: (geoPoint) => geoPoint != null ? null : "Null GeoPoint",
+      ),
       TwoChoices(
           type: widget.type,
           pc: pc,
           tcType: TwoChoicesType.saleRent,
           productInfo: widget.info),
       MyTextFormField(
+        pppType: widget.type,
         onSaved: (value) => pc.price = int.parse(value!),
         validator: validateForInt,
         keyboardType: TextInputType.number,
@@ -150,6 +152,7 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
             product: widget.info,
             controller: pc),
         MyTextFormField(
+          pppType: widget.type,
           onSaved: (value) => pc.size = int.parse(value!),
           validator: validateForInt,
           keyboardType: TextInputType.number,

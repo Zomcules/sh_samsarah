@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:samsarah/tab/drawer.dart';
-import 'package:samsarah/util/account/account_info.dart';
-import 'package:samsarah/util/database/internet.dart';
+import 'package:samsarah/services/auth_service.dart';
+import 'package:samsarah/pages/tab/drawer.dart';
+import 'package:samsarah/modules/account_info.dart';
 import 'package:samsarah/util/tools/get_image.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
-import '../chat_app/messages_page.dart';
-import '../util/database/database.dart';
+import '../../chat_app/messages_page.dart';
 import 'Discovery_tab/discovery_tab.dart';
 import 'Discovery_tab/product_snackbar.dart';
 import 'Account_tab/account_tab.dart';
 import 'map_tab/map_tab.dart';
-
-final net = Net();
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -22,6 +19,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final auth = AuthService();
   List<Widget> productSnackbars = getDummyProductSnackbars();
 
   List<Widget> myTabs = [
@@ -30,8 +28,6 @@ class _MyHomePageState extends State<MyHomePage> {
     const Tab(child: Icon(Icons.person)),
   ];
 
-  final db = DataBase();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // backgroundColor: Colors.white
         actions: [
           StreamBuilder(
-            stream: net.auth.userChanges(),
+            stream: auth.auth.userChanges(),
             builder: (context, snapshot) {
               return IconButton(
                 onPressed: snapshot.data != null
@@ -59,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
           StreamBuilder(
-              stream: net.auth.userChanges(),
+              stream: auth.auth.userChanges(),
               builder: (context, snapshot) {
                 return IconButton(
                     onPressed: () {
@@ -113,17 +109,18 @@ class UserThumbnail extends StatefulWidget {
 }
 
 class _UserThumbnailState extends State<UserThumbnail> {
+  final auth = AuthService();
   @override
   void initState() {
     super.initState();
-    future = net.currentAccount;
+    future = auth.currentAccount;
   }
 
   late Future<AccountInfo?> future;
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: net.auth.userChanges(),
+        stream: auth.auth.userChanges(),
         builder: (context, snapshot) {
           return FutureBuilder(
               future: future,

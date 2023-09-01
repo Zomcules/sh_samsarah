@@ -1,13 +1,13 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:samsarah/tab/Discovery_tab/discovery_header.dart';
+import 'package:samsarah/pages/tab/Discovery_tab/discovery_header.dart';
 import 'package:samsarah/util/product_info/product_preview_page.dart';
+import 'package:samsarah/util/product_info/product_preview_page/controller.dart';
+import 'package:samsarah/util/product_info/product_preview_page/fields/location_preview.dart';
 import 'package:samsarah/util/tools/my_text.dart';
 import 'package:samsarah/util/tools/extensions.dart';
-import 'package:samsarah/util/product_info/product_info.dart';
+import 'package:samsarah/modules/product_info.dart';
 
-import '../../util/product_info/product_preview_page/fields/ppp_floating_button.dart';
+import '../../../util/product_info/product_preview_page/fields/ppp_floating_button.dart';
 
 List<Widget> getDummyProductSnackbars() {
   List<ProductInfo> tempp = getDummyProductInfos();
@@ -54,9 +54,13 @@ class ProductSnackBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            GetProductThumbnail(
-              productInfo: productInfo,
-              size: 100,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: LocationPreview(
+                  geopoint: productInfo.geopoint,
+                  pc: ProductController(),
+                  type: PPPType.viewExternal,
+                  validator: (_) => null),
             ),
             Expanded(
               child: Column(
@@ -102,27 +106,5 @@ class ProductSnackBar extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class GetProductThumbnail extends StatelessWidget {
-  final ProductInfo productInfo;
-  final int size;
-  const GetProductThumbnail(
-      {super.key, required this.productInfo, required this.size});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        margin: const EdgeInsets.all(8),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          color: Color.fromARGB(255, 218, 218, 218),
-        ),
-        height: size.toDouble(),
-        width: size.toDouble(),
-        child: productInfo.imagePath != null && productInfo.imagePath != ""
-            ? Image.file(File(productInfo.imagePath!))
-            : const Icon(Icons.image));
   }
 }

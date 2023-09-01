@@ -1,26 +1,19 @@
 import 'dart:async';
 
-import 'package:samsarah/util/database/database.dart';
-import 'package:samsarah/util/database/internet.dart';
-import 'package:samsarah/util/product_info/product_info.dart';
+import 'package:samsarah/services/auth_service.dart';
+import 'package:samsarah/services/firestore_service.dart';
+import 'package:samsarah/modules/product_info.dart';
 
-import '../account/account_info.dart';
+import '../../modules/account_info.dart';
 
-final net = Net();
-FutureOr<AccountInfo> fetchAccount(String id) async {
-  return await net.getAccount(id) ?? AccountInfo.blank();
+final store = FireStoreService();
+final auth = AuthService();
+Future<AccountInfo> fetchAccount(String id) async {
+  return await store.getAccount(id) ?? AccountInfo.blank();
 }
 
 FutureOr<ProductInfo> fetchProduct(String id) async {
-  var db = DataBase();
-  if (db.activeBox.isNotEmpty) {
-    var list =
-        db.savedProducts.values.where((element) => element.globalId == id);
-    if (list.isNotEmpty) {
-      return list.first;
-    }
-  }
-  return await net.getProduct(id) ?? ProductInfo.blank();
+  return await store.getProduct(id) ?? ProductInfo.blank();
 }
 
 Future<List<ProductInfo>> fetchMultipleProducts(List<String> ids) async {

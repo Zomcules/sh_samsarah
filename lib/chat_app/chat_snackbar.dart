@@ -2,19 +2,25 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:samsarah/chat_app/chat_page/message.dart';
-import 'package:samsarah/util/account/account_info.dart';
+import 'package:samsarah/modules/message_data.dart';
+import 'package:samsarah/services/chat_service.dart';
+import 'package:samsarah/modules/account_info.dart';
 import 'package:samsarah/util/database/database.dart';
 
+import '../modules/chat_room.dart';
 import '../util/tools/get_image.dart';
 import '../util/tools/poppers_and_pushers.dart';
 import 'chat_page/chat_page.dart';
 
 class ChatSnackBar extends StatefulWidget {
   final AccountInfo accountInfo;
+  final ChatRoom room;
   final Function refreshParent;
   const ChatSnackBar(
-      {super.key, required this.accountInfo, required this.refreshParent});
+      {super.key,
+      required this.accountInfo,
+      required this.refreshParent,
+      required this.room});
 
   @override
   State<ChatSnackBar> createState() => _ChatSnackBarState();
@@ -59,16 +65,14 @@ class _ChatSnackBarState extends State<ChatSnackBar> {
         }
       }),
       onTap: () async {
-        await db.openMessages();
-        if (mounted) {
-          await push(
-              context,
-              ChatPage(
-                reciever: widget.accountInfo,
-              ));
-        }
+        await push(
+            context,
+            ChatPage(
+              service: ChatService(reciever: widget.accountInfo),
+            ));
+
         setState(() {
-          widget.accountInfo.lastMessage!.isRead = true;
+          widget.room.lastMessage.isRead = true;
         });
         widget.refreshParent();
       },
@@ -77,23 +81,20 @@ class _ChatSnackBarState extends State<ChatSnackBar> {
         size: 35,
       ),
       title: Text(widget.accountInfo.username),
-      subtitle: formatLastMessage(db.messages(widget.accountInfo).values.last),
-      trailing: widget.accountInfo.lastMessage != null
-          ? widget.accountInfo.lastMessage!.isRead
-              ? null
-              : Container(
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(20)),
-                )
-          : null,
+      //subtitle: formatLastMessage(db.messages(widget.accountInfo).values.last),
+      trailing: widget.room.lastMessage.isRead
+          ? null
+          : Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                  color: Colors.red, borderRadius: BorderRadius.circular(20)),
+            ),
     );
   }
 
   Text formatLastMessage(MessageData data) {
-    widget.accountInfo.lastMessage = data;
+    widget.room.lastMessage = data;
     if (data.fromUser) {
       return Text("You: ${data.content}");
     } else {

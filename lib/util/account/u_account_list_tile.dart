@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:samsarah/util/account/account_info.dart';
+import 'package:samsarah/modules/account_info.dart';
 import 'package:samsarah/util/database/database.dart';
 import 'package:samsarah/util/tools/get_image.dart';
 

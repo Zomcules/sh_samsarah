@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:samsarah/util/database/database.dart';
-import 'package:samsarah/util/database/internet.dart';
-import 'package:samsarah/util/product_info/product_info.dart';
 
 import 'geopoint_preview.dart';
 
@@ -61,16 +59,6 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
     setState(() {
       advancedOn = false;
     });
-  }
-
-  @override
-  initState() {
-    super.initState();
-    if (Net().auth.currentUser != null) {
-      for (ProductInfo info in db.savedProducts.values) {
-        mapController.addMarker(info.geopoint);
-      }
-    }
   }
 
   @override

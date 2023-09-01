@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:samsarah/util/product_info/product_info.dart';
+import 'package:samsarah/modules/product_info.dart';
 import 'package:samsarah/util/tools/my_text_form_field.dart';
 import '../../../tools/my_text.dart';
 import '../controller.dart';
@@ -115,6 +115,7 @@ class _ZoneFieldState extends State<ZoneField>
           height: 30,
         ),
         MyTextFormField(
+            pppType: widget.type,
             onSaved: (value) => widget.pc.roomsNum = int.parse(value!),
             validator: validateForInt,
             keyboardType: TextInputType.number,
@@ -124,6 +125,7 @@ class _ZoneFieldState extends State<ZoneField>
           height: 30,
         ),
         MyTextFormField(
+            pppType: widget.type,
             onSaved: (value) => widget.pc.floorsNum = int.parse(value!),
             validator: validateForInt,
             keyboardType: TextInputType.number,

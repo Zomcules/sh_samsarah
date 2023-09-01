@@ -1,10 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:samsarah/tab/home_page.dart';
+import 'package:samsarah/services/auth_service.dart';
+import 'package:samsarah/services/firestore_service.dart';
+import 'package:samsarah/pages/tab/home_page.dart';
 import 'package:samsarah/util/database/database.dart';
-import 'package:samsarah/util/database/internet.dart';
-import 'package:samsarah/util/pages/profile.dart';
+import 'package:samsarah/pages/profile.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,13 +13,13 @@ void main() async {
 
   await DataBase().init();
 
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-final net = Net();
-
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+  final auth = AuthService();
+  final store = FireStoreService();
 
   @override
   Widget build(BuildContext context) {
@@ -37,24 +38,27 @@ class MyApp extends StatelessWidget {
                     if (context.mounted) {
                       Navigator.pushReplacementNamed(context, "/profile");
                     }
-                    var account = (await net.currentAccount);
-                    await net.accountCollection
+                    var account = (await auth.currentAccount);
+                    await store.accountCollection
                         .doc(account!.globalId)
                         .set(account);
-                    await DataBase().openAccountSpecificBoxes();
                   },
                 )
               ],
             ),
-        "/profile": (context) => MyProfile(providers: [
-              EmailAuthProvider()
-            ], actions: [
-              SignedOutAction(
-                (context) {
-                  Navigator.pushReplacementNamed(context, "/sign-in");
-                },
-              )
-            ])
+        "/profile": (context) => MyProfile(
+              providers: [EmailAuthProvider()],
+              actions: [
+                SignedOutAction(
+                  (context) {
+                    Navigator.pushReplacementNamed(context, "/sign-in");
+                  },
+                ),
+                AuthStateChangeAction(
+                  (context, state) => AuthService().syncUser(),
+                ),
+              ],
+            )
       },
       debugShowCheckedModeBanner: false,
       home: const MyHomePage(),

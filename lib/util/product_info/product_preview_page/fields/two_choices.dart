@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../tools/my_text.dart';
-import '../../product_info.dart';
+import '../../../../modules/product_info.dart';
 import '../controller.dart';
 import 'ppp_floating_button.dart';
 
@@ -24,20 +24,20 @@ class _TwoChoicesState extends State<TwoChoices>
     with AutomaticKeepAliveClientMixin {
   late final _Data data;
   late bool value;
-  bool editable() {
-    return widget.type != PPPType.viewExternal;
-  }
+
+  bool get shouldSwitch => widget.type != PPPType.viewExternal;
+  bool get updateProduct => widget.productInfo != null && shouldSwitch;
 
   @override
   void initState() {
     super.initState();
     if (widget.tcType == TwoChoicesType.saleRent) {
-      value = (widget.productInfo?.forSale ?? widget.pc.forSale) ?? false;
+      value = widget.productInfo?.forSale ?? false;
     } else if (widget.tcType == TwoChoicesType.wholeHouse) {
-      value = (widget.productInfo?.wholeHouse ?? widget.pc.wholeHouse) ?? false;
+      value = widget.productInfo?.wholeHouse ?? false;
     }
-
-    data = _Data.fromType(widget.tcType, widget.productInfo, widget.pc);
+    data = _Data.fromType(
+        widget.tcType, widget.productInfo, widget.pc, widget.type);
   }
 
   @override
@@ -53,12 +53,22 @@ class _TwoChoicesState extends State<TwoChoices>
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onTap: editable()
-                  ? () => setState(() {
-                        value = true;
-                        data.onChanged(value);
-                      })
-                  : null,
+              onTap: () => setState(() {
+                shouldSwitch ? value = true : null;
+                switch (widget.tcType) {
+                  case TwoChoicesType.saleRent:
+                    widget.pc.forSale = value;
+                    updateProduct ? widget.productInfo!.forSale = value : null;
+                    break;
+                  case TwoChoicesType.wholeHouse:
+                    widget.pc.wholeHouse = value;
+                    updateProduct
+                        ? widget.productInfo!.wholeHouse = value
+                        : null;
+                    break;
+                  default:
+                }
+              }),
               child: MyText(
                 text: data.firstName,
                 color: value ? data.firstColor : Colors.grey,
@@ -70,12 +80,22 @@ class _TwoChoicesState extends State<TwoChoices>
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onTap: editable()
-                  ? () => setState(() {
-                        value = false;
-                        data.onChanged(value);
-                      })
-                  : null,
+              onTap: () => setState(() {
+                shouldSwitch ? value = false : null;
+                switch (widget.tcType) {
+                  case TwoChoicesType.saleRent:
+                    widget.pc.forSale = value;
+                    updateProduct ? widget.productInfo!.forSale = value : null;
+                    break;
+                  case TwoChoicesType.wholeHouse:
+                    widget.pc.wholeHouse = value;
+                    updateProduct
+                        ? widget.productInfo!.wholeHouse = value
+                        : null;
+                    break;
+                  default:
+                }
+              }),
               child: MyText(
                 text: data.secondName,
                 color: !value ? data.secondColor : Colors.grey,
@@ -99,43 +119,43 @@ class _Data {
   final Color firstColor;
   final String secondName;
   final Color secondColor;
-  final Function(bool value) onChanged;
-  _Data._(
-      {required this.onChanged,
-      required this.firstName,
-      required this.firstColor,
-      required this.secondName,
-      required this.secondColor});
+
+  _Data._({
+    required this.firstName,
+    required this.firstColor,
+    required this.secondName,
+    required this.secondColor,
+  });
 
   factory _Data.fromType(
-      TwoChoicesType type, ProductInfo? product, ProductController controller) {
+    TwoChoicesType type,
+    ProductInfo? product,
+    ProductController controller,
+    PPPType pppType,
+  ) {
     switch (type) {
       case TwoChoicesType.saleRent:
         return _Data._(
-            firstName: "للبيع",
-            firstColor: Colors.red,
-            secondName: "للايجار",
-            secondColor: Colors.blue,
-            onChanged: (bool value) {
-              controller.forSale = value;
-            });
+          firstName: "للبيع",
+          firstColor: Colors.red,
+          secondName: "للايجار",
+          secondColor: Colors.blue,
+        );
 
       case TwoChoicesType.wholeHouse:
         return _Data._(
-            firstName: "بيت كامل",
-            firstColor: Colors.blue,
-            secondName: "نصف بيت",
-            secondColor: Colors.blue,
-            onChanged: (bool value) {
-              controller.wholeHouse = value;
-            });
+          firstName: "بيت كامل",
+          firstColor: Colors.blue,
+          secondName: "نصف بيت",
+          secondColor: Colors.blue,
+        );
       default:
         return _Data._(
-            firstName: "firstName",
-            firstColor: Colors.black,
-            secondName: "secondName",
-            secondColor: Colors.black,
-            onChanged: (bool value) {});
+          firstName: "firstName",
+          firstColor: Colors.black,
+          secondName: "secondName",
+          secondColor: Colors.black,
+        );
     }
   }
 }

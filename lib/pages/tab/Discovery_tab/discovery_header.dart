@@ -1,20 +1,10 @@
 import 'package:flutter/material.dart';
-
-import '../../util/product_info/product_info.dart';
-import '../../util/product_info/product_preview_page.dart';
-import '../../util/product_info/product_preview_page/fields/ppp_floating_button.dart';
+import 'package:samsarah/util/product_info/product_preview_page/controller.dart';
+import 'package:samsarah/util/product_info/search_page.dart';
+import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
 class DisHeader extends StatelessWidget {
   const DisHeader({super.key});
-
-  void searchButtonTapped(BuildContext context) {
-    Navigator.push(
-        context,
-        MaterialPageRoute<ProductInfo>(
-          builder: (context) =>
-              const ProductPreviewPage(type: PPPType.createNew),
-        ));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +20,11 @@ class DisHeader extends StatelessWidget {
             width: 100,
             child: Center(
               child: FloatingActionButton(
-                onPressed: () => searchButtonTapped(context),
+                onPressed: () => push(
+                    context,
+                    SearchPage(
+                      pc: ProductController(),
+                    )),
                 shape: const CircleBorder(),
                 backgroundColor: Colors.blue,
                 child: const Icon(

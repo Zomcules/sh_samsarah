@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:samsarah/util/account/account_info.dart';
-import 'package:samsarah/util/database/internet.dart';
+import 'package:samsarah/services/auth_service.dart';
+import 'package:samsarah/services/firestore_service.dart';
+import 'package:samsarah/modules/account_info.dart';
 
 class MyProfile extends StatefulWidget {
   final List<AuthProvider<AuthListener, AuthCredential>>? providers;
@@ -18,10 +19,11 @@ class _MyProfileState extends State<MyProfile> {
   @override
   initState() {
     super.initState();
-    future = Net().currentAccount;
+    future = auth.currentAccount;
   }
 
-  final net = Net();
+  final auth = AuthService();
+  final store = FireStoreService();
 
   List<Widget> get children => [
         Expanded(
@@ -36,7 +38,7 @@ class _MyProfileState extends State<MyProfile> {
         Padding(
           padding: const EdgeInsets.all(10),
           child: StreamBuilder(
-            stream: net.accountCollection.doc(net.uid).snapshots(),
+            stream: store.accountCollection.doc(auth.uid).snapshots(),
             builder: (context, snapshot) => snapshot.hasData
                 ? Text(snapshot.data!.data()?.toMap().toString() ?? "")
                 : const CircularProgressIndicator(),
@@ -47,7 +49,7 @@ class _MyProfileState extends State<MyProfile> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        net.syncUser();
+        auth.syncUser();
         return Future.value(true);
       },
       child: ListView(

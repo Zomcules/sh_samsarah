@@ -1,32 +1,44 @@
 import 'dart:math';
 import 'package:hive/hive.dart';
-import 'package:samsarah/chat_app/chat_page/message.dart';
-import 'package:samsarah/util/database/database.dart';
 
 class AccountInfo extends HiveObject {
   String username;
   String? imagePath;
   String globalId;
-  MessageData? lastMessage;
   List<String> productIds;
+  List<String> savedProducts;
+  List<String> chatRooms;
   int currency;
 
   AccountInfo(
-      {this.lastMessage,
-      required this.username,
+      {required this.username,
       required this.globalId,
       this.imagePath,
       required this.productIds,
-      required this.currency});
+      required this.currency,
+      required this.savedProducts,
+      required this.chatRooms});
 
-  factory AccountInfo.fromMap(Map<String, dynamic> map) {
+  factory AccountInfo.firestoreWierdo(Map<String, dynamic> map) {
     return AccountInfo(
         username: map["username"],
         globalId: map["globalId"],
         imagePath: map["imagePath"],
-        lastMessage: map["lastMessage"],
         productIds: map["productIds"].cast<String>().toList(),
-        currency: map["currency"]);
+        currency: 0,
+        savedProducts: map["savedProducts"],
+        chatRooms: []);
+  }
+
+  factory AccountInfo.firestoreUser(Map<String, dynamic> map) {
+    return AccountInfo(
+        username: map["username"],
+        globalId: map["globalId"],
+        imagePath: map["imagePath"],
+        productIds: map["productIds"].cast<String>().toList(),
+        currency: map["currency"],
+        savedProducts: map["savedProducts"],
+        chatRooms: map["chatRooms"]);
   }
 
   Map<String, dynamic> toMap() {
@@ -34,29 +46,32 @@ class AccountInfo extends HiveObject {
       "username": username,
       "globalId": globalId,
       "imagePath": imagePath,
-      "lastMessage": lastMessage,
       "productIds": productIds,
-      "currency": currency
+      "currency": currency,
+      "savedProducts": savedProducts,
+      "chatRooms": chatRooms
     };
   }
 
   factory AccountInfo.dummy({String? globalId}) {
-    var db = DataBase();
-    bool signed = db.activeBox.isNotEmpty;
     var ran = Random().nextInt(999999).toString();
-    if (signed) {
-      ran = generateDummyId(signed ? db.accountInfos.values.toList() : []);
-      db.addDummyMessages(localId: ran);
-    }
     return AccountInfo(
         globalId: globalId ?? ran,
         username: "Dummy ${globalId ?? ran}",
         productIds: [],
-        currency: 0);
+        currency: 0,
+        savedProducts: [],
+        chatRooms: []);
   }
 
   factory AccountInfo.blank() {
-    return AccountInfo(username: "", globalId: "", productIds: [], currency: 0);
+    return AccountInfo(
+        username: "",
+        globalId: "",
+        productIds: [],
+        currency: 0,
+        savedProducts: [],
+        chatRooms: []);
   }
 }
 
@@ -66,21 +81,4 @@ List<AccountInfo> getDummyAccountInfos({int? n = 20}) {
     temp.add(AccountInfo.dummy());
   }
   return temp;
-}
-
-String generateDummyId(List inList) {
-  DataBase db = DataBase();
-  bool found = false;
-  String temp;
-  do {
-    temp = Random().nextInt(999999).toString();
-    var list = db.accountInfos.values.toList();
-
-    for (var account in list) {
-      if (account.globalId == temp) {
-        found = true;
-      }
-    }
-  } while (found == true);
-  return temp.toString();
 }

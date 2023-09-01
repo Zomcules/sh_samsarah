@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/util/database/database.dart';
-import 'package:samsarah/util/database/internet.dart';
 import 'package:samsarah/util/tools/get_image.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
@@ -15,17 +15,18 @@ class AccountHeader extends StatefulWidget {
 
 class _AccountHeaderState extends State<AccountHeader> {
   final db = DataBase();
-  final net = Net();
+  final auth = AuthService();
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: Net().auth.userChanges(),
+        stream: auth.auth.userChanges(),
         builder: (context, snapshot) {
           return snapshot.hasData
               ? GestureDetector(
                   onTap: () => pushNamed(
                     context,
-                    net.isSignedIn ? "/profile" : "/sign-in",
+                    auth.isSignedIn ? "/profile" : "/sign-in",
                   ),
                   child: Container(
                     height: 150,
@@ -34,10 +35,10 @@ class _AccountHeaderState extends State<AccountHeader> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         GetImage(
-                            imagePath: net.auth.currentUser?.photoURL ?? "",
+                            imagePath: auth.auth.currentUser?.photoURL ?? "",
                             size: 50),
                         Text(
-                          net.auth.currentUser?.displayName ?? "",
+                          auth.auth.currentUser?.displayName ?? "",
                           style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -54,7 +55,7 @@ class _AccountHeaderState extends State<AccountHeader> {
                         Container(
                           margin: const EdgeInsets.all(10),
                           child: StreamBuilder(
-                              stream: net.auth.userChanges(),
+                              stream: auth.auth.userChanges(),
                               builder: (context, snapshot) => snapshot.hasData
                                   ? GetImage(
                                       imagePath: snapshot.data!.photoURL ?? "",
@@ -73,7 +74,7 @@ class _AccountHeaderState extends State<AccountHeader> {
                               color: const Color.fromARGB(255, 0, 125, 228)),
                           child: IconButton(
                               onPressed: () => pushNamed(context,
-                                  net.isSignedIn ? "/profile" : "/sign-in"),
+                                  auth.isSignedIn ? "/profile" : "/sign-in"),
                               icon: const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 10),
                                 child: Text(

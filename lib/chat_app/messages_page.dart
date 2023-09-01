@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:samsarah/chat_app/chat_snackbar.dart';
 import 'package:samsarah/util/account/account_header.dart';
-import 'package:samsarah/util/account/account_info.dart';
 import 'package:samsarah/util/database/database.dart';
+import 'package:samsarah/util/database/fetchers.dart';
 
 class MessagesPage extends StatefulWidget {
   const MessagesPage({super.key});
@@ -13,6 +13,7 @@ class MessagesPage extends StatefulWidget {
 
 class _MessagesPageState extends State<MessagesPage> {
   var db = DataBase();
+  late Future future;
 
   @override
   Widget build(BuildContext context) {
@@ -26,28 +27,37 @@ class _MessagesPageState extends State<MessagesPage> {
           children: [
             const AccountHeader(),
             Expanded(
-                child: ListView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: db.accountInfos.length,
-                    itemBuilder: (context, index) => ChatSnackBar(
-                          accountInfo: db.accountInfos.values
-                              .toList()
-                              .reversed
-                              .elementAt(index),
-                          refreshParent: () => setState(() {}),
-                        ))),
+              child: FutureBuilder(
+                future: auth.chatRoomsOfUser(),
+                builder: (context, rooms) => rooms.connectionState ==
+                        ConnectionState.done
+                    ? ListView.builder(
+                        itemCount: rooms.data!.length,
+                        itemBuilder: (context, index) => FutureBuilder(
+                          future: fetchAccount(rooms.data![index]
+                              .data()
+                              .chatters
+                              .where((element) => element != auth.uid)
+                              .first),
+                          builder: (context, account) =>
+                              account.connectionState == ConnectionState.done
+                                  ? ChatSnackBar(
+                                      room: rooms.data![index].data(),
+                                      accountInfo: account.data!,
+                                      refreshParent: () => setState(() {}))
+                                  : const CircularProgressIndicator(),
+                        ),
+                      )
+                    : const CircularProgressIndicator(),
+              ),
+            ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            var info = AccountInfo.dummy();
-            db.accountInfos.add(info);
-            await db.openMessages();
-            //setState(() {});
-          },
+        floatingActionButton: const FloatingActionButton(
+          onPressed: null,
           backgroundColor: Colors.blue,
-          shape: const CircleBorder(),
-          child: const Icon(
+          shape: CircleBorder(),
+          child: Icon(
             Icons.message,
             color: Colors.white,
           ),

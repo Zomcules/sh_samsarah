@@ -1,16 +1,16 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:samsarah/services/auth_service.dart';
+import 'package:samsarah/services/firestore_service.dart';
 import 'package:samsarah/util/database/database.dart';
-import 'package:samsarah/util/product_info/product_info.dart';
-import 'package:samsarah/util/tools/extensions.dart';
+import 'package:samsarah/modules/product_info.dart';
 import 'package:samsarah/util/tools/two_points.dart';
 
-import '../../database/internet.dart';
-
 class ProductController {
-  var db = DataBase();
+  final db = DataBase();
+  final auth = AuthService();
+  final store = FireStoreService();
 
-  double? radius;
+  double radius = 50;
 
   GeoPoint? geopoint;
 
@@ -46,14 +46,13 @@ class ProductController {
 
   Future<void> save() async {
     String x = DateTime.now().toIso8601String();
-    final net = Net();
     var temp = ProductInfo(
-      producerId: net.uid!,
+      producerId: auth.uid!,
       geopoint: geopoint ?? GeoPoint(latitude: 0, longitude: 0),
       forSale: forSale ?? false,
       price: price ?? 0,
       dateTime: DateTime.now(),
-      globalId: "${net.uid}-$x",
+      globalId: "${auth.uid}-$x",
       services: services ?? true,
       certified: certified ?? true,
       //////////
@@ -69,22 +68,18 @@ class ProductController {
       size: size ?? 0,
     );
     await temp.saveToNetwork();
-    await temp.saveToDisk();
   }
 
-  Future<List<ProductInfo>> search(BuildContext context) async {
+  Future<List<ProductInfo>> search() async {
     var searchMap = {};
     if (forSale != null) {
       searchMap["forSale"] = forSale;
-    }
-    if (wholeHouse != null) {
-      searchMap["wholeHouse"] = wholeHouse;
     }
     if (withFurniture != null) {
       searchMap["withFurniture"] = withFurniture;
     }
 
-    var docs = (await Net().productCollection.get()).docs;
+    var docs = (await store.productCollection.get()).docs;
 
     var products =
         List<ProductInfo>.generate(docs.length, (index) => docs[index].data());
@@ -105,16 +100,13 @@ class ProductController {
       products = products
           .where((element) =>
               TwoPoints(first: geopoint!, second: element.geopoint)
-                  .closerThan(radius ?? 50))
+                  .closerThan(radius))
           .toList();
     }
     products = products
-        .where(
-          (element) => element.price.isInRangeOf(
-            minPrice ?? 0,
-            maxPrice ?? double.infinity,
-          ),
-        )
+        .where((element) =>
+            element.price <= (maxPrice ?? double.infinity) &&
+            element.price >= (minPrice ?? 0))
         .toList();
     return products;
   }

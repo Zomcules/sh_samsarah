@@ -1,9 +1,7 @@
-// ignore_for_file: sized_box_for_whitespace
-
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 
-import 'message_products_preview.dart';
+import '../../../modules/message_data.dart';
+import '../message_products_preview.dart';
 
 class Message extends StatefulWidget {
   final MessageData data;
@@ -36,7 +34,7 @@ class _MessageState extends State<Message> {
     ));
 
     temp.add(Text(
-      "${widget.data.dateTime.hour}:${widget.data.dateTime.minute}",
+      "${widget.data.timeStamp.toDate().hour}:${widget.data.timeStamp.toDate().minute}",
       style: const TextStyle(
           color: Color.fromARGB(255, 218, 218, 218), fontSize: 12),
     ));
@@ -78,37 +76,5 @@ class _MessageState extends State<Message> {
         ),
       ],
     );
-  }
-}
-
-class MessageData extends HiveObject {
-  final bool fromUser;
-  final String content;
-  bool isRead;
-  final DateTime dateTime;
-  final List<String> appendedProductsIds;
-  MessageData(
-      {required this.fromUser,
-      required this.content,
-      required this.dateTime,
-      this.isRead = false,
-      required this.appendedProductsIds});
-
-  factory MessageData.fromMap(Map map) {
-    return MessageData(
-        fromUser: map["fromUser"],
-        content: map["content"],
-        dateTime: DateTime.parse(map["dateTimeString"]),
-        appendedProductsIds: map["appendedProductsIds"]);
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      "fromUser": fromUser,
-      "content": content,
-      "dateTimeString": dateTime.toIso8601String(),
-      "isRead": isRead,
-      "appendedProductsIds": appendedProductsIds
-    };
   }
 }

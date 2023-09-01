@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:samsarah/tab/Discovery_tab/discovery_header.dart';
-import 'package:samsarah/tab/Discovery_tab/product_snackbar.dart';
-
-import '../../util/database/internet.dart';
+import 'package:samsarah/services/firestore_service.dart';
+import 'package:samsarah/pages/tab/Discovery_tab/discovery_header.dart';
+import 'package:samsarah/pages/tab/Discovery_tab/product_snackbar.dart';
 
 class DiscoveryTab extends StatefulWidget {
   const DiscoveryTab({super.key});
@@ -24,7 +23,7 @@ class _DiscoveryTabState extends State<DiscoveryTab>
         const DisHeader(),
         Expanded(
           child: StreamBuilder(
-              stream: Net().productCollection.snapshots(),
+              stream: FireStoreService().productCollection.snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return ListView.builder(

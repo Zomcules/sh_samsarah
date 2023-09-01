@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-
-import '../database/internet.dart';
+import 'package:samsarah/services/auth_service.dart';
 
 class GetImage extends StatelessWidget {
   final String imagePath;
   final int size;
-  GetImage({super.key, required this.imagePath, required this.size});
-  final net = Net();
+  const GetImage({super.key, required this.imagePath, required this.size});
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: net.auth.userChanges(),
+        stream: AuthService().auth.userChanges(),
         builder: (context, snapshot) => snapshot.hasData
             ? CircleAvatar(
                 radius: size / 1,

@@ -1,18 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:samsarah/chat_app/chat_page/choose_product_page.dart';
+import 'package:samsarah/modules/message_data.dart';
 import 'package:samsarah/chat_app/chat_page/page_contents/product_appendix.dart';
+import 'package:samsarah/services/chat_service.dart';
+import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
-import '../chat_controller.dart';
+import '../../../modules/product_info.dart';
 
 class ChatFooter extends StatefulWidget {
-  final ChatController controller;
-  const ChatFooter({super.key, required this.controller});
+  final ChatService service;
+  const ChatFooter({super.key, required this.service});
 
   @override
   State<ChatFooter> createState() => _ChatFooterState();
 }
 
 class _ChatFooterState extends State<ChatFooter> {
-  List<Widget> getFooter() {
+  final textController = TextEditingController();
+  List<ProductInfo> appendedProducts = [];
+  List<Widget> get footer {
     List<Widget> temp = [
       Padding(
           padding: const EdgeInsets.all(8),
@@ -22,10 +29,7 @@ class _ChatFooterState extends State<ChatFooter> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                    onPressed: () async {
-                      await widget.controller.locationPressed(context);
-                      setState(() {});
-                    },
+                    onPressed: onLocationPressed,
                     icon: const Icon(Icons.add_location_alt,
                         color: Colors.green)),
                 SizedBox(
@@ -38,7 +42,7 @@ class _ChatFooterState extends State<ChatFooter> {
                       borderRadius: BorderRadius.circular(50),
                     ),
                     child: TextFormField(
-                      controller: widget.controller.textController,
+                      controller: textController,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
                       ),
@@ -47,9 +51,7 @@ class _ChatFooterState extends State<ChatFooter> {
                   ),
                 ),
                 IconButton(
-                    onPressed: () => setState(() {
-                          widget.controller.sendMessage();
-                        }),
+                    onPressed: () async {},
                     icon: const Icon(
                       Icons.send,
                       color: Colors.blue,
@@ -58,11 +60,11 @@ class _ChatFooterState extends State<ChatFooter> {
             ),
           )),
     ];
-    if (widget.controller.appendedProducts.isNotEmpty) {
+    if (appendedProducts.isNotEmpty) {
       temp.add(ProductAppendix(
-        infos: widget.controller.appendedProducts,
+        infos: appendedProducts,
         onDismissed: () {
-          widget.controller.appendedProducts.clear();
+          appendedProducts.clear();
         },
       ));
     }
@@ -72,7 +74,28 @@ class _ChatFooterState extends State<ChatFooter> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: getFooter(),
+      children: footer,
     );
+  }
+
+  void onLocationPressed() async {
+    await push(
+        context,
+        ChooseProductPage(
+          onTap: (context, info) => appendedProducts.add(info),
+        ));
+    setState(() {});
+  }
+
+  void trySendMessage() async {
+    if (textController.text != "" || appendedProducts.isNotEmpty) {
+      final data = MessageData(
+          fromUser: true,
+          content: textController.text,
+          timeStamp: Timestamp.now(),
+          appendedProductsIds: List<String>.generate(appendedProducts.length,
+              (index) => appendedProducts[index].globalId));
+      await widget.service.sendMessage(data);
+    }
   }
 }

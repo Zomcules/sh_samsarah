@@ -24,7 +24,7 @@ class ProductPreviewFloatinButton extends StatelessWidget {
   }
 }
 
-enum PPPType { viewExternal, viewInternal, createNew }
+enum PPPType { viewExternal, viewInternal, createNew, search }
 
 class _Data {
   final Color buttonColor;

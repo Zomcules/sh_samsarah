@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:samsarah/util/account/account_info.dart';
+import 'package:samsarah/modules/account_info.dart';
 
 import '../../../util/tools/get_image.dart';
 import '../../../util/tools/poppers_and_pushers.dart';
