@@ -55,7 +55,7 @@ class ProductAdapter extends TypeAdapter<ProductInfo> {
       groundFloor: reader.read(),
       producerId: reader.read(),
       price: reader.read(),
-      dateTime: reader.read(),
+      timeStamp: reader.read(),
       globalId: reader.read(),
       zone: ZoneType.values[reader.read()],
       built: reader.read(),
@@ -83,7 +83,7 @@ class ProductAdapter extends TypeAdapter<ProductInfo> {
     writer.write(obj.groundFloor);
     writer.write(obj.producerId);
     writer.write(obj.price);
-    writer.write(obj.dateTime);
+    writer.write(obj.timeStamp);
     writer.write(obj.globalId);
     writer.write(obj.zone.index);
     writer.write(obj.built);

@@ -26,14 +26,34 @@ class _MyDrawerState extends State<MyDrawer> {
         return Drawer(
           child: snapshot.hasData
               ? ListView(
-                  children: const [
-                    SizedBox(
+                  children: [
+                    const SizedBox(
                       height: 50,
                     ),
-                    AccountHeader(),
+                    const AccountHeader(),
                     DrawerTile(
-                        title: "المنتجات المحفوظة", icon: Icons.discount_sharp),
-                    DeathButton()
+                      title: "المنتجات المحفوظة",
+                      icon: Icons.discount_sharp,
+                      onTap: () => push(
+                        context,
+                        ChooseProductPage(
+                          onTap: (context, info) => push(
+                            context,
+                            ProductPreviewPage(
+                              type: PPPType.viewInternal,
+                              info: info,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    DrawerTile(
+                      title: "add product",
+                      icon: Icons.map,
+                      onTap: () => push(context,
+                          const ProductPreviewPage(type: PPPType.createNew)),
+                    ),
+                    const DeathButton()
                   ],
                 )
               : Center(
@@ -63,7 +83,12 @@ class _MyDrawerState extends State<MyDrawer> {
 class DrawerTile extends StatelessWidget {
   final String title;
   final IconData icon;
-  const DrawerTile({super.key, required this.title, required this.icon});
+  final void Function() onTap;
+  const DrawerTile(
+      {super.key,
+      required this.title,
+      required this.icon,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -75,15 +100,7 @@ class DrawerTile extends StatelessWidget {
           icon,
           color: Colors.blue,
         ),
-        onTap: () => push(
-            context,
-            ChooseProductPage(
-                onTap: (context, info) => push(
-                    context,
-                    ProductPreviewPage(
-                      type: PPPType.viewInternal,
-                      info: info,
-                    )))),
+        onTap: onTap,
       ),
     );
   }

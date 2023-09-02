@@ -1,4 +1,5 @@
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart' as osm;
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/firestore_service.dart';
 import 'package:samsarah/util/database/database.dart';
@@ -12,7 +13,7 @@ class ProductController {
 
   double radius = 50;
 
-  GeoPoint? geopoint;
+  osm.GeoPoint? geopoint;
 
   bool? forSale;
 
@@ -48,10 +49,10 @@ class ProductController {
     String x = DateTime.now().toIso8601String();
     var temp = ProductInfo(
       producerId: auth.uid!,
-      geopoint: geopoint ?? GeoPoint(latitude: 0, longitude: 0),
+      geopoint: geopoint ?? osm.GeoPoint(latitude: 0, longitude: 0),
       forSale: forSale ?? false,
       price: price ?? 0,
-      dateTime: DateTime.now(),
+      timeStamp: Timestamp.now(),
       globalId: "${auth.uid}-$x",
       services: services ?? true,
       certified: certified ?? true,

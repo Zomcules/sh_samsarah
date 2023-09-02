@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart' as osm;
 import 'package:hive/hive.dart';
 import 'package:samsarah/services/firestore_service.dart';
@@ -8,7 +9,7 @@ class ProductInfo extends HiveObject {
   final String producerId;
   final String globalId;
   int price;
-  final DateTime dateTime;
+  final Timestamp timeStamp;
   bool? certified;
   String? producerComment;
   List<Map>? comments;
@@ -44,7 +45,7 @@ class ProductInfo extends HiveObject {
       this.wholeHouse,
       this.withFurniture,
       this.zone = ZoneType.residential,
-      required this.dateTime,
+      required this.timeStamp,
       required this.globalId,
       this.certified});
 
@@ -68,7 +69,7 @@ class ProductInfo extends HiveObject {
       "zoneIndex": zone.index,
       "imagePath": imagePath,
       "geopointMap": geopoint.toMap(),
-      "dateTime": dateTime.toIso8601String(),
+      "dateTime": timeStamp,
       "certified": certified
     };
   }
@@ -93,14 +94,14 @@ class ProductInfo extends HiveObject {
         zone: ZoneType.values[map["zoneIndex"]],
         imagePath: map["imagePath"],
         geopoint: osm.GeoPoint.fromMap(map["geopointMap"]),
-        dateTime: DateTime.parse(map["dateTime"]),
+        timeStamp: map["dateTime"],
         certified: map["certified"]);
   }
 
   factory ProductInfo.dummy(List<ProductInfo> infos, {String? globalId}) {
     return ProductInfo(
         globalId: globalId ?? Random().nextInt(99999).toString(),
-        dateTime: DateTime.now(),
+        timeStamp: Timestamp.now(),
         forSale: Random().nextBool(),
         producerId: Random().nextInt(2147000000).toString(),
         floorsNum: Random().nextInt(5),
@@ -126,7 +127,7 @@ class ProductInfo extends HiveObject {
         producerId: "",
         geopoint: osm.GeoPoint(latitude: 0, longitude: 0),
         price: 0,
-        dateTime: DateTime.now(),
+        timeStamp: Timestamp.now(),
         globalId: "");
   }
 
