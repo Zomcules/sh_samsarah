@@ -68,7 +68,7 @@ class ProductController {
       nasiah: nasiah ?? false,
       size: size ?? 0,
     );
-    await temp.saveToNetwork();
+    await store.saveProduct(temp);
   }
 
   Future<List<ProductInfo>> search() async {

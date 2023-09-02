@@ -3,7 +3,7 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/firestore_service.dart';
-import 'package:samsarah/modules/account_info.dart';
+import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
 class MyProfile extends StatefulWidget {
   final List<AuthProvider<AuthListener, AuthCredential>>? providers;
@@ -15,16 +15,6 @@ class MyProfile extends StatefulWidget {
 }
 
 class _MyProfileState extends State<MyProfile> {
-  late final Future<AccountInfo?> future;
-  @override
-  initState() {
-    super.initState();
-    future = auth.currentAccount;
-  }
-
-  final auth = AuthService();
-  final store = FireStoreService();
-
   List<Widget> get children => [
         Expanded(
           child: SizedBox(
@@ -35,25 +25,42 @@ class _MyProfileState extends State<MyProfile> {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(10),
-          child: StreamBuilder(
-            stream: store.accountCollection.doc(auth.uid).snapshots(),
-            builder: (context, snapshot) => snapshot.hasData
-                ? Text(snapshot.data!.data()?.toMap().toString() ?? "")
-                : const CircularProgressIndicator(),
-          ),
-        )
+        ElevatedButton(
+            onPressed: () => push(context, const AccData()),
+            child: const Text("DEBUG"))
       ];
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        auth.syncUser();
+        AuthService().syncUser();
         return Future.value(true);
       },
       child: ListView(
         children: children,
+      ),
+    );
+  }
+}
+
+class AccData extends StatelessWidget {
+  AuthService get auth => AuthService();
+  FireStoreService get store => FireStoreService();
+  const AccData({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: StreamBuilder(
+        stream: store.accountCollection.doc(auth.uid).snapshots(),
+        builder: (context, snapshot) => snapshot.hasData
+            ? Container(
+                color: Colors.white,
+                child: Center(
+                    child:
+                        Text(snapshot.data!.data()?.toMap().toString() ?? "")))
+            : const CircularProgressIndicator(),
       ),
     );
   }

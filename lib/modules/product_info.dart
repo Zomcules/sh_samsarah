@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart' as osm;
 import 'package:hive/hive.dart';
-import 'package:samsarah/services/firestore_service.dart';
 
 class ProductInfo extends HiveObject {
   final String producerId;
@@ -129,10 +128,6 @@ class ProductInfo extends HiveObject {
         price: 0,
         timeStamp: Timestamp.now(),
         globalId: "");
-  }
-
-  Future<void> saveToNetwork() async {
-    await FireStoreService().productCollection.doc(globalId).set(this);
   }
 }
 

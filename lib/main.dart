@@ -35,13 +35,8 @@ class MyApp extends StatelessWidget {
               actions: [
                 AuthStateChangeAction<SignedIn>(
                   (context, state) async {
-                    if (context.mounted) {
-                      Navigator.pushReplacementNamed(context, "/profile");
-                    }
-                    var account = (await auth.currentAccount);
-                    await store.accountCollection
-                        .doc(account!.globalId)
-                        .set(account);
+                    Navigator.pushReplacementNamed(context, "/profile");
+                    auth.syncUser();
                   },
                 )
               ],

@@ -55,4 +55,11 @@ class FireStoreService {
 
   Stream<DocumentSnapshot<AccountInfo>> accountStreamOf(String uid) =>
       accountCollection.doc(uid).snapshots();
+
+  saveProduct(ProductInfo temp) async {
+    await accountCollection.doc(AuthService().uid).update({
+      "productIds": FieldValue.arrayUnion([temp.globalId])
+    });
+    await productCollection.doc(temp.globalId).set(temp);
+  }
 }

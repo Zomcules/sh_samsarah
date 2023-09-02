@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/pages/tab/drawer.dart';
 import 'package:samsarah/modules/account_info.dart';
+import 'package:samsarah/services/firestore_service.dart';
 import 'package:samsarah/util/tools/get_image.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
@@ -110,6 +111,7 @@ class UserThumbnail extends StatefulWidget {
 
 class _UserThumbnailState extends State<UserThumbnail> {
   final auth = AuthService();
+  final store = FireStoreService();
   @override
   void initState() {
     super.initState();
@@ -122,15 +124,10 @@ class _UserThumbnailState extends State<UserThumbnail> {
     return StreamBuilder(
         stream: auth.auth.userChanges(),
         builder: (context, snapshot) {
-          return FutureBuilder(
-              future: future,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return GetImage(
-                      imagePath: snapshot.data!.imagePath ?? "", size: 20);
-                }
-                return const CircularProgressIndicator();
-              });
+          if (snapshot.hasData) {
+            return GetImage(imagePath: snapshot.data!.photoURL ?? "", size: 20);
+          }
+          return const CircularProgressIndicator();
         });
   }
 }

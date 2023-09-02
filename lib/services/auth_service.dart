@@ -12,25 +12,22 @@ class AuthService {
   bool get isSignedIn => auth.currentUser != null;
 
   Future<AccountInfo?> get currentAccount async {
-    if (auth.currentUser != null) {
-      var list = await _store.getProductsOf(uid!);
-      return AccountInfo(
-          username: auth.currentUser!.displayName ?? "",
-          globalId: auth.currentUser!.uid,
-          imagePath: auth.currentUser!.photoURL,
-          productIds:
-              List.generate(list.length, (index) => list[index].globalId),
-          currency: await getCurrency(),
-          savedProducts: await _store.savedProductsIdsOf(uid!),
-          chatters: await getChatters());
-    }
-    return null;
+    return (await _store.accountCollection.doc(auth.currentUser!.uid).get())
+        .data();
   }
 
   Future<void> syncUser() async {
-    _store.accountCollection
-        .doc(auth.currentUser!.uid)
-        .set((await currentAccount)!);
+    if (auth.currentUser != null) {
+      var acc = AccountInfo(
+          username: auth.currentUser!.displayName ?? "",
+          globalId: auth.currentUser!.uid,
+          imagePath: auth.currentUser!.photoURL,
+          productIds: await _store.getProductIdsOf(auth.currentUser!.uid),
+          currency: await getCurrency(),
+          savedProducts: await _store.savedProductsIdsOf(uid!),
+          chatters: await getChatters());
+      await _store.accountCollection.doc(auth.currentUser!.uid).set((acc));
+    }
   }
 
   Future<int> getCurrency() async {
@@ -39,6 +36,6 @@ class AuthService {
 
   Future<List<String>> getChatters() async {
     final acc = await _store.accountCollection.doc(auth.currentUser!.uid).get();
-    return acc.data()!.chatters;
+    return acc.data()?.chatters ?? [];
   }
 }

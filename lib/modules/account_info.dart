@@ -26,7 +26,7 @@ class AccountInfo extends HiveObject {
         imagePath: map["imagePath"],
         productIds: map["productIds"].cast<String>().toList(),
         currency: 0,
-        savedProducts: map["savedProducts"],
+        savedProducts: (map["savedProducts"] as List<dynamic>).cast<String>(),
         chatters: []);
   }
 
@@ -37,8 +37,8 @@ class AccountInfo extends HiveObject {
         imagePath: map["imagePath"],
         productIds: map["productIds"].cast<String>().toList(),
         currency: map["currency"],
-        savedProducts: map["savedProducts"],
-        chatters: map["chatRooms"]);
+        savedProducts: map["savedProducts"].cast<String>().toList(),
+        chatters: map["chatRooms"].cast<String>().toList());
   }
 
   Map<String, dynamic> toMap() {

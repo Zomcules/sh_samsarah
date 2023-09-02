@@ -35,7 +35,8 @@ class _MessagesPageState extends State<MessagesPage> {
                             itemBuilder: (context, index) => StreamBuilder(
                               stream: store.accountStreamOf(
                                   (rooms.data!.docs[index].data()["chatters"]
-                                          as List<String>)
+                                          as List<dynamic>)
+                                      .cast<String>()
                                       .firstWhere(
                                           (element) => element != auth.uid)),
                               builder: (context, account) => account.hasData
