@@ -22,7 +22,7 @@ class ChooseProductPage extends StatelessWidget {
       ));
       for (ProductInfo product in await store.getProductsOf(auth.uid!)) {
         temp.add(ProductSnackBar(
-          productInfo: product,
+          product: product,
           onTap: () => onTap(context, product),
         ));
       }
@@ -33,7 +33,7 @@ class ChooseProductPage extends StatelessWidget {
       for (String id in await store.savedProductsIdsOf(auth.uid ?? "")) {
         var product = await fetchProduct(id);
         temp.add(ProductSnackBar(
-          productInfo: product,
+          product: product,
           onTap: () => onTap(context, product),
         ));
       }
@@ -41,7 +41,7 @@ class ChooseProductPage extends StatelessWidget {
     }
     for (var product in products!) {
       temp.add(ProductSnackBar(
-          productInfo: product, onTap: () => onTap(context, product)));
+          product: product, onTap: () => onTap(context, product)));
     }
     return temp;
   }

@@ -39,7 +39,7 @@ class _DiscoveryTabState extends State<DiscoveryTab>
                         decelerationRate: ScrollDecelerationRate.fast),
                     itemCount: snapshot.data?.docs.length ?? 0,
                     itemBuilder: (context, index) => ProductSnackBar(
-                        productInfo: snapshot.data!.docs[index].data()),
+                        product: snapshot.data!.docs[index].data()),
                   );
                 }
                 return const CircularProgressIndicator();

@@ -122,15 +122,15 @@ class _SearchResultsState extends State<SearchResults> {
       ),
       body: FutureBuilder(
         future: widget.list,
-        builder: (context, snapshot) => snapshot.connectionState ==
-                ConnectionState.done
-            ? ListView(
-                children: List<ProductSnackBar>.generate(
-                    snapshot.data!.length,
-                    (index) =>
-                        ProductSnackBar(productInfo: snapshot.data![index])),
-              )
-            : const CircularProgressIndicator(),
+        builder: (context, snapshot) =>
+            snapshot.connectionState == ConnectionState.done
+                ? ListView(
+                    children: List<ProductSnackBar>.generate(
+                        snapshot.data!.length,
+                        (index) =>
+                            ProductSnackBar(product: snapshot.data![index])),
+                  )
+                : const CircularProgressIndicator(),
       ),
     );
   }

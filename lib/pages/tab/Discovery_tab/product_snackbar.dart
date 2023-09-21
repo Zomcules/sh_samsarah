@@ -19,15 +19,15 @@ List<Widget> getDummyProductSnackbars() {
     )
   ];
   for (ProductInfo info in tempp) {
-    tempw.add(ProductSnackBar(productInfo: info));
+    tempw.add(ProductSnackBar(product: info));
   }
   return tempw;
 }
 
 class ProductSnackBar extends StatelessWidget {
   final Function? onTap;
-  final ProductInfo productInfo;
-  const ProductSnackBar({super.key, required this.productInfo, this.onTap});
+  final ProductInfo product;
+  const ProductSnackBar({super.key, required this.product, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class ProductSnackBar extends StatelessWidget {
           ? onTap!()
           : Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ProductPreviewPage(
-                    info: productInfo,
+                    info: product,
                     type: PPPType.viewExternal,
                   ))),
       child: Container(
@@ -57,7 +57,7 @@ class ProductSnackBar extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: LocationPreview(
-                  geopoint: productInfo.geopoint,
+                  geopoint: product.geopoint,
                   pc: ProductController(),
                   type: PPPType.viewExternal,
                   validator: (_) => null),
@@ -85,7 +85,7 @@ class ProductSnackBar extends StatelessWidget {
                                   fontWeight: FontWeight.bold, fontSize: 16),
                             ),
                             Text(
-                              productInfo.price.annotate(),
+                              product.price.annotate(),
                               style: TextStyle(
                                   color: Colors.black.withOpacity(.6),
                                   fontSize: 16),
@@ -98,7 +98,7 @@ class ProductSnackBar extends StatelessWidget {
                   Wrap(
                       //alignment: WrapAlignment.end,
                       textDirection: TextDirection.rtl,
-                      children: getAttributes(productInfo))
+                      children: getAttributes(product))
                 ],
               ),
             )
