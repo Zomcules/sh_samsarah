@@ -33,16 +33,19 @@ class _DiscoveryTabState extends State<DiscoveryTab>
           child: StreamBuilder(
               stream: _stream,
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                    physics: const BouncingScrollPhysics(
-                        decelerationRate: ScrollDecelerationRate.fast),
-                    itemCount: snapshot.data?.docs.length ?? 0,
-                    itemBuilder: (context, index) => ProductSnackBar(
-                        product: snapshot.data!.docs[index].data()),
-                  );
+                if (snapshot.hasError) {
+                  return const Text("Error");
                 }
-                return const CircularProgressIndicator();
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                }
+                return ListView.builder(
+                  physics: const BouncingScrollPhysics(
+                      decelerationRate: ScrollDecelerationRate.fast),
+                  itemCount: snapshot.data?.docs.length ?? 0,
+                  itemBuilder: (context, index) => ProductSnackBar(
+                      product: snapshot.data!.docs[index].data()),
+                );
               }),
         ),
       ],

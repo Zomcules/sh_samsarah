@@ -17,7 +17,7 @@ class ChatPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-          preferredSize: const Size(0, 0),
+          preferredSize: Size(MediaQuery.of(context).size.width, 60),
           child: ChatHeader(reciever: reciever)),
       body: Column(
         children: [

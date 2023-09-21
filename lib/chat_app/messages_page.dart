@@ -36,17 +36,21 @@ class _MessagesPageState extends State<MessagesPage> {
             child: StreamBuilder(
                 stream: _stream,
                 builder: (context, rooms) {
-                  return rooms.hasData
-                      ? ListView.builder(
-                          itemCount: rooms.data!.size,
-                          itemBuilder: (context, index) => ChatSnackBar(
-                                chatter: (rooms.data!.docs[index]
-                                        .data()["chatters"] as List<dynamic>)
-                                    .cast<String>()
-                                    .firstWhere(
-                                        (element) => element != _auth.uid),
-                              ))
-                      : const CircularProgressIndicator();
+                  if (rooms.hasError) {
+                    return Text(
+                        "Error MessagesPage: ${rooms.error.toString()}");
+                  }
+                  if (rooms.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  }
+                  return ListView.builder(
+                      itemCount: rooms.data!.size,
+                      itemBuilder: (context, index) => ChatSnackBar(
+                            chatter: (rooms.data!.docs[index].data()["chatters"]
+                                    as List<dynamic>)
+                                .cast<String>()
+                                .firstWhere((element) => element != _auth.uid),
+                          ));
                 }),
           ),
         ],

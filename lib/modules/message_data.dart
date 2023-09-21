@@ -24,7 +24,8 @@ class MessageData extends HiveObject {
         from: map["fromUser"],
         content: map["content"],
         timeStamp: map["timeStamp"],
-        appendedProductsIds: map["appendedProductsIds"]);
+        appendedProductsIds:
+            (map["appendedProductsIds"] as List).cast<String>());
   }
 
   Map<String, dynamic> toMap() {

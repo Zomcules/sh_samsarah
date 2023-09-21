@@ -28,17 +28,18 @@ class _ChatBodyState extends State<ChatBody> {
       child: StreamBuilder(
         stream: _stream,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.hasError) {
-              return const Text("error!");
-            }
-            return ListView.builder(
-              itemCount: snapshot.data!.size,
-              itemBuilder: (context, index) =>
-                  Message(data: snapshot.data!.docs[index].data()),
-            );
+          if (snapshot.hasError) {
+            return const Text("Error ChatPage");
           }
-          return const CircularProgressIndicator();
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          }
+          return ListView.builder(
+            reverse: true,
+            itemCount: snapshot.data!.size,
+            itemBuilder: (context, index) =>
+                Message(data: snapshot.data!.docs[index].data()),
+          );
         },
       ),
     );

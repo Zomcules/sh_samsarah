@@ -35,7 +35,7 @@ class ChatService {
           .collection("ChatRooms")
           .doc(_chatRoomIdOf(uid))
           .collection("Messages")
-          .orderBy("timeStamp")
+          .orderBy("timeStamp", descending: true)
           .withConverter<MessageData>(
             fromFirestore: (snapshot, options) =>
                 MessageData.fromMap(snapshot.data()!),

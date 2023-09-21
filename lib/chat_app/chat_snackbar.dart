@@ -31,48 +31,51 @@ class _ChatSnackBarState extends State<ChatSnackBar> {
         future: future,
         builder: (context, snapshot) {
           return snapshot.hasData
-              ? ListTile(
-                  onLongPress: () => showDialog<bool>(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text(snapshot.data!.username),
-                      content: const Text("حذف المحادثة؟"),
-                      actions: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(50),
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListTile(
+                    onLongPress: () => showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text(snapshot.data!.username),
+                        content: const Text("حذف المحادثة؟"),
+                        actions: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: IconButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(true);
+                                },
+                                icon: const Text(
+                                  "نعم",
+                                  style: TextStyle(color: Colors.white),
+                                )),
                           ),
-                          child: IconButton(
+                          IconButton(
                               onPressed: () {
-                                Navigator.of(context).pop(true);
+                                Navigator.of(context).pop(false);
                               },
-                              icon: const Text(
-                                "نعم",
-                                style: TextStyle(color: Colors.white),
-                              )),
-                        ),
-                        IconButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(false);
-                            },
-                            icon: const Text("رجوع"))
-                      ],
-                    ),
-                  ),
-                  onTap: () {
-                    push(
-                      context,
-                      ChatPage(
-                        reciever: snapshot.data!,
+                              icon: const Text("رجوع"))
+                        ],
                       ),
-                    );
-                  },
-                  leading: GetImage(
-                    imagePath: snapshot.data!.imagePath ?? "",
-                    size: 35,
+                    ),
+                    onTap: () {
+                      push(
+                        context,
+                        ChatPage(
+                          reciever: snapshot.data!,
+                        ),
+                      );
+                    },
+                    leading: GetImage(
+                      imagePath: snapshot.data!.imagePath ?? "",
+                      size: 35,
+                    ),
+                    title: Text(snapshot.data!.username),
                   ),
-                  title: Text(snapshot.data!.username),
                 )
               : const SizedBox(height: 80, child: CircularProgressIndicator());
         });

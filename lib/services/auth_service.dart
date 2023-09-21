@@ -18,15 +18,9 @@ class AuthService {
 
   Future<void> syncUser() async {
     if (auth.currentUser != null) {
-      var acc = AccountInfo(
-        username: auth.currentUser!.displayName ?? "",
-        globalId: auth.currentUser!.uid,
-        imagePath: auth.currentUser!.photoURL,
-        productIds: await _store.getProductIdsOf(auth.currentUser!.uid),
-        currency: await getCurrency(),
-        savedProducts: await _store.savedProductsIdsOf(uid!),
-      );
-      await _store.accountCollection.doc(auth.currentUser!.uid).set((acc));
+      await _store.accountCollection
+          .doc(auth.currentUser!.uid)
+          .update({"username": auth.currentUser!.displayName});
     }
   }
 
