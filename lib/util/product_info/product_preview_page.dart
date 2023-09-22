@@ -45,7 +45,7 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
 
   late Future<AccountInfo?> producer;
   final _auth = AuthService();
-  final msg = ChatService();
+  final _msg = ChatService();
   final pc = ProductController();
   final formKey = GlobalKey<FormState>();
   bool showMore = false;
@@ -74,7 +74,7 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
 
   void messageProducer(AccountInfo info) async {
     if (_auth.isSignedIn && info.globalId != _auth.uid) {
-      await msg.initiateNewChat(info.globalId);
+      await _msg.initiateNewChat(info.globalId);
       if (mounted) {
         push(
           context,
