@@ -43,8 +43,9 @@ class _LocationPreviewState extends State<LocationPreview>
         await push(
             context,
             MapPage(
-                geopoint: geopoint!,
-                controller: MapController(initPosition: geopoint)));
+              geopoint: geopoint!,
+              controller: MapController(initPosition: geopoint),
+            ));
         break;
       default:
         var temp = await chooseGeoPoint(context);

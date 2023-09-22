@@ -25,8 +25,34 @@ Future<GeoPoint?> chooseGeoPoint(BuildContext context) async {
         content: SizedBox(
           height: MediaQuery.of(context).size.width * 4 / 5,
           child: OSMFlutter(
-            osmOption: const OSMOption(
-              isPicker: true,
+            osmOption: OSMOption(
+              enableRotationByGesture: false,
+              zoomOption: const ZoomOption(
+                initZoom: 18,
+                maxZoomLevel: 18,
+                stepZoom: 1.0,
+              ),
+              userLocationMarker: UserLocationMaker(
+                personMarker: const MarkerIcon(
+                  icon: Icon(
+                    Icons.pin_drop,
+                    color: Colors.blue,
+                    size: 60,
+                  ),
+                ),
+                directionArrowMarker: const MarkerIcon(
+                  icon: Icon(
+                    Icons.double_arrow,
+                    size: 48,
+                  ),
+                ),
+              ),
+              roadConfiguration: const RoadOption(
+                roadColor: Colors.yellowAccent,
+              ),
+              markerOption: MarkerOption(
+                defaultMarker: const MarkerIcon(icon: Icon(Icons.circle)),
+              ),
             ),
             controller: controller,
           ),

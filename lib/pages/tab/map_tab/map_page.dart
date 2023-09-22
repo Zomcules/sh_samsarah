@@ -25,6 +25,7 @@ class _MapPageState extends State<MapPage> {
       appBar: AppBar(),
       body: OSMFlutter(
         osmOption: OSMOption(
+          enableRotationByGesture: false,
           zoomOption: const ZoomOption(
             initZoom: 16,
           ),

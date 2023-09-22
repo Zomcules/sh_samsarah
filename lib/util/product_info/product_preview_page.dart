@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/chat_service.dart';
 import 'package:samsarah/modules/account_info.dart';
@@ -20,7 +21,9 @@ import 'product_preview_page/fields/zone_field.dart';
 class ProductPreviewPage extends StatefulWidget {
   final PPPType type;
   final ProductInfo? info;
-  const ProductPreviewPage({super.key, this.info, required this.type})
+  final GeoPoint? geoPoint;
+  const ProductPreviewPage(
+      {super.key, this.info, required this.type, this.geoPoint})
       : assert(type != PPPType.viewExternal || info != null),
         assert(type != PPPType.viewInternal || info != null);
 
@@ -37,6 +40,7 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
     } else {
       producer = fetchAccount(widget.info!.producerId);
     }
+    pc.geopoint = widget.geoPoint;
   }
 
   late Future<AccountInfo?> producer;
