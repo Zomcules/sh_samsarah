@@ -5,7 +5,6 @@ class AccountInfo extends HiveObject {
   String username;
   String? imagePath;
   String globalId;
-  List<String> productIds;
   List<String> savedProducts;
   int currency;
 
@@ -13,7 +12,6 @@ class AccountInfo extends HiveObject {
     required this.username,
     required this.globalId,
     this.imagePath,
-    required this.productIds,
     required this.currency,
     required this.savedProducts,
   });
@@ -23,7 +21,6 @@ class AccountInfo extends HiveObject {
       username: map["username"],
       globalId: map["globalId"],
       imagePath: map["imagePath"],
-      productIds: (map["productIds"] as List).cast<String>(),
       currency: 0,
       savedProducts: (map["savedProducts"] as List<dynamic>).cast<String>(),
     );
@@ -34,7 +31,6 @@ class AccountInfo extends HiveObject {
       username: map["username"],
       globalId: map["globalId"],
       imagePath: map["imagePath"],
-      productIds: map["productIds"].cast<String>().toList(),
       currency: map["currency"],
       savedProducts: map["savedProducts"].cast<String>().toList(),
     );
@@ -45,7 +41,6 @@ class AccountInfo extends HiveObject {
       "username": username,
       "globalId": globalId,
       "imagePath": imagePath,
-      "productIds": productIds,
       "currency": currency,
       "savedProducts": savedProducts,
     };
@@ -56,7 +51,6 @@ class AccountInfo extends HiveObject {
     return AccountInfo(
       globalId: globalId ?? ran,
       username: "Dummy ${globalId ?? ran}",
-      productIds: [],
       currency: 0,
       savedProducts: [],
     );
@@ -66,7 +60,6 @@ class AccountInfo extends HiveObject {
     return AccountInfo(
       username: "",
       globalId: "",
-      productIds: [],
       currency: 0,
       savedProducts: [],
     );

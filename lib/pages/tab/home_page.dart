@@ -36,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // backgroundColor: Colors.white
         actions: [
           StreamBuilder(
-            stream: auth.auth.userChanges(),
+            stream: auth.firebaseAuth.userChanges(),
             builder: (context, snapshot) {
               return IconButton(
                 onPressed: snapshot.data != null
@@ -56,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
           StreamBuilder(
-              stream: auth.auth.userChanges(),
+              stream: auth.firebaseAuth.userChanges(),
               builder: (context, snapshot) {
                 return IconButton(
                     onPressed: () {
@@ -122,7 +122,7 @@ class _UserThumbnailState extends State<UserThumbnail> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: auth.auth.userChanges(),
+        stream: auth.firebaseAuth.userChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return GetImage(imagePath: snapshot.data!.photoURL ?? "", size: 20);

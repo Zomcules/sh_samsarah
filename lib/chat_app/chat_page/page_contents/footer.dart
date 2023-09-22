@@ -11,7 +11,8 @@ import '../../../modules/product_info.dart';
 
 class ChatFooter extends StatefulWidget {
   final String reciever;
-  const ChatFooter({super.key, required this.reciever});
+  final ProductInfo? appendedProduct;
+  const ChatFooter({super.key, required this.reciever, this.appendedProduct});
 
   @override
   State<ChatFooter> createState() => _ChatFooterState();
@@ -22,6 +23,14 @@ class _ChatFooterState extends State<ChatFooter> {
   final auth = AuthService();
   final textController = TextEditingController();
   List<ProductInfo> appendedProducts = [];
+  @override
+  initState() {
+    super.initState();
+    if (widget.appendedProduct != null) {
+      appendedProducts.add(widget.appendedProduct!);
+    }
+  }
+
   List<Widget> get footer {
     List<Widget> temp = [
       Padding(

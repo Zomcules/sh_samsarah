@@ -4,27 +4,37 @@ import 'package:samsarah/services/firestore_service.dart';
 import '../modules/account_info.dart';
 
 class AuthService {
-  final auth = FirebaseAuth.instance;
+  final firebaseAuth = FirebaseAuth.instance;
   final _store = FireStoreService();
 
-  String? get uid => auth.currentUser?.uid;
+  String? get uid => firebaseAuth.currentUser?.uid;
 
-  bool get isSignedIn => auth.currentUser != null;
+  bool get isSignedIn => firebaseAuth.currentUser != null;
 
   Future<AccountInfo?> get currentAccount async {
-    return (await _store.accountCollection.doc(auth.currentUser!.uid).get())
+    return (await _store.accountCollection
+            .doc(firebaseAuth.currentUser!.uid)
+            .get())
         .data();
   }
 
   Future<void> syncUser() async {
-    if (auth.currentUser != null) {
-      await _store.accountCollection
-          .doc(auth.currentUser!.uid)
-          .update({"username": auth.currentUser!.displayName});
+    if (firebaseAuth.currentUser != null) {
+      var acc = await _store.accountCollection
+          .doc(firebaseAuth.currentUser!.uid)
+          .get();
+      if (acc.exists) {
+        acc.reference
+            .update({"username": firebaseAuth.currentUser!.displayName});
+      } else {
+        acc.reference.set(AccountInfo(
+            username: firebaseAuth.currentUser?.displayName ?? "No Data",
+            globalId: acc.reference.id,
+            currency: 0,
+            savedProducts: []));
+      }
     }
   }
 
-  Future<int> getCurrency() async {
-    return (await currentAccount)?.currency ?? 0;
-  }
+  Future<int> getCurrency() async => (await currentAccount)?.currency ?? 0;
 }

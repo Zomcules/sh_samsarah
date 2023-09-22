@@ -19,7 +19,7 @@ class _MyDrawerState extends State<MyDrawer> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: AuthService().auth.userChanges(),
+      stream: AuthService().firebaseAuth.userChanges(),
       builder: (context, snapshot) {
         return Drawer(
           child: snapshot.hasData

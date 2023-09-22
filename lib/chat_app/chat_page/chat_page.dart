@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_typing_uninitialized_variables
-
 import 'package:flutter/material.dart';
 
 import 'package:samsarah/chat_app/chat_page/page_contents/body.dart';
@@ -24,6 +22,7 @@ class ChatPage extends StatelessWidget {
           ChatBody(reciever: reciever.globalId),
           ChatFooter(
             reciever: reciever.globalId,
+            appendedProduct: appendedProduct,
           )
         ],
       ),

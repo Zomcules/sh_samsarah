@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:samsarah/services/auth_service.dart';
+import 'package:samsarah/util/tools/extensions.dart';
 
 import '../modules/account_info.dart';
 import '../modules/product_info.dart';
@@ -34,19 +35,14 @@ class FireStoreService {
         AccountInfo.blank();
   }
 
-  Future<List<String>> getProductIdsOf(String uid) async {
-    return (await accountCollection.doc(uid).get()).data()?.productIds ?? [];
+  Future<List<ProductInfo>> getProductsOf(String uid) async {
+    return (await productCollection.where("producerId", isEqualTo: uid).get())
+        .docs
+        .translate((element) => element.data());
   }
 
-  Future<List<ProductInfo>> getProductsOf(String uid) async {
-    var temp = <ProductInfo>[];
-    for (String id in await getProductIdsOf(uid)) {
-      var data = (await productCollection.doc(id).get()).data();
-      if (data != null) {
-        temp.add(data);
-      }
-    }
-    return temp;
+  Future<List<String>> getProductIdsOf(String uid) async {
+    return (await getProductsOf(uid)).translate((element) => element.globalId);
   }
 
   Future<List<String>> savedProductsIdsOf(String uid) async {

@@ -18,7 +18,7 @@ class _AccountHeaderState extends State<AccountHeader> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: auth.auth.userChanges(),
+        stream: auth.firebaseAuth.userChanges(),
         builder: (context, snapshot) {
           return snapshot.hasData
               ? GestureDetector(
@@ -33,10 +33,11 @@ class _AccountHeaderState extends State<AccountHeader> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         GetImage(
-                            imagePath: auth.auth.currentUser?.photoURL ?? "",
+                            imagePath:
+                                auth.firebaseAuth.currentUser?.photoURL ?? "",
                             size: 50),
                         Text(
-                          auth.auth.currentUser?.displayName ?? "",
+                          auth.firebaseAuth.currentUser?.displayName ?? "",
                           style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -53,7 +54,7 @@ class _AccountHeaderState extends State<AccountHeader> {
                         Container(
                           margin: const EdgeInsets.all(10),
                           child: StreamBuilder(
-                              stream: auth.auth.userChanges(),
+                              stream: auth.firebaseAuth.userChanges(),
                               builder: (context, snapshot) => snapshot.hasData
                                   ? GetImage(
                                       imagePath: snapshot.data!.photoURL ?? "",

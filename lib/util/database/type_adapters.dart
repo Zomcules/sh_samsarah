@@ -25,7 +25,6 @@ class AccountAdapter extends TypeAdapter<AccountInfo> {
       username: reader.read(),
       globalId: reader.read(),
       imagePath: reader.read(),
-      productIds: reader.read().cast<String>(),
       currency: reader.read(),
       savedProducts: reader.read(),
     );
@@ -39,7 +38,6 @@ class AccountAdapter extends TypeAdapter<AccountInfo> {
     writer.write(obj.username);
     writer.write(obj.globalId);
     writer.write(obj.imagePath);
-    writer.write(obj.productIds);
     writer.write(obj.currency);
     writer.write(obj.savedProducts);
   }

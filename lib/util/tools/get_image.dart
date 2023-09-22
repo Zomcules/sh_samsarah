@@ -9,7 +9,7 @@ class GetImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: AuthService().auth.userChanges(),
+        stream: AuthService().firebaseAuth.userChanges(),
         builder: (context, snapshot) => snapshot.hasData
             ? CircleAvatar(
                 radius: size / 1,
