@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:samsarah/auth_flow/sign_in.dart';
 import 'package:samsarah/chat_app/chat_page/choose_product_page.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/util/product_info/product_preview_page.dart';
@@ -56,7 +57,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 )
               : Center(
                   child: GestureDetector(
-                    onTap: () => pushNamed(context, "/sign-in"),
+                    onTap: () => push(context, const SignInPage()),
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.blue,

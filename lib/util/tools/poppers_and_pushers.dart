@@ -9,10 +9,19 @@ Future<R?> push<R>(BuildContext context, Widget page) async {
   );
 }
 
-Future<R?> pushNamed<R>(BuildContext context, String routeName) async {
-  return await Navigator.pushNamed<R>(context, routeName);
-}
+// Future<R?> pushNamed<R>(BuildContext context, String routeName) async {
+//   return await Navigator.pushNamed<R>(context, routeName);
+// }
 
 pop(BuildContext context, dynamic result) {
   Navigator.pop(context, result);
+}
+
+alert(BuildContext context, String message) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      content: Text(message),
+    ),
+  );
 }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:samsarah/auth_flow/sign_in.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/pages/tab/drawer.dart';
 import 'package:samsarah/util/tools/get_image.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
+import '../../auth_flow/my_profile_page.dart';
 import '../../chat_app/messages_page.dart';
 import 'Discovery_tab/discovery_tab.dart';
 import 'Discovery_tab/product_snackbar.dart';
@@ -59,9 +61,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 return IconButton(
                     onPressed: () {
                       if (snapshot.hasData) {
-                        pushNamed(context, "/profile");
+                        push(context, const MyProfilePage());
                       } else {
-                        pushNamed(context, "/sign-in");
+                        push(context, const SignInPage());
                       }
                     },
                     icon: snapshot.hasData

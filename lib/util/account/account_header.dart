@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:samsarah/auth_flow/sign_in.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/util/tools/get_image.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
+
+import '../../auth_flow/my_profile_page.dart';
 
 class AccountHeader extends StatefulWidget {
   const AccountHeader({
@@ -22,9 +25,11 @@ class _AccountHeaderState extends State<AccountHeader> {
         builder: (context, snapshot) {
           return snapshot.hasData
               ? GestureDetector(
-                  onTap: () => pushNamed(
+                  onTap: () => push(
                     context,
-                    auth.isSignedIn ? "/profile" : "/sign-in",
+                    auth.isSignedIn
+                        ? const MyProfilePage()
+                        : const SignInPage(),
                   ),
                   child: Container(
                     height: 150,
@@ -72,8 +77,11 @@ class _AccountHeaderState extends State<AccountHeader> {
                               borderRadius: BorderRadius.circular(50),
                               color: const Color.fromARGB(255, 0, 125, 228)),
                           child: IconButton(
-                              onPressed: () => pushNamed(context,
-                                  auth.isSignedIn ? "/profile" : "/sign-in"),
+                              onPressed: () => push(
+                                  context,
+                                  auth.isSignedIn
+                                      ? const MyProfilePage()
+                                      : const SignInPage()),
                               icon: const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 10),
                                 child: Text(
