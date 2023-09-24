@@ -39,7 +39,7 @@ class _MyTextFormFieldState extends State<MyTextFormField>
         keyboardType: widget.keyboardType,
         //textDirection: TextDirection.rtl,
         decoration: InputDecoration(
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
           labelText: widget.labelText,
         ),
         onSaved: widget.onSaved,

@@ -9,9 +9,13 @@ Future<R?> push<R>(BuildContext context, Widget page) async {
   );
 }
 
-// Future<R?> pushNamed<R>(BuildContext context, String routeName) async {
-//   return await Navigator.pushNamed<R>(context, routeName);
-// }
+Future<void> pushReplacement(BuildContext context, Widget page) async {
+  await Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => page,
+      ));
+}
 
 pop(BuildContext context, dynamic result) {
   Navigator.pop(context, result);

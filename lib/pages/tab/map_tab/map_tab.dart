@@ -5,7 +5,6 @@ import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/firestore_service.dart';
 import 'package:samsarah/util/product_info/product_preview_page.dart';
 import 'package:samsarah/util/product_info/product_preview_page/fields/ppp_floating_button.dart';
-import 'package:samsarah/util/tools/extensions.dart';
 
 import '../../../util/tools/poppers_and_pushers.dart';
 
@@ -29,7 +28,7 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
   Future<void> addGeoPoints() async {
     var points = (await FireStoreService().productCollection.get())
         .docs
-        .translate((element) => element.data().geopoint);
+        .map((element) => element.data().geopoint);
     for (var element in points) {
       mapController.addMarker(element,
           markerIcon: const MarkerIcon(

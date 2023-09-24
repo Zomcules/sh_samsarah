@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:samsarah/auth_flow/error_handler.dart';
+import 'package:samsarah/auth_flow/my_profile_page.dart';
 import 'package:samsarah/modules/account_info.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/firestore_service.dart';
@@ -18,10 +20,10 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   final key = GlobalKey<FormState>();
   final auth = AuthService().firebaseAuth;
-  late String email;
-  late String password;
-  late String password2;
-  late String username;
+  String email = "";
+  String password = "";
+  String password2 = "";
+  String username = "";
   bool createNew = false;
   @override
   Widget build(BuildContext context) {
@@ -32,78 +34,122 @@ class _SignInPageState extends State<SignInPage> {
           title: const Text("تسجيل الدخول"),
         ),
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: !createNew
               ? [
-                  MyTextFormField(
-                      onSaved: (value) => email = value!,
-                      validator: validator,
-                      keyboardType: TextInputType.emailAddress,
-                      labelText: "عنوان البريد الالكتروني",
-                      pppType: PPPType.createNew),
-                  MyTextFormField(
-                      onSaved: (value) => password = value!,
-                      validator: validator,
-                      keyboardType: TextInputType.visiblePassword,
-                      labelText: "كلمة السر",
-                      pppType: PPPType.createNew),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      MyButton(
-                          onPressed: () => setState(() {
-                                createNew = true;
-                              }),
-                          raised: false,
-                          title: "انشاء حساب جديد"),
-                      MyButton(
-                          onPressed: trySignIn,
-                          raised: true,
-                          title: "تسجيل الدخول"),
-                    ],
+                  Expanded(
+                    child: ListView(children: [
+                      Column(children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: MyTextFormField(
+                              onSaved: (value) => email = value!,
+                              validator: validator,
+                              keyboardType: TextInputType.emailAddress,
+                              labelText: "عنوان البريد الالكتروني",
+                              pppType: PPPType.createNew),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: MyTextFormField(
+                              onSaved: (value) => password = value!,
+                              validator: validator,
+                              keyboardType: TextInputType.visiblePassword,
+                              labelText: "كلمة السر",
+                              pppType: PPPType.createNew),
+                        ),
+                      ]),
+                    ]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        MyButton(
+                            onPressed: () => setState(() {
+                                  createNew = true;
+                                }),
+                            raised: false,
+                            title: "انشاء حساب جديد"),
+                        MyButton(
+                            onPressed: trySignIn,
+                            raised: true,
+                            title: "تسجيل الدخول"),
+                      ],
+                    ),
                   )
                 ]
-              : [
-                  MyTextFormField(
-                      onSaved: (value) => username = value!,
-                      validator: validator,
-                      keyboardType: TextInputType.name,
-                      labelText: "الاسم",
-                      pppType: PPPType.createNew),
-                  MyTextFormField(
-                      onSaved: (value) => email = value!,
-                      validator: validator,
-                      keyboardType: TextInputType.emailAddress,
-                      labelText: "البريد الالكتروني",
-                      pppType: PPPType.createNew),
-                  MyTextFormField(
-                      onSaved: (value) => password = value!,
-                      validator: validator,
-                      keyboardType: TextInputType.name,
-                      labelText: "كلمة السر",
-                      pppType: PPPType.createNew),
-                  MyTextFormField(
-                      onSaved: (value) => password2 = value!,
-                      validator: validator,
-                      keyboardType: TextInputType.name,
-                      labelText: "أعد كتابة كلمة السر",
-                      pppType: PPPType.createNew),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      MyButton(
-                          onPressed: () {
-                            setState(() {
-                              createNew = false;
-                            });
-                          },
-                          raised: false,
-                          title: "رجوع"),
-                      MyButton(
-                          onPressed: tryCreateAccount,
-                          raised: true,
-                          title: "انشاء الحساب"),
-                    ],
+              :
+              /////////////////////////////////////////////////////////////////////////
+              [
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: MyTextFormField(
+                                  onSaved: (value) => username = value!,
+                                  validator: validator,
+                                  keyboardType: TextInputType.name,
+                                  labelText: "الاسم",
+                                  pppType: PPPType.createNew),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: MyTextFormField(
+                                  onSaved: (value) => email = value!,
+                                  validator: validator,
+                                  keyboardType: TextInputType.emailAddress,
+                                  labelText: "البريد الالكتروني",
+                                  pppType: PPPType.createNew),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: MyTextFormField(
+                                  onSaved: (value) => password = value!,
+                                  validator: validator,
+                                  keyboardType: TextInputType.name,
+                                  labelText: "كلمة السر",
+                                  pppType: PPPType.createNew),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: MyTextFormField(
+                                  onSaved: (value) => password2 = value!,
+                                  validator: (value) => password == value
+                                      ? null
+                                      : "كلمة السر غير متطابقة",
+                                  keyboardType: TextInputType.name,
+                                  labelText: "أعد كتابة كلمة السر",
+                                  pppType: PPPType.createNew),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        MyButton(
+                            onPressed: () {
+                              setState(() {
+                                createNew = false;
+                              });
+                            },
+                            raised: false,
+                            title: "رجوع"),
+                        MyButton(
+                            onPressed: tryCreateAccount,
+                            raised: true,
+                            title: "انشاء الحساب"),
+                      ],
+                    ),
                   )
                 ],
         ),
@@ -116,15 +162,10 @@ class _SignInPageState extends State<SignInPage> {
     try {
       await auth.signInWithEmailAndPassword(email: email, password: password);
       if (mounted) {
-        pop(context, null);
+        pushReplacement(context, const MyProfilePage());
       }
     } on FirebaseAuthException catch (e) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          content: Text(e.code),
-        ),
-      );
+      alert(context, handleError(e));
     }
   }
 
@@ -144,10 +185,10 @@ class _SignInPageState extends State<SignInPage> {
                 currency: 0,
                 savedProducts: []));
         if (mounted) {
-          pop(context, null);
+          pushReplacement(context, const MyProfilePage());
         }
       } on FirebaseAuthException catch (e) {
-        alert(context, e.code);
+        alert(context, handleError(e));
       }
     } else {
       alert(context, "كلمة السر غير متطابقة");

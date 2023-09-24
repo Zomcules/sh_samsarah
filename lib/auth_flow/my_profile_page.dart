@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:samsarah/auth_flow/activate_voucher.dart';
+import 'package:samsarah/auth_flow/sign_in.dart';
 import 'package:samsarah/services/auth_service.dart';
-import 'package:samsarah/util/tools/extensions.dart';
+import 'package:samsarah/services/firestore_service.dart';
+import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
 class MyProfilePage extends StatefulWidget {
   const MyProfilePage({super.key});
@@ -11,14 +14,20 @@ class MyProfilePage extends StatefulWidget {
 
 class _MyProfilePageState extends State<MyProfilePage> {
   final auth = AuthService().firebaseAuth;
+  final store = FireStoreService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(auth.currentUser!.displayName ?? "No Data"),
+        title: const Text("الصفحة الشخصية"),
         actions: [
           IconButton(
-              onPressed: () => auth.signOut(),
+              onPressed: () async {
+                await auth.signOut();
+                if (mounted) {
+                  pushReplacement(context, const SignInPage());
+                }
+              },
               icon: const Icon(
                 Icons.logout,
                 color: Colors.red,
@@ -28,10 +37,66 @@ class _MyProfilePageState extends State<MyProfilePage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          CircleAvatar(
-            backgroundColor: Colors.grey,
-            child: Text(getInitials()),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              CircleAvatar(
+                radius: MediaQuery.of(context).size.width * 1.5 / 5,
+                backgroundColor: Colors.green.shade300,
+                child: Text(
+                  getInitials(),
+                  style: const TextStyle(fontSize: 50, color: Colors.white),
+                ),
+              ),
+            ],
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text(
+                auth.currentUser!.displayName!,
+                style: const TextStyle(fontSize: 25, color: Colors.black87),
+              ),
+              IconButton(onPressed: () {}, icon: const Icon(Icons.edit))
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(26),
+                  color: Colors.green.shade100,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    FutureBuilder(
+                      future: AuthService().getCurrency(),
+                      builder: (_, snapshot) =>
+                          snapshot.connectionState == ConnectionState.done
+                              ? Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "الرصيد :${snapshot.data!}",
+                                    style: const TextStyle(
+                                        fontSize: 30, color: Colors.green),
+                                  ),
+                                )
+                              : const CircularProgressIndicator(),
+                    ),
+                    FloatingActionButton(
+                      onPressed: () =>
+                          push(context, const ActivateVoucherPage()),
+                      backgroundColor: Colors.green,
+                      shape: const CircleBorder(),
+                      child: const Icon(Icons.add, color: Colors.white),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          )
         ],
       ),
     );
@@ -39,6 +104,6 @@ class _MyProfilePageState extends State<MyProfilePage> {
 
   String getInitials() => auth.currentUser!.displayName!
       .split(" ")
-      .translate((element) => element[0])
+      .map((element) => element[0])
       .join(" ");
 }

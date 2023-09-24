@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:samsarah/services/auth_service.dart';
-import 'package:samsarah/util/tools/extensions.dart';
 
 import '../modules/account_info.dart';
 import '../modules/product_info.dart';
@@ -38,11 +37,14 @@ class FireStoreService {
   Future<List<ProductInfo>> getProductsOf(String uid) async {
     return (await productCollection.where("producerId", isEqualTo: uid).get())
         .docs
-        .translate((element) => element.data());
+        .map((element) => element.data())
+        .toList();
   }
 
   Future<List<String>> getProductIdsOf(String uid) async {
-    return (await getProductsOf(uid)).translate((element) => element.globalId);
+    return (await getProductsOf(uid))
+        .map((element) => element.globalId)
+        .toList();
   }
 
   Future<List<String>> savedProductsIdsOf(String uid) async {
@@ -57,5 +59,31 @@ class FireStoreService {
       "productIds": FieldValue.arrayUnion([temp.globalId])
     });
     await productCollection.doc(temp.globalId).set(temp);
+  }
+
+  Future<int> voucherValue(String code) async {
+    return (await instance
+                .collection("AppData")
+                .doc("Vouchers")
+                .collection("Vouchers")
+                .doc(code)
+                .get())
+            .data()?["value"] ??
+        0;
+  }
+
+  Future<void> deleteVoucher(String code) async {
+    await instance
+        .collection("AppData")
+        .doc("Vouchers")
+        .collection("Vouchers")
+        .doc(code)
+        .delete();
+  }
+
+  Future<void> updateCurrency(int change) async {
+    await accountCollection
+        .doc(AuthService().uid)
+        .update({"currency": FieldValue.increment(change)});
   }
 }
