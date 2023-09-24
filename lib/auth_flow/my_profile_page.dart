@@ -3,6 +3,9 @@ import 'package:samsarah/auth_flow/activate_voucher.dart';
 import 'package:samsarah/auth_flow/sign_in.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/firestore_service.dart';
+import 'package:samsarah/util/product_info/product_preview_page/fields/ppp_floating_button.dart';
+import 'package:samsarah/util/tools/my_button.dart';
+import 'package:samsarah/util/tools/my_text_form_field.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
 class MyProfilePage extends StatefulWidget {
@@ -57,7 +60,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                 auth.currentUser!.displayName!,
                 style: const TextStyle(fontSize: 25, color: Colors.black87),
               ),
-              IconButton(onPressed: () {}, icon: const Icon(Icons.edit))
+              IconButton(onPressed: editUserName, icon: const Icon(Icons.edit))
             ],
           ),
           Row(
@@ -106,4 +109,47 @@ class _MyProfilePageState extends State<MyProfilePage> {
       .split(" ")
       .map((element) => element[0])
       .join(" ");
+
+  void editUserName() async {
+    final key = GlobalKey<FormState>();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+          actions: [
+            MyButton(
+                onPressed: () => pop(context, null),
+                raised: false,
+                title: "رجوع"),
+            MyButton(
+                onPressed: () async {
+                  if (key.currentState!.validate()) {
+                    key.currentState!.save();
+                    pop(context, null);
+                    await store.accountCollection
+                        .doc(auth.currentUser!.uid)
+                        .update({"username": auth.currentUser!.displayName!});
+                  }
+                },
+                raised: true,
+                title: "تغيير الاسم"),
+          ],
+          title: const Text("تغيير الاسم"),
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Form(
+                key: key,
+                child: MyTextFormField(
+                    onSaved: (value) =>
+                        auth.currentUser!.updateDisplayName(value),
+                    validator: (value) =>
+                        value == null || value == "" ? "هذا الحقل فارغ" : null,
+                    keyboardType: TextInputType.name,
+                    labelText: "الاسم الجديد",
+                    pppType: PPPType.createNew),
+              ),
+            ],
+          )),
+    );
+  }
 }

@@ -26,6 +26,7 @@ Future<GeoPoint?> chooseGeoPoint(BuildContext context) async {
           height: MediaQuery.of(context).size.width * 4 / 5,
           child: OSMFlutter(
             osmOption: OSMOption(
+              isPicker: true,
               enableRotationByGesture: false,
               zoomOption: const ZoomOption(
                 initZoom: 18,

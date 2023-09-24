@@ -23,7 +23,9 @@ class MyButton extends StatelessWidget {
         child: Text(
           title,
           style: TextStyle(
-              color: raised ? Colors.white : null, fontWeight: FontWeight.bold),
+              color: raised ? Colors.white : null,
+              fontWeight: raised ? FontWeight.bold : null,
+              fontSize: 20),
         ),
       ),
     );

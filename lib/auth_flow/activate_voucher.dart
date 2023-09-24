@@ -30,36 +30,45 @@ class _ActivateVoucherPageState extends State<ActivateVoucherPage> {
               key: key,
               child: MyTextFormField(
                   onSaved: (value) => code = value!,
-                  validator: (value) => value == null ? "الحقل فارغ" : null,
+                  validator: (value) =>
+                      value == null || value == "" ? "الحقل فارغ" : null,
                   keyboardType: TextInputType.text,
                   labelText: "",
                   pppType: PPPType.createNew),
             ),
           ),
-          MyButton(onPressed: tryActivateVoucher, raised: true, title: "تفعيل")
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: MyButton(
+                onPressed: tryActivateVoucher, raised: true, title: "تفعيل"),
+          )
         ],
       ),
     );
   }
 
   void tryActivateVoucher() async {
-    key.currentState!.save();
-    final store = FireStoreService();
-    var value = await store.voucherValue(code);
-    if (value == 0) {
-      if (mounted) {
-        alert(context, "هذا الكود غير صحيح ");
+    if (key.currentState!.validate()) {
+      key.currentState!.save();
+      final store = FireStoreService();
+      var value = await store.voucherValue(code);
+      if (value == 0) {
+        if (mounted) {
+          alert(context, "هذا الكود غير صحيح ");
+        }
+      } else {
+        await store.updateCurrency(value);
+        await store.deleteVoucher(code);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+            "+$value",
+            style: const TextStyle(fontSize: 30),
+          )));
+        }
       }
     } else {
-      await store.updateCurrency(value);
-      await store.deleteVoucher(code);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(
-          "+$value",
-          style: const TextStyle(fontSize: 30),
-        )));
-      }
+      alert(context, "الحقل فارغ");
     }
   }
 }
