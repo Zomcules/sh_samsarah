@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/firestore_service.dart';
 import 'package:samsarah/pages/tab/Discovery_tab/product_snackbar.dart';
-import 'package:samsarah/util/database/fetchers.dart';
 
 import '../../modules/product_info.dart';
 
@@ -21,27 +20,26 @@ class ChooseProductPage extends StatelessWidget {
         children: [Divider(), Text("عروضي"), Divider()],
       ));
       for (ProductInfo product in await store.getProductsOf(auth.uid!)) {
-        temp.add(ProductSnackBar(
+        temp.add(ProductSnackBar.simple(
           product: product,
-          onTap: () => onTap(context, product),
+          onTap: (product) => onTap(context, product),
         ));
       }
       temp.add(const Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [Divider(), Text("العروض المحفوظة"), Divider()],
       ));
-      for (String id in await store.savedProductsIdsOf(auth.uid ?? "")) {
-        var product = await fetchProduct(id);
-        temp.add(ProductSnackBar(
+      for (ProductInfo product in await store.savedProductsOf(auth.uid!)) {
+        temp.add(ProductSnackBar.simple(
           product: product,
-          onTap: () => onTap(context, product),
+          onTap: (product) => onTap(context, product),
         ));
       }
       return temp;
     }
     for (var product in products!) {
-      temp.add(ProductSnackBar(
-          product: product, onTap: () => onTap(context, product)));
+      temp.add(ProductSnackBar.simple(
+          product: product, onTap: (product) => onTap(context, product)));
     }
     return temp;
   }

@@ -38,7 +38,7 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
     if (widget.type != PPPType.viewExternal) {
       producer = _auth.currentAccount;
     } else {
-      producer = fetchAccount(widget.info!.producerId);
+      producer = fetchAccount(widget.info!.producer["globalId"]);
     }
     pc.geopoint = widget.geoPoint;
   }
@@ -50,21 +50,19 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
   final formKey = GlobalKey<FormState>();
   bool showMore = false;
 
-  Widget title(AsyncSnapshot<AccountInfo?> snapshot) {
+  Widget title() {
     switch (widget.type) {
       case PPPType.createNew:
         return const Text("انشاء عرض جديد");
       case PPPType.viewExternal:
-        return snapshot.connectionState == ConnectionState.done
-            ? snapshot.data!.globalId == _auth.uid
-                ? const Text(
-                    "أنت",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 0, 146, 5)),
-                  )
-                : Text(snapshot.data!.username)
-            : const CircularProgressIndicator();
+        return widget.info!.producer["globalId"] == _auth.uid
+            ? const Text(
+                "أنت",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 0, 146, 5)),
+              )
+            : Text(widget.info!.producer["username"]);
       case PPPType.viewInternal:
         return const Text("تعديل العرض");
       default:
@@ -72,13 +70,15 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
     }
   }
 
-  void messageProducer(AccountInfo info) async {
-    if (_auth.isSignedIn && info.globalId != _auth.uid) {
-      await _msg.initiateNewChat(info.globalId);
+  void messageProducer(String uid) async {
+    if (_auth.isSignedIn && uid != _auth.uid) {
+      await _msg.initiateNewChat(uid);
       if (mounted) {
         push(
           context,
-          ChatPage(reciever: info, appendedProduct: widget.info),
+          ChatPage(
+              reciever: await store.getAccount(uid),
+              appendedProduct: widget.info),
         );
       }
     }
@@ -102,7 +102,7 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
       showDialog(
         context: context,
         builder: (context) => const AlertDialog(
-          content: Text("Unimplemented Fields!"),
+          content: Text("بعض الحقول فارغة"),
         ),
       );
     }
@@ -173,39 +173,32 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
     });
   }
 
-  onPressed(AsyncSnapshot<AccountInfo?> snapshot) async {
+  onPressed() async {
     switch (widget.type) {
       case PPPType.createNew:
         await saveProduct();
         break;
       case PPPType.viewExternal:
-        snapshot.connectionState == ConnectionState.done
-            ? messageProducer(snapshot.data!)
-            : null;
+        messageProducer(widget.info!.producer["globalId"]);
       default:
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: producer,
-      builder: (context, snapshot) {
-        return Scaffold(
-            appBar: AppBar(title: title(snapshot)),
-            body: Form(
-                key: formKey,
-                child: ListView.separated(
-                  addAutomaticKeepAlives: true,
-                  itemCount: fields.length,
-                  itemBuilder: (context, index) => fields[index],
-                  separatorBuilder: (context, index) => const SizedBox(
-                    height: 50,
-                  ),
-                )),
-            floatingActionButton: ProductPreviewFloatinButton(
-                type: widget.type, onPressed: () => onPressed(snapshot)));
-      },
-    );
+    return Scaffold(
+        appBar: AppBar(title: title()),
+        body: Form(
+            key: formKey,
+            child: ListView.separated(
+              addAutomaticKeepAlives: true,
+              itemCount: fields.length,
+              itemBuilder: (context, index) => fields[index],
+              separatorBuilder: (context, index) => const SizedBox(
+                height: 50,
+              ),
+            )),
+        floatingActionButton: ProductPreviewFloatinButton(
+            type: widget.type, onPressed: onPressed));
   }
 }

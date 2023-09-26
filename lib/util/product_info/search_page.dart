@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:samsarah/pages/tab/Discovery_tab/product_snackbar.dart';
 import 'package:samsarah/modules/product_info.dart';
+import 'package:samsarah/util/product_info/product_preview_page.dart';
 import 'package:samsarah/util/product_info/product_preview_page/controller.dart';
 import 'package:samsarah/util/product_info/product_preview_page/fields/location_preview.dart';
 import 'package:samsarah/util/product_info/product_preview_page/fields/my_check_box.dart';
@@ -127,8 +128,15 @@ class _SearchResultsState extends State<SearchResults> {
                 ? ListView(
                     children: List<ProductSnackBar>.generate(
                         snapshot.data!.length,
-                        (index) =>
-                            ProductSnackBar(product: snapshot.data![index])),
+                        (index) => ProductSnackBar.post(
+                              product: snapshot.data![index],
+                              onTap: (info) => push(
+                                  context,
+                                  ProductPreviewPage(
+                                    type: PPPType.viewExternal,
+                                    info: info,
+                                  )),
+                            )),
                   )
                 : const CircularProgressIndicator(),
       ),

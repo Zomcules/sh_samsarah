@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:samsarah/services/firestore_service.dart';
 import 'package:samsarah/pages/tab/Discovery_tab/discovery_header.dart';
 import 'package:samsarah/pages/tab/Discovery_tab/product_snackbar.dart';
+import 'package:samsarah/util/product_info/product_preview_page.dart';
+import 'package:samsarah/util/product_info/product_preview_page/fields/ppp_floating_button.dart';
+import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
 import '../../../modules/product_info.dart';
 
@@ -15,11 +18,11 @@ class DiscoveryTab extends StatefulWidget {
 
 class _DiscoveryTabState extends State<DiscoveryTab>
     with AutomaticKeepAliveClientMixin {
-  late Stream<QuerySnapshot<ProductInfo>> _stream;
+  late Future<QuerySnapshot<ProductInfo>> _future;
   @override
   void initState() {
     super.initState();
-    _stream = FireStoreService().productCollection.snapshots();
+    _future = FireStoreService().productCollection.get();
   }
 
   @override
@@ -30,8 +33,8 @@ class _DiscoveryTabState extends State<DiscoveryTab>
       children: [
         const DisHeader(),
         Expanded(
-          child: StreamBuilder(
-              stream: _stream,
+          child: FutureBuilder(
+              future: _future,
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return const Text("Error");
@@ -43,8 +46,15 @@ class _DiscoveryTabState extends State<DiscoveryTab>
                   physics: const BouncingScrollPhysics(
                       decelerationRate: ScrollDecelerationRate.fast),
                   itemCount: snapshot.data?.docs.length ?? 0,
-                  itemBuilder: (context, index) => ProductSnackBar(
-                      product: snapshot.data!.docs[index].data()),
+                  itemBuilder: (context, index) => ProductSnackBar.post(
+                    product: snapshot.data!.docs[index].data(),
+                    onTap: (info) => push(
+                        context,
+                        ProductPreviewPage(
+                          type: PPPType.viewExternal,
+                          info: info,
+                        )),
+                  ),
                 );
               }),
         ),

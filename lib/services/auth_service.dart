@@ -18,6 +18,12 @@ class AuthService {
         .data();
   }
 
+  Map<String, dynamic> get userSnapshot => {
+        "username": firebaseAuth.currentUser!.displayName,
+        "imagePath": firebaseAuth.currentUser!.photoURL,
+        "globalId": uid
+      };
+
   Future<void> syncUser() async {
     if (firebaseAuth.currentUser != null) {
       var acc = await _store.accountCollection
@@ -28,10 +34,10 @@ class AuthService {
             .update({"username": firebaseAuth.currentUser!.displayName});
       } else {
         acc.reference.set(AccountInfo(
-            username: firebaseAuth.currentUser?.displayName ?? "No Data",
-            globalId: acc.reference.id,
-            currency: 0,
-            savedProducts: []));
+          username: firebaseAuth.currentUser?.displayName ?? "No Data",
+          globalId: acc.reference.id,
+          currency: 0,
+        ));
       }
     }
   }

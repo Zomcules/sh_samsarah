@@ -5,7 +5,6 @@ class AccountInfo extends HiveObject {
   String username;
   String? imagePath;
   String globalId;
-  List<String> savedProducts;
   int currency;
 
   AccountInfo({
@@ -13,26 +12,14 @@ class AccountInfo extends HiveObject {
     required this.globalId,
     this.imagePath,
     required this.currency,
-    required this.savedProducts,
   });
 
-  factory AccountInfo.firestoreWierdo(Map<String, dynamic> map) {
-    return AccountInfo(
-      username: map["username"],
-      globalId: map["globalId"],
-      imagePath: map["imagePath"],
-      currency: 0,
-      savedProducts: (map["savedProducts"] as List<dynamic>).cast<String>(),
-    );
-  }
-
-  factory AccountInfo.firestoreUser(Map<String, dynamic> map) {
+  factory AccountInfo.firestore(Map<String, dynamic> map) {
     return AccountInfo(
       username: map["username"],
       globalId: map["globalId"],
       imagePath: map["imagePath"],
       currency: map["currency"],
-      savedProducts: map["savedProducts"].cast<String>().toList(),
     );
   }
 
@@ -42,7 +29,6 @@ class AccountInfo extends HiveObject {
       "globalId": globalId,
       "imagePath": imagePath,
       "currency": currency,
-      "savedProducts": savedProducts,
     };
   }
 
@@ -52,16 +38,14 @@ class AccountInfo extends HiveObject {
       globalId: globalId ?? ran,
       username: "Dummy ${globalId ?? ran}",
       currency: 0,
-      savedProducts: [],
     );
   }
 
   factory AccountInfo.blank() {
     return AccountInfo(
-      username: "",
-      globalId: "",
+      username: "NoData",
+      globalId: "NoData",
       currency: 0,
-      savedProducts: [],
     );
   }
 }

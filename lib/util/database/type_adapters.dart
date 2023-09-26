@@ -26,7 +26,6 @@ class AccountAdapter extends TypeAdapter<AccountInfo> {
       globalId: reader.read(),
       imagePath: reader.read(),
       currency: reader.read(),
-      savedProducts: reader.read(),
     );
   }
 
@@ -39,7 +38,6 @@ class AccountAdapter extends TypeAdapter<AccountInfo> {
     writer.write(obj.globalId);
     writer.write(obj.imagePath);
     writer.write(obj.currency);
-    writer.write(obj.savedProducts);
   }
 }
 
@@ -47,27 +45,28 @@ class ProductAdapter extends TypeAdapter<ProductInfo> {
   @override
   ProductInfo read(BinaryReader reader) {
     return ProductInfo(
-      groundFloor: reader.read(),
-      producerId: reader.read(),
-      price: reader.read(),
-      timeStamp: reader.read(),
-      globalId: reader.read(),
-      zone: ZoneType.values[reader.read()],
-      built: reader.read(),
-      comments: reader.read(),
-      floorsNum: reader.read(),
-      forSale: reader.read(),
-      geopoint: reader.read(),
-      imagePath: reader.read(),
-      nasiah: reader.read(),
-      producerComment: reader.read(),
-      roomsNum: reader.read(),
-      services: reader.read(),
-      size: reader.read(),
-      wholeHouse: reader.read(),
-      withFurniture: reader.read(),
-      certified: reader.read(),
-    );
+        groundFloor: reader.read(),
+        producer: reader.read(),
+        price: reader.read(),
+        timeStamp: reader.read(),
+        globalId: reader.read(),
+        zone: ZoneType.values[reader.read()],
+        built: reader.read(),
+        comments: reader.read(),
+        floorsNum: reader.read(),
+        forSale: reader.read(),
+        geopoint: reader.read(),
+        imagePath: reader.read(),
+        nasiah: reader.read(),
+        producerComment: reader.read(),
+        roomsNum: reader.read(),
+        services: reader.read(),
+        size: reader.read(),
+        wholeHouse: reader.read(),
+        withFurniture: reader.read(),
+        certified: reader.read(),
+        likers: reader.read(),
+        bookmarkers: reader.read());
   }
 
   @override
@@ -76,7 +75,7 @@ class ProductAdapter extends TypeAdapter<ProductInfo> {
   @override
   void write(BinaryWriter writer, ProductInfo obj) {
     writer.write(obj.groundFloor);
-    writer.write(obj.producerId);
+    writer.write(obj.producer);
     writer.write(obj.price);
     writer.write(obj.timeStamp);
     writer.write(obj.globalId);
@@ -95,6 +94,7 @@ class ProductAdapter extends TypeAdapter<ProductInfo> {
     writer.write(obj.wholeHouse);
     writer.write(obj.withFurniture);
     writer.write(obj.certified);
+    writer.write(obj.likers);
   }
 }
 

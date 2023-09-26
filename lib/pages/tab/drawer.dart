@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:samsarah/auth_flow/activate_voucher.dart';
 import 'package:samsarah/auth_flow/sign_in.dart';
 import 'package:samsarah/chat_app/chat_page/choose_product_page.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/util/product_info/product_preview_page.dart';
-import 'package:samsarah/util/tools/death_button.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
 import '../../util/account/account_header.dart';
@@ -31,6 +31,12 @@ class _MyDrawerState extends State<MyDrawer> {
                     ),
                     const AccountHeader(),
                     DrawerTile(
+                      title: "اضافة منتج",
+                      icon: Icons.add_location_alt,
+                      onTap: () => push(context,
+                          const ProductPreviewPage(type: PPPType.createNew)),
+                    ),
+                    DrawerTile(
                       title: "المنتجات المحفوظة",
                       icon: Icons.discount_sharp,
                       onTap: () => push(
@@ -47,12 +53,9 @@ class _MyDrawerState extends State<MyDrawer> {
                       ),
                     ),
                     DrawerTile(
-                      title: "add product",
-                      icon: Icons.map,
-                      onTap: () => push(context,
-                          const ProductPreviewPage(type: PPPType.createNew)),
-                    ),
-                    const DeathButton()
+                        title: "شحن الرصيد",
+                        icon: Icons.monetization_on_outlined,
+                        onTap: () => push(context, const ActivateVoucherPage()))
                   ],
                 )
               : Center(

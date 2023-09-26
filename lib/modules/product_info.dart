@@ -1,12 +1,14 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart' as osm;
 import 'package:hive/hive.dart';
 
+import 'account_info.dart';
+
 class ProductInfo extends HiveObject {
-  final String producerId;
+  final Map<String, dynamic> producer;
   final String globalId;
+  List<String> likers;
+  List<String> bookmarkers;
   int price;
   final Timestamp timeStamp;
   bool? certified;
@@ -27,7 +29,7 @@ class ProductInfo extends HiveObject {
   osm.GeoPoint geopoint;
 
   ProductInfo(
-      {required this.producerId,
+      {required this.producer,
       required this.geopoint,
       this.imagePath,
       this.built = true,
@@ -46,11 +48,13 @@ class ProductInfo extends HiveObject {
       this.zone = ZoneType.residential,
       required this.timeStamp,
       required this.globalId,
-      this.certified});
+      this.certified,
+      required this.likers,
+      required this.bookmarkers});
 
   Map<String, dynamic> toMap() {
     return {
-      "producerId": producerId,
+      "producer": producer,
       "globalId": globalId,
       "price": price,
       "producerComment": producerComment,
@@ -69,13 +73,15 @@ class ProductInfo extends HiveObject {
       "imagePath": imagePath,
       "geopointMap": geopoint.toMap(),
       "dateTime": timeStamp,
-      "certified": certified
+      "certified": certified,
+      "likers": likers,
+      "bookmarkers": bookmarkers
     };
   }
 
   factory ProductInfo.fromMap(Map<String, dynamic> map) {
     return ProductInfo(
-        producerId: map["producerId"],
+        producer: map["producer"],
         globalId: map["globalId"],
         price: map["price"],
         producerComment: map["producerComment"],
@@ -94,49 +100,21 @@ class ProductInfo extends HiveObject {
         imagePath: map["imagePath"],
         geopoint: osm.GeoPoint.fromMap(map["geopointMap"]),
         timeStamp: map["dateTime"],
-        certified: map["certified"]);
-  }
-
-  factory ProductInfo.dummy(List<ProductInfo> infos, {String? globalId}) {
-    return ProductInfo(
-        globalId: globalId ?? Random().nextInt(99999).toString(),
-        timeStamp: Timestamp.now(),
-        forSale: Random().nextBool(),
-        producerId: Random().nextInt(2147000000).toString(),
-        floorsNum: Random().nextInt(5),
-        groundFloor: Random().nextBool(),
-        nasiah: Random().nextBool(),
-        roomsNum: Random().nextInt(5),
-        wholeHouse: Random().nextBool(),
-        withFurniture: Random().nextBool(),
-        price: Random().nextInt(99999999),
-        comments: [],
-        built: Random().nextBool(),
-        geopoint: osm.GeoPoint(latitude: 0.0, longitude: 0.0),
-        imagePath: "",
-        producerComment: "wnsmyebdnimw?",
-        services: Random().nextBool(),
-        size: Random().nextInt(99999),
-        certified: Random().nextBool(),
-        zone: ZoneType.values[Random().nextInt(ZoneType.values.length)]);
+        certified: map["certified"],
+        likers: (map["likers"] as List).cast<String>(),
+        bookmarkers: (map["bookmarkers"] as List).cast<String>());
   }
 
   factory ProductInfo.blank() {
     return ProductInfo(
-        producerId: "",
+        producer: AccountInfo.blank().toMap(),
         geopoint: osm.GeoPoint(latitude: 0, longitude: 0),
         price: 0,
         timeStamp: Timestamp.now(),
-        globalId: "");
+        globalId: "",
+        likers: [],
+        bookmarkers: []);
   }
-}
-
-List<ProductInfo> getDummyProductInfos({int number = 20}) {
-  List<ProductInfo> temp = [];
-  for (var i = 0; i < number; i++) {
-    temp.add(ProductInfo.dummy(temp));
-  }
-  return temp;
 }
 
 enum ZoneType { agricultural, residential, industrial }

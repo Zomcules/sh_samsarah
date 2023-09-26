@@ -180,10 +180,10 @@ class _SignInPageState extends State<SignInPage> {
             .accountCollection
             .doc(auth.currentUser!.uid)
             .set(AccountInfo(
-                username: username,
-                globalId: auth.currentUser!.uid,
-                currency: 0,
-                savedProducts: []));
+              username: username,
+              globalId: auth.currentUser!.uid,
+              currency: 0,
+            ));
         if (mounted) {
           pushReplacement(context, const MyProfilePage());
         }

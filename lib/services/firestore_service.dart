@@ -6,13 +6,12 @@ import '../modules/product_info.dart';
 
 class FireStoreService {
   FirebaseFirestore get instance => FirebaseFirestore.instance;
+  get auth => AuthService();
 
   CollectionReference<AccountInfo> get accountCollection =>
       instance.collection("Accounts").withConverter<AccountInfo>(
             fromFirestore: (snapshot, options) {
-              return snapshot.data()?["globalId"] != AuthService().uid
-                  ? AccountInfo.firestoreWierdo(snapshot.data()!)
-                  : AccountInfo.firestoreUser(snapshot.data()!);
+              return AccountInfo.firestore(snapshot.data()!);
             },
             toFirestore: (value, options) => value.toMap(),
           );
@@ -35,9 +34,20 @@ class FireStoreService {
   }
 
   Future<List<ProductInfo>> getProductsOf(String uid) async {
-    return (await productCollection.where("producerId", isEqualTo: uid).get())
+    return (await productCollection
+            .where("producer.globalId", isEqualTo: uid)
+            .get())
         .docs
         .map((element) => element.data())
+        .toList();
+  }
+
+  Future<List<ProductInfo>> savedProductsOf(String uid) async {
+    return (await productCollection
+            .where("bookmarkers", arrayContains: uid)
+            .get())
+        .docs
+        .map((e) => e.data())
         .toList();
   }
 
@@ -47,17 +57,10 @@ class FireStoreService {
         .toList();
   }
 
-  Future<List<String>> savedProductsIdsOf(String uid) async {
-    return (await getAccount(uid)).savedProducts;
-  }
-
   Stream<DocumentSnapshot<AccountInfo>> accountStreamOf(String uid) =>
       accountCollection.doc(uid).snapshots();
 
   saveProduct(ProductInfo temp) async {
-    await accountCollection.doc(AuthService().uid).update({
-      "productIds": FieldValue.arrayUnion([temp.globalId])
-    });
     await productCollection.doc(temp.globalId).set(temp);
   }
 
@@ -83,7 +86,31 @@ class FireStoreService {
 
   Future<void> updateCurrency(int change) async {
     await accountCollection
-        .doc(AuthService().uid)
+        .doc(auth.uid)
         .update({"currency": FieldValue.increment(change)});
+  }
+
+  void likeProduct(String globalId) {
+    productCollection.doc(globalId).update({
+      "likers": FieldValue.arrayUnion([auth.uid])
+    });
+  }
+
+  void unlikeProduct(String globalId) {
+    productCollection.doc(globalId).update({
+      "likers": FieldValue.arrayRemove([auth.uid])
+    });
+  }
+
+  void addToSaved(String globalId) {
+    productCollection.doc(globalId).update({
+      "bookmarkers": FieldValue.arrayUnion([auth.uid])
+    });
+  }
+
+  void removeFromSaved(String globalId) {
+    productCollection.doc(globalId).update({
+      "bookmarkers": FieldValue.arrayRemove([auth.uid])
+    });
   }
 }
