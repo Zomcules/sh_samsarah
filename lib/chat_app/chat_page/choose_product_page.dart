@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/database_service.dart';
 import 'package:samsarah/pages/tab/Discovery_tab/product_snackbar.dart';
+import 'package:samsarah/util/product_info/product_preview_page.dart';
+import 'package:samsarah/util/product_info/product_preview_page/fields/ppp_floating_button.dart';
+import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
 import '../../modules/product_info.dart';
 
@@ -22,7 +25,14 @@ class ChooseProductPage extends StatelessWidget {
       for (ProductInfo product in await store.getProductsOf(auth.uid!)) {
         temp.add(ProductSnackBar.simple(
           product: product,
-          onTap: (product) => onTap(context, product),
+          onTap: products != null
+              ? (product) => push(
+                  context,
+                  ProductPreviewPage(
+                    type: PPPType.viewInternal,
+                    info: product,
+                  ))
+              : onTap(context, product),
         ));
       }
       temp.add(const Row(
@@ -32,7 +42,15 @@ class ChooseProductPage extends StatelessWidget {
       for (ProductInfo product in await store.savedProductsOf(auth.uid!)) {
         temp.add(ProductSnackBar.simple(
           product: product,
-          onTap: (product) => onTap(context, product),
+          onTap: products != null
+              ? (product) => push(
+                  context,
+                  ProductPreviewPage(
+                    type: PPPType.viewExternal,
+                    info: product,
+                  ))
+              // ignore: use_build_context_synchronously
+              : onTap(context, product),
         ));
       }
       return temp;

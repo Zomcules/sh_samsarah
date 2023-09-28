@@ -21,11 +21,20 @@ pop(BuildContext context, dynamic result) {
   Navigator.pop(context, result);
 }
 
-alert(BuildContext context, String message) {
+Future<void> alert(BuildContext context, String message) async {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
       content: Text(message),
+    ),
+  );
+}
+
+Future<void> alertWidget(BuildContext context, Widget widget) async {
+  await showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      content: widget,
     ),
   );
 }

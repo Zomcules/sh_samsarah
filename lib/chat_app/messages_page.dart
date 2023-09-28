@@ -59,15 +59,6 @@ class _MessagesPageState extends State<MessagesPage>
           ),
         ],
       ),
-      floatingActionButton: const FloatingActionButton(
-        onPressed: null,
-        backgroundColor: Colors.blue,
-        shape: CircleBorder(),
-        child: Icon(
-          Icons.message,
-          color: Colors.white,
-        ),
-      ),
     );
   }
 }

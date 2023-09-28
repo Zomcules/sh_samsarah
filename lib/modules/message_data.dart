@@ -23,16 +23,16 @@ class MessageData extends HiveObject {
     return MessageData(
         from: map["fromUser"],
         content: map["content"],
-        timeStamp: map["timeStamp"],
+        timeStamp: map["timeStamp"] ?? Timestamp.now(),
         appendedProductsIds:
             (map["appendedProductsIds"] as List).cast<String>());
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toFireStore() {
     return {
       "fromUser": from,
       "content": content,
-      "timeStamp": timeStamp,
+      "timeStamp": FieldValue.serverTimestamp(),
       "isRead": isRead,
       "appendedProductsIds": appendedProductsIds
     };

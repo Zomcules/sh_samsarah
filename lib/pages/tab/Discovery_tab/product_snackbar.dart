@@ -88,19 +88,24 @@ class ProductSnackBar extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Row(
-                      children: [
-                        ProfilePhoto(
-                          username: product.producer["username"],
-                          radius: 12,
-                          imagePath: product.producer["imagePath"],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(product.producer["username"]),
-                        ),
-                      ],
-                    ),
+                    child: product.producer["globalId"] != AuthService().uid
+                        ? Row(
+                            children: [
+                              ProfilePhoto(
+                                username: product.producer["username"],
+                                radius: 12,
+                                imagePath: product.producer["imagePath"],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(product.producer["username"]),
+                              ),
+                            ],
+                          )
+                        : const Text(
+                            "أنت",
+                            style: TextStyle(color: Colors.green, fontSize: 24),
+                          ),
                   ),
                   //price
                   Container(

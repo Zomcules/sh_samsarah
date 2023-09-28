@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:samsarah/auth_flow/activate_voucher.dart';
 import 'package:samsarah/services/auth_service.dart';
+import 'package:flutter/material.dart';
+import 'package:samsarah/util/tools/my_button.dart';
+import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
 import '../modules/account_info.dart';
 import '../modules/product_info.dart';
@@ -84,6 +88,11 @@ class Database {
         .delete();
   }
 
+  Future<int> publishPrice() async {
+    return (await instance.collection("AppData").doc("Prices").get())
+        .data()!["publishPrice"];
+  }
+
   Future<void> updateCurrency(int change) async {
     await accountCollection
         .doc(auth.uid)
@@ -112,5 +121,87 @@ class Database {
     await productCollection.doc(globalId).update({
       "bookmarkers": FieldValue.arrayRemove([auth.uid])
     });
+  }
+
+  Future<void> tryPublishProduct(
+      BuildContext context, ProductInfo product) async {
+    var price = 0;
+    var currency = 0;
+
+    bool eligable() => price < currency;
+
+    Future<void> init() async {
+      price = await publishPrice();
+      currency = await AuthService().getCurrency();
+    }
+
+    if (context.mounted) {
+      bool? result = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: const Text("نشر العرض"),
+                content: FutureBuilder(
+                    future: init(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return const Text("Error");
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      }
+                      return Column(
+                        children: [
+                          Text(
+                            "${currency.toString()} :رصيدك الان",
+                            style: const TextStyle(fontSize: 24),
+                          ),
+                          Text(
+                            "سعر النشر: ${price.toString()}",
+                            style: const TextStyle(fontSize: 24),
+                          ),
+                          const SizedBox(
+                            height: 50,
+                          ),
+                          eligable()
+                              ? const Text(
+                                  "هل تريد عرض منتجك على التطبيق؟",
+                                  style: TextStyle(
+                                      fontSize: 24, color: Colors.green),
+                                )
+                              : const Text(
+                                  "نأسف ولكن يبدون ان ليس لديك رصيد كافي",
+                                  style: TextStyle(
+                                      fontSize: 24, color: Colors.red),
+                                )
+                        ],
+                      );
+                    }),
+                actions: [
+                  eligable()
+                      ? MyButton(
+                          onPressed: () =>
+                              push(context, const ActivateVoucherPage()),
+                          raised: true,
+                          title: "شحن رصيد")
+                      : MyButton(
+                          onPressed: () => pop(context, true),
+                          raised: true,
+                          title: "موافق"),
+                  MyButton(
+                      onPressed: () => pop(context, false),
+                      raised: false,
+                      title: "الرجوع")
+                ],
+              ));
+      if (result != null) {
+        if (result) {
+          saveProduct(product);
+          updateCurrency(0 - price);
+          if (context.mounted) {
+            pop(context, null);
+          }
+        }
+      }
+    }
   }
 }

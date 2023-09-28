@@ -29,7 +29,8 @@ class _ProfilePhotoState extends State<ProfilePhoto> {
         //backgroundColor: Colors.grey,
         child: Text(
           getInitials(),
-          style: TextStyle(fontSize: 50, color: Colors.cyan.shade900),
+          style: TextStyle(
+              fontSize: widget.radius * 4 / 5, color: Colors.cyan.shade900),
         ),
       ),
     );

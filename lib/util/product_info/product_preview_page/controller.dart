@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart' as osm;
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/database_service.dart';
@@ -43,7 +44,7 @@ class ProductController {
 
   bool? nasiah;
 
-  Future<void> save() async {
+  Future<void> save(BuildContext context) async {
     String x = DateTime.now().toIso8601String();
     var temp = ProductInfo(
         producer: auth.userSnapshot,
@@ -67,7 +68,8 @@ class ProductController {
         size: size ?? 0,
         likers: [],
         bookmarkers: []);
-    await store.saveProduct(temp);
+
+    await store.tryPublishProduct(context, temp);
   }
 
   Future<List<ProductInfo>> search() async {

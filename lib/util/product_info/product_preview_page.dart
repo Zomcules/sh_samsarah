@@ -89,15 +89,7 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
   Future<void> saveProduct() async {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
-      await pc.save();
-      if (mounted) {
-        showDialog(
-          context: context,
-          builder: (context) => const AlertDialog(
-            content: Text("Success"),
-          ),
-        );
-      }
+      await pc.save(context);
     } else {
       showDialog(
         context: context,

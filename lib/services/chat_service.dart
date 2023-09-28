@@ -21,12 +21,6 @@ class ChatService {
       "chatters": [uid, _auth.uid],
       "timeStamp": Timestamp.now(),
     });
-    await _store.accountCollection.doc(_auth.uid).update({
-      "chatRooms": FieldValue.arrayUnion([chatRoomId])
-    });
-    await _store.accountCollection.doc(uid).update({
-      "chatRooms": FieldValue.arrayUnion([chatRoomId])
-    });
     return chatRoom.id;
   }
 
@@ -39,7 +33,7 @@ class ChatService {
           .withConverter<MessageData>(
             fromFirestore: (snapshot, options) =>
                 MessageData.fromMap(snapshot.data()!),
-            toFirestore: (value, options) => value.toMap(),
+            toFirestore: (value, options) => value.toFireStore(),
           )
           .snapshots();
 
@@ -47,19 +41,15 @@ class ChatService {
       _store.instance
           .collection("ChatRooms")
           .where("chatters", arrayContains: _auth.uid)
-          .orderBy("timeStamp")
+          .orderBy("timeStamp", descending: true)
           .snapshots();
 
   Future<bool> sendMessage(MessageData message, String reciever) async {
     try {
       var doc =
           _store.instance.collection("ChatRooms").doc(_chatRoomIdOf(reciever));
-      await doc
-          .collection("Messages")
-          .add(message.toMap())
-          .onError((error, stackTrace) => throw Error());
-      await doc.update({"timeStamp": Timestamp.now()}).onError(
-          (error, stackTrace) => throw Error());
+      await doc.collection("Messages").add(message.toFireStore());
+      await doc.update({"timeStamp": FieldValue.serverTimestamp()});
       return true;
     } catch (e) {
       return false;
