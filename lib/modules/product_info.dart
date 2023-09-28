@@ -72,7 +72,7 @@ class ProductInfo extends HiveObject {
       "zoneIndex": zone.index,
       "imagePath": imagePath,
       "geopointMap": geopoint.toMap(),
-      "dateTime": timeStamp,
+      "timeStamp": timeStamp,
       "certified": certified,
       "likers": likers,
       "bookmarkers": bookmarkers
@@ -99,7 +99,7 @@ class ProductInfo extends HiveObject {
         zone: ZoneType.values[map["zoneIndex"]],
         imagePath: map["imagePath"],
         geopoint: osm.GeoPoint.fromMap(map["geopointMap"]),
-        timeStamp: map["dateTime"],
+        timeStamp: map["timeStamp"],
         certified: map["certified"],
         likers: (map["likers"] as List).cast<String>(),
         bookmarkers: (map["bookmarkers"] as List).cast<String>());

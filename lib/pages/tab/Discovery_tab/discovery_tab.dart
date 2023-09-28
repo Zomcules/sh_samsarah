@@ -63,7 +63,10 @@ class _DiscoveryTabState extends State<DiscoveryTab>
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
-          _future = Database().productCollection.orderBy("timeStamp").get();
+          _future = Database()
+              .productCollection
+              .orderBy("timeStamp", descending: true)
+              .get();
         }),
         heroTag: "Refresh",
         shape: const CircleBorder(),
