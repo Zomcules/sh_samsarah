@@ -1,3 +1,5 @@
+import 'dart:io';
+
 extension IntTools on int {
   /// Returns a [String] annotated to ease reading
   String annotate() {
@@ -14,6 +16,11 @@ extension IntTools on int {
 
   bool isInRangeOf(num first, num second) =>
       (this <= first && this >= second) || (this <= second && this >= first);
+}
+
+extension FileTools on File {
+  String get fullName => path.split(Platform.pathSeparator).last;
+  String get extension => fullName.split(".").last;
 }
 
 // extension ListTools<T> on List<T> {

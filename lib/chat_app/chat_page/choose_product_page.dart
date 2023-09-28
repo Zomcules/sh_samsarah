@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:samsarah/services/auth_service.dart';
-import 'package:samsarah/services/firestore_service.dart';
+import 'package:samsarah/services/database_service.dart';
 import 'package:samsarah/pages/tab/Discovery_tab/product_snackbar.dart';
 
 import '../../modules/product_info.dart';
@@ -8,7 +8,7 @@ import '../../modules/product_info.dart';
 class ChooseProductPage extends StatelessWidget {
   final Function(BuildContext context, ProductInfo info) onTap;
   final List<ProductInfo>? products;
-  final store = FireStoreService();
+  final store = Database();
   final auth = AuthService();
   ChooseProductPage({super.key, this.products, required this.onTap});
 

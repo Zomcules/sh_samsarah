@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:samsarah/modules/message_data.dart';
 import 'package:samsarah/services/auth_service.dart';
-import 'package:samsarah/services/firestore_service.dart';
+import 'package:samsarah/services/database_service.dart';
 
 class ChatService {
-  final _store = FireStoreService();
+  final _store = Database();
   final _auth = AuthService();
 
   String _chatRoomIdOf(String uid) {

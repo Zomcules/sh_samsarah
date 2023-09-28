@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:samsarah/auth_flow/profile_photo.dart';
 import 'package:samsarah/modules/account_info.dart';
-import 'package:samsarah/services/firestore_service.dart';
-
-import '../../../util/tools/get_image.dart';
+import 'package:samsarah/services/database_service.dart';
 import '../../../util/tools/poppers_and_pushers.dart';
 
 class ChatHeader extends StatelessWidget {
   final AccountInfo reciever;
   const ChatHeader({super.key, required this.reciever});
-  FireStoreService get store => FireStoreService();
+  Database get store => Database();
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -31,9 +30,10 @@ class ChatHeader extends StatelessWidget {
               child: Row(
                 children: [
                   const Icon(Icons.arrow_back),
-                  GetImage(
+                  ProfilePhoto(
                     imagePath: reciever.imagePath ?? "",
-                    size: 20,
+                    radius: 20,
+                    username: reciever.username,
                   )
                 ],
               ),

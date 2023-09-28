@@ -4,7 +4,7 @@ import 'package:samsarah/services/auth_service.dart';
 import '../modules/account_info.dart';
 import '../modules/product_info.dart';
 
-class FireStoreService {
+class Database {
   FirebaseFirestore get instance => FirebaseFirestore.instance;
   get auth => AuthService();
 
@@ -90,26 +90,26 @@ class FireStoreService {
         .update({"currency": FieldValue.increment(change)});
   }
 
-  void likeProduct(String globalId) {
-    productCollection.doc(globalId).update({
+  Future<void> likeProduct(String globalId) async {
+    await productCollection.doc(globalId).update({
       "likers": FieldValue.arrayUnion([auth.uid])
     });
   }
 
-  void unlikeProduct(String globalId) {
-    productCollection.doc(globalId).update({
+  Future<void> unlikeProduct(String globalId) async {
+    await productCollection.doc(globalId).update({
       "likers": FieldValue.arrayRemove([auth.uid])
     });
   }
 
-  void addToSaved(String globalId) {
-    productCollection.doc(globalId).update({
+  Future<void> addToSaved(String globalId) async {
+    await productCollection.doc(globalId).update({
       "bookmarkers": FieldValue.arrayUnion([auth.uid])
     });
   }
 
-  void removeFromSaved(String globalId) {
-    productCollection.doc(globalId).update({
+  Future<void> removeFromSaved(String globalId) async {
+    await productCollection.doc(globalId).update({
       "bookmarkers": FieldValue.arrayRemove([auth.uid])
     });
   }

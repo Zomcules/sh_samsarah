@@ -4,7 +4,7 @@ import 'package:samsarah/auth_flow/error_handler.dart';
 import 'package:samsarah/auth_flow/my_profile_page.dart';
 import 'package:samsarah/modules/account_info.dart';
 import 'package:samsarah/services/auth_service.dart';
-import 'package:samsarah/services/firestore_service.dart';
+import 'package:samsarah/services/database_service.dart';
 import 'package:samsarah/util/product_info/product_preview_page/fields/ppp_floating_button.dart';
 import 'package:samsarah/util/tools/my_button.dart';
 import 'package:samsarah/util/tools/my_text_form_field.dart';
@@ -176,7 +176,7 @@ class _SignInPageState extends State<SignInPage> {
         await auth.createUserWithEmailAndPassword(
             email: email, password: password);
         await auth.currentUser!.updateDisplayName(username);
-        await FireStoreService()
+        await Database()
             .accountCollection
             .doc(auth.currentUser!.uid)
             .set(AccountInfo(

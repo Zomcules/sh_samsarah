@@ -37,7 +37,7 @@ class _MyDrawerState extends State<MyDrawer> {
                           const ProductPreviewPage(type: PPPType.createNew)),
                     ),
                     DrawerTile(
-                      title: "المنتجات المحفوظة",
+                      title: "منتجاتي",
                       icon: Icons.discount_sharp,
                       onTap: () => push(
                         context,
@@ -45,7 +45,7 @@ class _MyDrawerState extends State<MyDrawer> {
                           onTap: (context, info) => push(
                             context,
                             ProductPreviewPage(
-                              type: PPPType.viewInternal,
+                              type: PPPType.viewExternal,
                               info: info,
                             ),
                           ),

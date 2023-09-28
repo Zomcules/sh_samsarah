@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:samsarah/modules/product_info.dart';
 import 'package:samsarah/services/auth_service.dart';
-import 'package:samsarah/services/firestore_service.dart';
+import 'package:samsarah/services/database_service.dart';
 import 'package:samsarah/util/product_info/product_preview_page.dart';
 import 'package:samsarah/util/product_info/product_preview_page/fields/ppp_floating_button.dart';
 
@@ -26,7 +26,7 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
   );
 
   Future<void> addGeoPoints() async {
-    var points = (await FireStoreService().productCollection.get())
+    var points = (await Database().productCollection.get())
         .docs
         .map((element) => element.data().geopoint);
     for (var element in points) {
@@ -138,7 +138,7 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
             context,
             ProductPreviewPage(
               type: PPPType.viewExternal,
-              info: (await FireStoreService()
+              info: (await Database()
                           .productCollection
                           .where("geopointMap", isEqualTo: geoPoint.toMap())
                           .get())

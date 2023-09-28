@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:samsarah/services/firestore_service.dart';
+import 'package:samsarah/services/database_service.dart';
 import 'package:samsarah/util/product_info/product_preview_page/fields/ppp_floating_button.dart';
 import 'package:samsarah/util/tools/my_button.dart';
 import 'package:samsarah/util/tools/my_text_form_field.dart';
@@ -50,7 +50,7 @@ class _ActivateVoucherPageState extends State<ActivateVoucherPage> {
   void tryActivateVoucher() async {
     if (key.currentState!.validate()) {
       key.currentState!.save();
-      final store = FireStoreService();
+      final store = Database();
       var value = await store.voucherValue(code);
       if (value == 0) {
         if (mounted) {

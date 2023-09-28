@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:samsarah/services/firestore_service.dart';
+import 'package:samsarah/services/database_service.dart';
 import 'package:samsarah/pages/tab/Discovery_tab/discovery_header.dart';
 import 'package:samsarah/pages/tab/Discovery_tab/product_snackbar.dart';
 import 'package:samsarah/util/product_info/product_preview_page.dart';
@@ -22,7 +22,7 @@ class _DiscoveryTabState extends State<DiscoveryTab>
   @override
   void initState() {
     super.initState();
-    _future = FireStoreService().productCollection.get();
+    _future = Database().productCollection.get();
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:samsarah/auth_flow/profile_photo.dart';
 import 'package:samsarah/services/auth_service.dart';
-import 'package:samsarah/services/firestore_service.dart';
+import 'package:samsarah/services/database_service.dart';
 import 'package:samsarah/util/product_info/product_preview_page/controller.dart';
 import 'package:samsarah/util/product_info/product_preview_page/fields/location_preview.dart';
 import 'package:samsarah/util/tools/my_text.dart';
@@ -81,6 +82,53 @@ class ProductSnackBar extends StatelessWidget {
               ]),
           child: Column(
             children: [
+              ////////////// top row //////////////////
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      children: [
+                        ProfilePhoto(
+                          username: product.producer["username"],
+                          radius: 12,
+                          imagePath: product.producer["imagePath"],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(product.producer["username"]),
+                        ),
+                      ],
+                    ),
+                  ),
+                  //price
+                  Container(
+                    padding: const EdgeInsets.all(5),
+                    margin: const EdgeInsets.only(bottom: 10),
+                    decoration: BoxDecoration(
+                        color: Colors.amber.shade300,
+                        borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(10),
+                            bottomLeft: Radius.circular(10))),
+                    child: Row(
+                      children: [
+                        const Text(
+                          "جنيه ",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                        Text(
+                          product.price.annotate(),
+                          style: TextStyle(
+                              color: Colors.black.withOpacity(.6),
+                              fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -93,45 +141,10 @@ class ProductSnackBar extends StatelessWidget {
                         validator: (_) => null),
                   ),
                   Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(5),
-                              margin: const EdgeInsets.only(bottom: 10),
-                              decoration: BoxDecoration(
-                                  color: Colors.amber.shade300,
-                                  borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(10),
-                                      bottomLeft: Radius.circular(10))),
-                              child: Row(
-                                children: [
-                                  const Text(
-                                    "جنيه ",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16),
-                                  ),
-                                  Text(
-                                    product.price.annotate(),
-                                    style: TextStyle(
-                                        color: Colors.black.withOpacity(.6),
-                                        fontSize: 16),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                        Wrap(
-                            //alignment: WrapAlignment.end,
-                            textDirection: TextDirection.rtl,
-                            children: getAttributes(product))
-                      ],
-                    ),
+                    child: Wrap(
+                        //alignment: WrapAlignment.end,
+                        textDirection: TextDirection.rtl,
+                        children: getAttributes(product)),
                   )
                 ],
               ),
@@ -160,14 +173,10 @@ class Likes extends StatefulWidget {
 }
 
 class _LikesState extends State<Likes> {
-  bool get isOn => widget.product.likers.contains(AuthService().uid);
-  late bool state;
-  @override
-  void initState() {
-    super.initState();
-    state = isOn;
-  }
-
+  final auth = AuthService();
+  final store = Database();
+  String? get uid => auth.uid;
+  bool get isOn => widget.product.likers.contains(uid);
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -177,24 +186,22 @@ class _LikesState extends State<Likes> {
           child: Text(widget.product.likers.length.annotate()),
         ),
         IconButton(
-            onPressed: () {
-              if (AuthService().isSignedIn) {
-                if (state) {
-                  FireStoreService().unlikeProduct(widget.product.globalId);
-                  widget.product.likers.remove(AuthService().uid!);
+            onPressed: () async {
+              if (auth.isSignedIn) {
+                if (isOn) {
+                  await store.unlikeProduct(widget.product.globalId);
+                  widget.product.likers.remove(uid!);
                 } else {
-                  FireStoreService().likeProduct(widget.product.globalId);
-                  widget.product.likers.add(AuthService().uid!);
+                  await store.likeProduct(widget.product.globalId);
+                  widget.product.likers.add(uid!);
                 }
-                setState(() {
-                  state = !state;
-                });
+                setState(() {});
               } else {
                 alert(context,
                     "الرجاء تسجيل الدخول للتمكن من حفظ والاعجاب بالمعروضات");
               }
             },
-            icon: state
+            icon: isOn
                 ? const Icon(
                     Icons.favorite,
                     color: Colors.red,
@@ -217,26 +224,21 @@ class Bookmark extends StatefulWidget {
 }
 
 class _BookmarkState extends State<Bookmark> {
-  bool get isOn => widget.product.bookmarkers.contains(AuthService().uid);
-  late bool state;
-  @override
-  void initState() {
-    super.initState();
-    state = isOn;
-  }
-
+  final auth = AuthService();
+  final store = Database();
+  String? get uid => auth.uid;
+  bool get isOn => widget.product.bookmarkers.contains(uid);
   @override
   Widget build(BuildContext context) {
     return IconButton(
         onPressed: () async {
-          if (AuthService().isSignedIn) {
-            state = !state;
-            if (state) {
-              FireStoreService().addToSaved(widget.product.globalId);
-              widget.product.bookmarkers.add(AuthService().uid!);
+          if (auth.isSignedIn) {
+            if (isOn) {
+              await store.removeFromSaved(widget.product.globalId);
+              widget.product.bookmarkers.remove(uid!);
             } else {
-              FireStoreService().removeFromSaved(widget.product.globalId);
-              widget.product.bookmarkers.remove(AuthService().uid!);
+              await store.addToSaved(widget.product.globalId);
+              widget.product.bookmarkers.add(uid!);
             }
             setState(() {});
           } else {

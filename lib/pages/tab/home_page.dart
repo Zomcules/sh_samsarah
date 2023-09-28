@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:samsarah/auth_flow/profile_photo.dart';
 import 'package:samsarah/auth_flow/sign_in.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/pages/tab/drawer.dart';
-import 'package:samsarah/util/tools/get_image.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
 import '../../auth_flow/my_profile_page.dart';
@@ -115,7 +115,11 @@ class _UserThumbnailState extends State<UserThumbnail> {
         stream: auth.firebaseAuth.userChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return GetImage(imagePath: snapshot.data!.photoURL ?? "", size: 20);
+            return ProfilePhoto(
+              imagePath: snapshot.data!.photoURL ?? "",
+              radius: 20,
+              username: snapshot.data!.displayName,
+            );
           }
           return const CircularProgressIndicator();
         });

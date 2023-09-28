@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:samsarah/services/firestore_service.dart';
+import 'package:samsarah/services/database_service.dart';
 
 import '../modules/account_info.dart';
 
 class AuthService {
   final firebaseAuth = FirebaseAuth.instance;
-  final _store = FireStoreService();
+  final _store = Database();
 
   String? get uid => firebaseAuth.currentUser?.uid;
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:samsarah/services/firestore_service.dart';
+import 'package:samsarah/auth_flow/profile_photo.dart';
+import 'package:samsarah/services/database_service.dart';
 import '../modules/account_info.dart';
-import '../util/tools/get_image.dart';
 import '../util/tools/poppers_and_pushers.dart';
 import 'chat_page/chat_page.dart';
 
@@ -17,7 +17,7 @@ class ChatSnackBar extends StatefulWidget {
 }
 
 class _ChatSnackBarState extends State<ChatSnackBar> {
-  final _store = FireStoreService();
+  final _store = Database();
   late Future<AccountInfo> future;
   @override
   void initState() {
@@ -34,34 +34,6 @@ class _ChatSnackBarState extends State<ChatSnackBar> {
               ? Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ListTile(
-                    onLongPress: () => showDialog<bool>(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text(snapshot.data!.username),
-                        content: const Text("حذف المحادثة؟"),
-                        actions: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: IconButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop(true);
-                                },
-                                icon: const Text(
-                                  "نعم",
-                                  style: TextStyle(color: Colors.white),
-                                )),
-                          ),
-                          IconButton(
-                              onPressed: () {
-                                Navigator.of(context).pop(false);
-                              },
-                              icon: const Text("رجوع"))
-                        ],
-                      ),
-                    ),
                     onTap: () {
                       push(
                         context,
@@ -70,10 +42,10 @@ class _ChatSnackBarState extends State<ChatSnackBar> {
                         ),
                       );
                     },
-                    leading: GetImage(
-                      imagePath: snapshot.data!.imagePath ?? "",
-                      size: 35,
-                    ),
+                    leading: ProfilePhoto(
+                        username: snapshot.data!.username,
+                        radius: 30,
+                        imagePath: snapshot.data!.imagePath),
                     title: Text(snapshot.data!.username),
                   ),
                 )

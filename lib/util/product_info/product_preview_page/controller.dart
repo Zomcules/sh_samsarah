@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart' as osm;
 import 'package:samsarah/services/auth_service.dart';
-import 'package:samsarah/services/firestore_service.dart';
+import 'package:samsarah/services/database_service.dart';
 import 'package:samsarah/modules/product_info.dart';
 import 'package:samsarah/util/tools/two_points.dart';
 
 class ProductController {
   final auth = AuthService();
-  final store = FireStoreService();
+  final store = Database();
 
   double radius = 50;
 

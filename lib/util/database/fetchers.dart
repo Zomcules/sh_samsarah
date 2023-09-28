@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:samsarah/services/firestore_service.dart';
+import 'package:samsarah/services/database_service.dart';
 import 'package:samsarah/modules/product_info.dart';
 
 import '../../modules/account_info.dart';
 
-final store = FireStoreService();
+final store = Database();
 Future<AccountInfo> fetchAccount(String id) async {
   return await store.getAccount(id);
 }

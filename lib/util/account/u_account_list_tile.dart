@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:samsarah/auth_flow/profile_photo.dart';
 import 'package:samsarah/modules/account_info.dart';
-import 'package:samsarah/util/tools/get_image.dart';
 
 class UAccountListTile extends StatefulWidget {
   final AccountInfo info;
@@ -60,7 +60,11 @@ class _UAccountListTileState extends State<UAccountListTile> {
 
         widget.info.delete();
       },
-      leading: GetImage(imagePath: widget.info.imagePath ?? "", size: 30),
+      leading: ProfilePhoto(
+        imagePath: widget.info.imagePath ?? "",
+        radius: 30,
+        username: widget.info.username,
+      ),
       trailing: IconButton(
           onPressed: () => confirmDelete(context),
           icon: const Icon(

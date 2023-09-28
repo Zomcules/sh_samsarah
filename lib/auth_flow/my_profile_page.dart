@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:samsarah/auth_flow/activate_voucher.dart';
+import 'package:samsarah/auth_flow/profile_photo.dart';
 import 'package:samsarah/auth_flow/sign_in.dart';
 import 'package:samsarah/services/auth_service.dart';
-import 'package:samsarah/services/firestore_service.dart';
+import 'package:samsarah/services/database_service.dart';
+import 'package:samsarah/services/storage_service.dart';
 import 'package:samsarah/util/product_info/product_preview_page/fields/ppp_floating_button.dart';
 import 'package:samsarah/util/tools/my_button.dart';
 import 'package:samsarah/util/tools/my_text_form_field.dart';
@@ -17,7 +20,7 @@ class MyProfilePage extends StatefulWidget {
 
 class _MyProfilePageState extends State<MyProfilePage> {
   final auth = AuthService().firebaseAuth;
-  final store = FireStoreService();
+  final store = Database();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,14 +46,33 @@ class _MyProfilePageState extends State<MyProfilePage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              CircleAvatar(
-                radius: MediaQuery.of(context).size.width * 1.5 / 5,
-                backgroundColor: Colors.green.shade300,
-                child: Text(
-                  getInitials(),
-                  style: const TextStyle(fontSize: 50, color: Colors.white),
-                ),
-              ),
+              Stack(children: [
+                ProfilePhoto(
+                    username: auth.currentUser!.displayName,
+                    radius: MediaQuery.of(context).size.width * 3 / 10,
+                    imagePath: auth.currentUser!.photoURL),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: FloatingActionButton(
+                    onPressed: () async {
+                      final image = await ImagePicker()
+                          .pickImage(source: ImageSource.gallery);
+                      if (image != null) {
+                        await StorageService().updateProfile(image.path);
+                        setState(() {});
+                      }
+                    },
+                    backgroundColor: Colors.green,
+                    shape: const CircleBorder(),
+                    heroTag: "GOGOGAGA",
+                    child: const Icon(
+                      Icons.camera_alt,
+                      color: Colors.white,
+                    ),
+                  ),
+                )
+              ])
             ],
           ),
           Row(
@@ -104,11 +126,6 @@ class _MyProfilePageState extends State<MyProfilePage> {
       ),
     );
   }
-
-  String getInitials() => auth.currentUser!.displayName!
-      .split(" ")
-      .map((element) => element[0])
-      .join(" ");
 
   void editUserName() async {
     final key = GlobalKey<FormState>();
