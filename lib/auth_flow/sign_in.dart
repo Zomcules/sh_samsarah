@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:samsarah/auth_flow/error_handler.dart';
 import 'package:samsarah/auth_flow/my_profile_page.dart';
-import 'package:samsarah/modules/account_info.dart';
+import 'package:samsarah/models/account_info.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/database_service.dart';
 import 'package:samsarah/util/product_info/product_preview_page/fields/ppp_floating_button.dart';

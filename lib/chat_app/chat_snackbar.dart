@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:samsarah/auth_flow/profile_photo.dart';
 import 'package:samsarah/services/database_service.dart';
-import '../modules/account_info.dart';
+import '../models/account_info.dart';
 import '../util/tools/poppers_and_pushers.dart';
 import 'chat_page/chat_page.dart';
 

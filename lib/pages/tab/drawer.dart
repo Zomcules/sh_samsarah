@@ -41,15 +41,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       icon: Icons.discount_sharp,
                       onTap: () => push(
                         context,
-                        ChooseProductPage(
-                          onTap: (context, info) => push(
-                            context,
-                            ProductPreviewPage(
-                              type: PPPType.viewExternal,
-                              info: info,
-                            ),
-                          ),
-                        ),
+                        ChooseProductPage.viewUsers(),
                       ),
                     ),
                     DrawerTile(

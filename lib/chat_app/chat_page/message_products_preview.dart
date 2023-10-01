@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-
-import 'package:samsarah/util/product_info/product_preview_page.dart';
 import 'package:samsarah/util/tools/extensions.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
 import '../../util/database/fetchers.dart';
-import '../../modules/product_info.dart';
-import '../../util/product_info/product_preview_page/fields/ppp_floating_button.dart';
+import '../../models/product_info.dart';
 import 'choose_product_page.dart';
 
 class MessageProductsPreview extends StatefulWidget {
@@ -17,7 +14,8 @@ class MessageProductsPreview extends StatefulWidget {
   State<MessageProductsPreview> createState() => _MessageProductsPreviewState();
 }
 
-class _MessageProductsPreviewState extends State<MessageProductsPreview> {
+class _MessageProductsPreviewState extends State<MessageProductsPreview>
+    with AutomaticKeepAliveClientMixin {
   late Future<List<ProductInfo>> futureProducts;
 
   Future<List<ProductInfo>> theFuture() async {
@@ -36,23 +34,15 @@ class _MessageProductsPreviewState extends State<MessageProductsPreview> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return FutureBuilder(
       future: futureProducts,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onTap: () => push(
-                context,
-                ChooseProductPage(
-                  products: snapshot.data,
-                  onTap: (context, info) => push(
-                      context,
-                      ProductPreviewPage(
-                        type: PPPType.viewExternal,
-                        info: info,
-                      )),
-                )),
+            onTap: () =>
+                push(context, ChooseProductPage.viewProducts(snapshot.data!)),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
@@ -92,4 +82,7 @@ class _MessageProductsPreviewState extends State<MessageProductsPreview> {
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

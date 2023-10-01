@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:samsarah/modules/product_info.dart';
+import 'package:samsarah/models/product_info.dart';
 import 'package:samsarah/util/tools/my_text_form_field.dart';
 import '../../../tools/my_text.dart';
 import '../controller.dart';

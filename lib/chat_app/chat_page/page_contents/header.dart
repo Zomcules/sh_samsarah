@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:samsarah/auth_flow/profile_photo.dart';
-import 'package:samsarah/modules/account_info.dart';
+import 'package:samsarah/models/account_info.dart';
 import 'package:samsarah/services/database_service.dart';
 import '../../../util/tools/poppers_and_pushers.dart';
 

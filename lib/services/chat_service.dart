@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:samsarah/modules/message_data.dart';
+import 'package:samsarah/models/message_data.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/database_service.dart';
 

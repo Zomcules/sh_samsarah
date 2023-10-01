@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:samsarah/services/database_service.dart';
-import 'package:samsarah/modules/product_info.dart';
+import 'package:samsarah/models/product_info.dart';
 
-import '../../modules/account_info.dart';
+import '../../models/account_info.dart';
 
 final store = Database();
 Future<AccountInfo> fetchAccount(String id) async {

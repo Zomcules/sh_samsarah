@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:samsarah/modules/product_info.dart';
+import 'package:samsarah/models/product_info.dart';
 
 class MyText extends StatelessWidget {
   final String text;

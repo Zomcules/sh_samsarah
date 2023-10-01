@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:samsarah/pages/tab/Discovery_tab/product_snackbar.dart';
-import 'package:samsarah/modules/product_info.dart';
+import 'package:samsarah/models/product_info.dart';
 import 'package:samsarah/util/product_info/product_preview_page.dart';
 import 'package:samsarah/util/product_info/product_preview_page/controller.dart';
 import 'package:samsarah/util/product_info/product_preview_page/fields/location_preview.dart';

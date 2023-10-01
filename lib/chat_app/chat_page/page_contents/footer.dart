@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:samsarah/chat_app/chat_page/choose_product_page.dart';
-import 'package:samsarah/modules/message_data.dart';
+import 'package:samsarah/models/message_data.dart';
 import 'package:samsarah/chat_app/chat_page/page_contents/product_appendix.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/chat_service.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
-import '../../../modules/product_info.dart';
+import '../../../models/product_info.dart';
 
 class ChatFooter extends StatefulWidget {
   final String reciever;
@@ -91,35 +91,26 @@ class _ChatFooterState extends State<ChatFooter> {
   }
 
   void onLocationPressed() async {
-    await push(
-        context,
-        ChooseProductPage(
-          onTap: (context, info) => appendedProducts.add(info),
-        ));
+    var prod =
+        await push<ProductInfo>(context, ChooseProductPage.selectFromUser());
+    if (prod != null) {
+      appendedProducts.add(prod);
+    }
     setState(() {});
   }
 
-  Future<void> trySendMessage() async {
+  void trySendMessage() {
     if (textController.text != "" || appendedProducts.isNotEmpty) {
-      final data = MessageData(
-          from: auth.uid!,
-          content: textController.text,
-          timeStamp: Timestamp.now(),
-          appendedProductsIds: List<String>.generate(appendedProducts.length,
-              (index) => appendedProducts[index].globalId));
-      if (!(await msg.sendMessage(data, widget.reciever))) {
-        if (mounted) {
-          showDialog(
-            context: context,
-            builder: (context) => const AlertDialog(
-              content: Text("Network Issue!"),
-            ),
-          );
-        }
-      } else {
-        appendedProducts.clear();
-        textController.clear();
-      }
+      msg.sendMessage(
+          MessageData(
+              from: auth.uid!,
+              content: textController.text,
+              timeStamp: Timestamp.now(),
+              appendedProductsIds:
+                  appendedProducts.map((e) => e.globalId).toList()),
+          widget.reciever);
+      textController.clear();
+      appendedProducts.clear();
     }
   }
 }

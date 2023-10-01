@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:samsarah/services/database_service.dart';
 
-import '../modules/account_info.dart';
+import '../models/account_info.dart';
 
 class AuthService {
   final firebaseAuth = FirebaseAuth.instance;

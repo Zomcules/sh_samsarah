@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:samsarah/chat_app/chat_page/page_contents/message.dart';
 
-import '../../../modules/message_data.dart';
+import '../../../models/message_data.dart';
 import '../../../services/chat_service.dart';
 
 class ChatBody extends StatefulWidget {

@@ -1,8 +1,8 @@
 import 'package:hive/hive.dart';
-import 'package:samsarah/modules/message_data.dart';
-import 'package:samsarah/modules/account_info.dart';
+import 'package:samsarah/models/message_data.dart';
+import 'package:samsarah/models/account_info.dart';
 import 'package:samsarah/util/database/app_data.dart';
-import 'package:samsarah/modules/product_info.dart';
+import 'package:samsarah/models/product_info.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 
 class AppDataAdapter extends TypeAdapter<AppData> {

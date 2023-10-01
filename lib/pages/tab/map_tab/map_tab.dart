@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
-import 'package:samsarah/modules/product_info.dart';
+import 'package:samsarah/models/product_info.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/database_service.dart';
 import 'package:samsarah/util/product_info/product_preview_page.dart';

@@ -6,14 +6,64 @@ import 'package:samsarah/util/product_info/product_preview_page.dart';
 import 'package:samsarah/util/product_info/product_preview_page/fields/ppp_floating_button.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
-import '../../modules/product_info.dart';
+import '../../models/product_info.dart';
 
 class ChooseProductPage extends StatelessWidget {
   final Function(BuildContext context, ProductInfo info) onTap;
   final List<ProductInfo>? products;
   final store = Database();
   final auth = AuthService();
-  ChooseProductPage({super.key, this.products, required this.onTap});
+
+  ChooseProductPage._({this.products, required this.onTap});
+
+  factory ChooseProductPage.overrideForUser(
+      {required Function(BuildContext context, ProductInfo info) onTap}) {
+    return ChooseProductPage._(
+      onTap: onTap,
+    );
+  }
+
+  factory ChooseProductPage.viewUsers() {
+    return ChooseProductPage._(
+      onTap: (context, info) => push(
+        context,
+        ProductPreviewPage(
+          type: info.producer["globalId"] == AuthService().uid
+              ? PPPType.viewInternal
+              : PPPType.viewExternal,
+          info: info,
+        ),
+      ),
+    );
+  }
+
+  factory ChooseProductPage.viewProducts(List<ProductInfo> products) {
+    return ChooseProductPage._(
+      onTap: (context, info) => push(
+        context,
+        ProductPreviewPage(
+          type: info.producer["globalId"] == AuthService().uid
+              ? PPPType.viewInternal
+              : PPPType.viewExternal,
+          info: info,
+        ),
+      ),
+      products: products,
+    );
+  }
+
+  factory ChooseProductPage.selectFromUser() {
+    return ChooseProductPage._(
+      onTap: pop,
+    );
+  }
+
+  factory ChooseProductPage.selectFromProducts(List<ProductInfo> products) {
+    return ChooseProductPage._(
+      onTap: pop,
+      products: products,
+    );
+  }
 
   Future<List<Widget>> widgetList(BuildContext context) async {
     List<Widget> temp = [];
@@ -23,35 +73,24 @@ class ChooseProductPage extends StatelessWidget {
         children: [Divider(), Text("عروضي"), Divider()],
       ));
       for (ProductInfo product in await store.getProductsOf(auth.uid!)) {
-        temp.add(ProductSnackBar.simple(
-          product: product,
-          onTap: products != null
-              ? (product) => push(
-                  context,
-                  ProductPreviewPage(
-                    type: PPPType.viewInternal,
-                    info: product,
-                  ))
-              : onTap(context, product),
-        ));
+        temp.add(
+          ProductSnackBar.simple(
+            product: product,
+            onTap: (product) => onTap(context, product),
+          ),
+        );
       }
       temp.add(const Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [Divider(), Text("العروض المحفوظة"), Divider()],
       ));
       for (ProductInfo product in await store.savedProductsOf(auth.uid!)) {
-        temp.add(ProductSnackBar.simple(
-          product: product,
-          onTap: products != null
-              ? (product) => push(
-                  context,
-                  ProductPreviewPage(
-                    type: PPPType.viewExternal,
-                    info: product,
-                  ))
-              // ignore: use_build_context_synchronously
-              : onTap(context, product),
-        ));
+        temp.add(
+          ProductSnackBar.simple(
+            product: product,
+            onTap: (product) => onTap(context, product),
+          ),
+        );
       }
       return temp;
     }

@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:samsarah/util/tools/my_button.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
-import '../modules/account_info.dart';
-import '../modules/product_info.dart';
+import '../models/account_info.dart';
+import '../models/product_info.dart';
 
 class Database {
   FirebaseFirestore get instance => FirebaseFirestore.instance;

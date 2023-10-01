@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:samsarah/chat_app/chat_page/page_contents/body.dart';
 import 'package:samsarah/chat_app/chat_page/page_contents/footer.dart';
 import 'package:samsarah/chat_app/chat_page/page_contents/header.dart';
-import 'package:samsarah/modules/account_info.dart';
-import 'package:samsarah/modules/product_info.dart';
+import 'package:samsarah/models/account_info.dart';
+import 'package:samsarah/models/product_info.dart';
 
 class ChatPage extends StatelessWidget {
   final AccountInfo reciever;

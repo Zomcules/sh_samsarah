@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../tools/my_text.dart';
-import '../../../../modules/product_info.dart';
+import '../../../../models/product_info.dart';
 import '../controller.dart';
 import 'ppp_floating_button.dart';
 

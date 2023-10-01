@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:samsarah/services/auth_service.dart';
 
-import '../../../modules/message_data.dart';
+import '../../../models/message_data.dart';
 import '../message_products_preview.dart';
 
 class Message extends StatefulWidget {
