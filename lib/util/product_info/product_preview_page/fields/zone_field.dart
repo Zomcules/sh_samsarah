@@ -43,14 +43,14 @@ class _ZoneFieldState extends State<ZoneField>
           onTap: widget.info == null
               ? () {
                   setState(() {
-                    zone = ZoneType.industrial;
+                    zone = ZoneType.commercial;
                     widget.pc.zone = zone;
                   });
                 }
               : null,
           child: MyText(
             text: "صناعية",
-            color: zone == ZoneType.industrial ? Colors.orange : Colors.grey,
+            color: zone == ZoneType.commercial ? Colors.orange : Colors.grey,
             size: 20,
           ),
         ),
@@ -71,7 +71,7 @@ class _ZoneFieldState extends State<ZoneField>
         )
       ])
     ];
-    if (zone == ZoneType.industrial) {
+    if (zone == ZoneType.commercial) {
       temp.addAll([
         MyCheckbox(
             type: widget.type,

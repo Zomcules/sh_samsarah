@@ -89,14 +89,9 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
   Future<void> saveProduct() async {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
-      await pc.save(context);
+      await pc.trySaveProduct(context);
     } else {
-      showDialog(
-        context: context,
-        builder: (context) => const AlertDialog(
-          content: Text("بعض الحقول فارغة"),
-        ),
-      );
+      alert(context, "بعض الحقول فارغة");
     }
   }
 

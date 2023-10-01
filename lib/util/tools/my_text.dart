@@ -28,35 +28,71 @@ class MyText extends StatelessWidget {
 
 List<Widget> getAttributes(ProductInfo productInfo) {
   List<Widget> temp = [];
-  temp.add(productInfo.forSale
-      ? const MyText(
-          text: "للبيع",
-          color: Colors.red,
-        )
-      : const MyText(
-          text: "للايجار",
+  switch (productInfo.zone) {
+    case ZoneType.agricultural:
+      temp.add(
+        const MyText(
+          text: "زراعية",
           color: Colors.green,
-        ));
-  temp.add(const MyText(text: "سكني"));
-  if (productInfo.floorsNum != 1) {
-    temp.add(MyText(text: "${productInfo.floorsNum} عدد الطوابق"));
+        ),
+      );
+      break;
+    case ZoneType.commercial:
+      temp.add(
+        const MyText(
+          text: "تجارية",
+          color: Colors.orange,
+        ),
+      );
+      break;
+    case ZoneType.residential:
+      temp.add(
+        const MyText(
+          text: "سكنية",
+          color: Colors.cyan,
+        ),
+      );
+      break;
+    default:
   }
-  if (productInfo.roomsNum != null) {
-    temp.add(MyText(text: "${productInfo.floorsNum} عدد الغرف"));
-  }
-  if (productInfo.nasiah != null) {
-    if (productInfo.nasiah == false) {
-      temp.add(const MyText(text: " ناصية"));
-    }
-  }
-  if (productInfo.wholeHouse != null) {
-    if (productInfo.wholeHouse == true) {
-      temp.add(const MyText(text: "بيت كامل"));
-    } else {
-      temp.add(const MyText(text: "شقة"));
+  temp.addAll([
+    productInfo.forSale
+        ? const MyText(
+            text: "للبيع",
+            color: Colors.red,
+          )
+        : const MyText(
+            text: "للايجار",
+            color: Colors.green,
+          ),
+    MyText(text: "المساحة: ${productInfo.size}"),
+  ]);
+
+  if (productInfo.services != null) {
+    if (productInfo.services!) {
+      temp.add(const MyText(text: "خدمات متوفرة"));
     }
   }
 
-  temp.add(MyText(text: productInfo.zone.name));
+  if (productInfo.zone == ZoneType.residential) {
+    if (productInfo.floorsNum != 1) {
+      temp.add(MyText(text: "${productInfo.floorsNum} عدد الطوابق"));
+    }
+    if (productInfo.roomsNum != null) {
+      temp.add(MyText(text: "${productInfo.floorsNum} عدد الغرف"));
+    }
+    if (productInfo.nasiah != null) {
+      if (productInfo.nasiah!) {
+        temp.add(const MyText(text: " ناصية"));
+      }
+    }
+    if (productInfo.wholeHouse != null) {
+      if (productInfo.wholeHouse!) {
+        temp.add(const MyText(text: "بيت كامل"));
+      } else {
+        temp.add(const MyText(text: "شقة"));
+      }
+    }
+  }
   return temp;
 }

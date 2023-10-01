@@ -117,4 +117,4 @@ class ProductInfo extends HiveObject {
   }
 }
 
-enum ZoneType { agricultural, residential, industrial }
+enum ZoneType { agricultural, residential, commercial }

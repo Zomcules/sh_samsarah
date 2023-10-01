@@ -22,13 +22,15 @@ class _DiscoveryTabState extends State<DiscoveryTab>
   @override
   void initState() {
     super.initState();
-    _future = Database().productCollection.orderBy("timeStamp").get();
+    _future = Database()
+        .productCollection
+        .orderBy("timeStamp", descending: true)
+        .get();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    // ignore: avoid_unnecessary_containers
     return Scaffold(
       body: Column(
         children: [

@@ -46,33 +46,35 @@ class _MyProfilePageState extends State<MyProfilePage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Stack(children: [
-                ProfilePhoto(
-                    username: auth.currentUser!.displayName,
-                    radius: MediaQuery.of(context).size.width * 3 / 10,
-                    imagePath: auth.currentUser!.photoURL),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: FloatingActionButton(
-                    onPressed: () async {
-                      final image = await ImagePicker()
-                          .pickImage(source: ImageSource.gallery);
-                      if (image != null) {
-                        await StorageService().updateProfile(image.path);
-                        setState(() {});
-                      }
-                    },
-                    backgroundColor: Colors.green,
-                    shape: const CircleBorder(),
-                    heroTag: "GOGOGAGA",
-                    child: const Icon(
-                      Icons.camera_alt,
-                      color: Colors.white,
+              Stack(
+                children: [
+                  ProfilePhoto(
+                      username: auth.currentUser!.displayName,
+                      radius: MediaQuery.of(context).size.width * 3 / 10,
+                      imagePath: auth.currentUser!.photoURL),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: FloatingActionButton(
+                      onPressed: () async {
+                        final image = await ImagePicker()
+                            .pickImage(source: ImageSource.gallery);
+                        if (image != null) {
+                          await StorageService().updateProfile(image.path);
+                          setState(() {});
+                        }
+                      },
+                      backgroundColor: Colors.green,
+                      shape: const CircleBorder(),
+                      heroTag: "GOGOGAGA",
+                      child: const Icon(
+                        Icons.camera_alt,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                )
-              ])
+                ],
+              )
             ],
           ),
           Row(
@@ -129,6 +131,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
 
   void editUserName() async {
     final key = GlobalKey<FormState>();
+    String value = "";
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -141,10 +144,13 @@ class _MyProfilePageState extends State<MyProfilePage> {
                 onPressed: () async {
                   if (key.currentState!.validate()) {
                     key.currentState!.save();
-                    pop(context, null);
+                    await auth.currentUser!.updateDisplayName(value);
                     await store.accountCollection
                         .doc(auth.currentUser!.uid)
                         .update({"username": auth.currentUser!.displayName!});
+                    if (context.mounted) {
+                      pop(context, null);
+                    }
                   }
                 },
                 raised: true,
@@ -157,8 +163,10 @@ class _MyProfilePageState extends State<MyProfilePage> {
               Form(
                 key: key,
                 child: MyTextFormField(
-                    onSaved: (value) =>
-                        auth.currentUser!.updateDisplayName(value),
+                    initialValue: auth.currentUser!.displayName,
+                    onSaved: (result) {
+                      value = result!;
+                    },
                     validator: (value) =>
                         value == null || value == "" ? "هذا الحقل فارغ" : null,
                     keyboardType: TextInputType.name,

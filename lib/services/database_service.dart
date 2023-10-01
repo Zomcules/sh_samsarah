@@ -128,12 +128,14 @@ class Database {
     var price = 0;
     var currency = 0;
 
-    bool eligable() => price < currency;
+    bool eligable() => price <= currency;
 
     Future<void> init() async {
       price = await publishPrice();
       currency = await AuthService().getCurrency();
     }
+
+    Future future = init();
 
     if (context.mounted) {
       bool? result = await showDialog<bool>(
@@ -141,7 +143,7 @@ class Database {
           builder: (context) => AlertDialog(
                 title: const Text("نشر العرض"),
                 content: FutureBuilder(
-                    future: init(),
+                    future: future,
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
                         return const Text("Error");
@@ -177,16 +179,27 @@ class Database {
                       );
                     }),
                 actions: [
-                  eligable()
-                      ? MyButton(
-                          onPressed: () =>
-                              push(context, const ActivateVoucherPage()),
-                          raised: true,
-                          title: "شحن رصيد")
-                      : MyButton(
-                          onPressed: () => pop(context, true),
-                          raised: true,
-                          title: "موافق"),
+                  FutureBuilder(
+                      future: future,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const SizedBox();
+                        }
+                        if (snapshot.hasError) {
+                          return const SizedBox();
+                        }
+                        return eligable()
+                            ? MyButton(
+                                onPressed: () => pop(context, true),
+                                raised: true,
+                                title: "موافق")
+                            : MyButton(
+                                onPressed: () =>
+                                    push(context, const ActivateVoucherPage()),
+                                raised: true,
+                                title: "شحن رصيد");
+                      }),
                   MyButton(
                       onPressed: () => pop(context, false),
                       raised: false,

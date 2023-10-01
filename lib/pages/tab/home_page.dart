@@ -3,6 +3,7 @@ import 'package:samsarah/auth_flow/profile_photo.dart';
 import 'package:samsarah/auth_flow/sign_in.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/pages/tab/drawer.dart';
+import 'package:samsarah/util/tools/my_button.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
 import '../../auth_flow/my_profile_page.dart';
@@ -28,73 +29,100 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        // backgroundColor: Colors.white
-        actions: [
-          StreamBuilder(
-            stream: auth.firebaseAuth.userChanges(),
-            builder: (context, snapshot) {
-              return IconButton(
-                onPressed: snapshot.data != null
-                    ? () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return const MessagesPage();
-                            },
-                          ),
-                        );
-                      }
-                    : null,
-                icon: const Icon(Icons.message),
-              );
-            },
-          ),
-          StreamBuilder(
+    return WillPopScope(
+      onWillPop: () async =>
+          await showDialog<bool>(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text("الخروج من التطبيق"),
+              content: const Text("هل انت متأكد؟"),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                      onTap: () => pop(context, true),
+                      child: const Text(
+                        "نعم",
+                        style: TextStyle(fontSize: 20),
+                      )),
+                ),
+                MyButton(
+                    onPressed: () => pop(context, false),
+                    raised: true,
+                    title: "العودة"),
+              ],
+            ),
+          ) ??
+          false,
+      child: Scaffold(
+        appBar: AppBar(
+          // backgroundColor: Colors.white
+          actions: [
+            StreamBuilder(
               stream: auth.firebaseAuth.userChanges(),
               builder: (context, snapshot) {
                 return IconButton(
-                    onPressed: () {
-                      if (snapshot.hasData) {
-                        push(context, const MyProfilePage());
-                      } else {
-                        push(context, const SignInPage());
-                      }
-                    },
-                    icon: snapshot.hasData
-                        ? const UserThumbnail()
-                        : const Icon(Icons.person));
-              }),
-        ],
-        title: const Text("Samsarah",
-            style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
-      ),
-      drawer: const MyDrawer(),
-      body: DefaultTabController(
-          length: myTabs.length,
-          child: Column(
-            children: [
-              const Expanded(
-                child: TabBarView(
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    DiscoveryTab(),
-                    MapTab(),
-                    AccountTab(),
-                  ],
+                  onPressed: snapshot.data != null
+                      ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const MessagesPage();
+                              },
+                            ),
+                          );
+                        }
+                      : null,
+                  icon: const Icon(Icons.message),
+                );
+              },
+            ),
+            StreamBuilder(
+                stream: auth.firebaseAuth.userChanges(),
+                builder: (context, snapshot) {
+                  return IconButton(
+                      onPressed: () {
+                        if (snapshot.hasData) {
+                          push(context, const MyProfilePage());
+                        } else {
+                          push(context, const SignInPage());
+                        }
+                      },
+                      icon: snapshot.hasData
+                          ? const UserThumbnail()
+                          : const Icon(Icons.person));
+                }),
+          ],
+          title: const Text("Samsarah",
+              style:
+                  TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
+        ),
+        drawer: const MyDrawer(),
+        body: DefaultTabController(
+            length: myTabs.length,
+            child: Column(
+              children: [
+                const Expanded(
+                  child: TabBarView(
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
+                      DiscoveryTab(),
+                      MapTab(),
+                      AccountTab(),
+                    ],
+                  ),
                 ),
-              ),
-              TabBar(
-                tabs: myTabs,
-                isScrollable: false,
-                indicatorColor: const Color.fromARGB(255, 0, 0, 255),
-                unselectedLabelColor: Colors.grey,
-                labelColor: const Color.fromARGB(255, 0, 0, 255),
-              ),
-            ],
-          )),
+                TabBar(
+                  tabs: myTabs,
+                  isScrollable: false,
+                  indicatorColor: const Color.fromARGB(255, 0, 0, 255),
+                  unselectedLabelColor: Colors.grey,
+                  labelColor: const Color.fromARGB(255, 0, 0, 255),
+                ),
+              ],
+            )),
+      ),
     );
   }
 }

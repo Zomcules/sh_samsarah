@@ -44,7 +44,7 @@ class ProductController {
 
   bool? nasiah;
 
-  Future<void> save(BuildContext context) async {
+  Future<void> trySaveProduct(BuildContext context) async {
     String x = DateTime.now().toIso8601String();
     var temp = ProductInfo(
         producer: auth.userSnapshot,
