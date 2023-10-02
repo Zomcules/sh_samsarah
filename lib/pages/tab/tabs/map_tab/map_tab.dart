@@ -6,7 +6,7 @@ import 'package:samsarah/services/database_service.dart';
 import 'package:samsarah/util/product_info/product_preview_page.dart';
 import 'package:samsarah/util/product_info/product_preview_page/fields/ppp_floating_button.dart';
 
-import '../../../util/tools/poppers_and_pushers.dart';
+import '../../../../util/tools/poppers_and_pushers.dart';
 
 class MapTab extends StatefulWidget {
   const MapTab({super.key});

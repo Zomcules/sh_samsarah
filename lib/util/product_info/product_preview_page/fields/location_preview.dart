@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
-import 'package:samsarah/pages/tab/map_tab/map_page.dart';
+import 'package:samsarah/pages/tab/tabs/map_tab/map_page.dart';
 import 'package:samsarah/util/product_info/product_preview_page/controller.dart';
 import '../../../tools/poppers_and_pushers.dart';
 import 'ppp_floating_button.dart';

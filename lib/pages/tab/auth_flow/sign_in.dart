@@ -35,153 +35,11 @@ class _SignInPageState extends State<SignInPage> {
           title: const Text("تسجيل الدخول"),
         ),
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: !createNew
-              ? [
-                  Column(children: [
-                    Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: MyTextFormField(
-                            onSaved: (value) => email = value!,
-                            validator: validator,
-                            keyboardType: TextInputType.emailAddress,
-                            labelText: "عنوان البريد الالكتروني",
-                            pppType: PPPType.createNew),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: MyTextFormField(
-                            onSaved: (value) => password = value!,
-                            validator: validator,
-                            keyboardType: TextInputType.visiblePassword,
-                            labelText: "كلمة السر",
-                            pppType: PPPType.createNew),
-                      ),
-                    ]),
-                  ]),
-                  GestureDetector(
-                    onTap: () async {
-                      await AuthService().signInWithGoogle();
-                    },
-                    child: const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "G",
-                          style: TextStyle(fontSize: 20, color: Colors.grey),
-                        ),
-                        Text("تسجيل الدخول باستخدام جوجل")
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        MyButton(
-                            onPressed: () => setState(() {
-                                  createNew = true;
-                                }),
-                            raised: false,
-                            title: "انشاء حساب جديد"),
-                        !isLoading
-                            ? MyButton(
-                                onPressed: () {
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-                                  trySignIn();
-                                },
-                                raised: true,
-                                title: "تسجيل الدخول")
-                            : const CircularProgressIndicator(),
-                      ],
-                    ),
-                  )
-                ]
-              :
-              /////////////////////////////////////////////////////////////////////////
-              [
-                  Expanded(
-                    child: ListView(
-                      children: [
-                        Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: MyTextFormField(
-                                  onSaved: (value) => username = value!,
-                                  validator: validator,
-                                  keyboardType: TextInputType.name,
-                                  labelText: "الاسم",
-                                  pppType: PPPType.createNew),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: MyTextFormField(
-                                  onSaved: (value) => email = value!,
-                                  validator: validator,
-                                  keyboardType: TextInputType.emailAddress,
-                                  labelText: "البريد الالكتروني",
-                                  pppType: PPPType.createNew),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: MyTextFormField(
-                                  onChanged: (value) => password = value ?? "",
-                                  onSaved: (value) => password = value!,
-                                  validator: validator,
-                                  keyboardType: TextInputType.name,
-                                  labelText: "كلمة السر",
-                                  pppType: PPPType.createNew),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: MyTextFormField(
-                                  onSaved: (value) => password2 = value!,
-                                  validator: (value) => password == value
-                                      ? null
-                                      : "كلمة السر غير متطابقة",
-                                  keyboardType: TextInputType.name,
-                                  labelText: "أعد كتابة كلمة السر",
-                                  pppType: PPPType.createNew),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        MyButton(
-                            onPressed: () {
-                              setState(() {
-                                createNew = false;
-                              });
-                            },
-                            raised: false,
-                            title: "رجوع"),
-                        !isLoading
-                            ? MyButton(
-                                onPressed: () {
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-                                  tryCreateAccount();
-                                },
-                                raised: true,
-                                title: "انشاء الحساب")
-                            : const CircularProgressIndicator(),
-                      ],
-                    ),
-                  )
-                ],
-        ),
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: children
+            /////////////////////////////////////////////////////////////////////////
+
+            ),
       ),
     );
   }
@@ -238,4 +96,177 @@ class _SignInPageState extends State<SignInPage> {
 
   String? validator(String? value) =>
       value == "" || value == null ? "هذا الحقل فارغ" : null;
+
+  List<Widget> get children {
+    if (createNew) {
+      [
+        Expanded(
+          child: ListView(
+            children: [
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: MyTextFormField(
+                        onSaved: (value) => username = value!,
+                        validator: validator,
+                        keyboardType: TextInputType.name,
+                        labelText: "الاسم",
+                        pppType: PPPType.createNew),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: MyTextFormField(
+                        onSaved: (value) => email = value!,
+                        validator: validator,
+                        keyboardType: TextInputType.emailAddress,
+                        labelText: "البريد الالكتروني",
+                        pppType: PPPType.createNew),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: MyTextFormField(
+                        onChanged: (value) => password = value ?? "",
+                        onSaved: (value) => password = value!,
+                        validator: validator,
+                        keyboardType: TextInputType.name,
+                        labelText: "كلمة السر",
+                        pppType: PPPType.createNew),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: MyTextFormField(
+                        onSaved: (value) => password2 = value!,
+                        validator: (value) =>
+                            password == value ? null : "كلمة السر غير متطابقة",
+                        keyboardType: TextInputType.name,
+                        labelText: "أعد كتابة كلمة السر",
+                        pppType: PPPType.createNew),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              MyButton(
+                  onPressed: () {
+                    setState(() {
+                      createNew = false;
+                    });
+                  },
+                  raised: false,
+                  title: "رجوع"),
+              !isLoading
+                  ? MyButton(
+                      onPressed: () {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        tryCreateAccount();
+                      },
+                      raised: true,
+                      title: "انشاء الحساب")
+                  : const CircularProgressIndicator(),
+            ],
+          ),
+        )
+      ];
+    }
+    return [
+      Column(
+        children: [
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MyTextFormField(
+                    onSaved: (value) => email = value!,
+                    validator: validator,
+                    keyboardType: TextInputType.emailAddress,
+                    labelText: "عنوان البريد الالكتروني",
+                    pppType: PPPType.createNew),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MyTextFormField(
+                    onSaved: (value) => password = value!,
+                    validator: validator,
+                    keyboardType: TextInputType.visiblePassword,
+                    labelText: "كلمة السر",
+                    pppType: PPPType.createNew),
+              ),
+            ],
+          ),
+        ],
+      ),
+      GestureDetector(
+        onTap: () async {
+          await AuthService().signInWithGoogle();
+        },
+        child: Card(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  width: 65,
+                  height: 65,
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: const Center(
+                    child: Text(
+                      "G",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 40),
+                    ),
+                  ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Text(
+                  "تسجيل الدخول باستخدام جوجل",
+                  style: TextStyle(fontSize: 20, color: Colors.black54),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            MyButton(
+                onPressed: () => setState(() {
+                      createNew = true;
+                    }),
+                raised: false,
+                title: "انشاء حساب جديد"),
+            !isLoading
+                ? MyButton(
+                    onPressed: () {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      trySignIn();
+                    },
+                    raised: true,
+                    title: "تسجيل الدخول")
+                : const CircularProgressIndicator(),
+          ],
+        ),
+      )
+    ];
+  }
 }

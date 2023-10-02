@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:samsarah/services/database_service.dart';
 
@@ -49,12 +50,16 @@ class AuthService {
   Future<int> getCurrency() async => (await currentAccount)?.currency ?? 0;
 
   Future<void> signInWithGoogle() async {
-    final gUser = await GoogleSignIn().signIn();
-    final gAuth = await gUser!.authentication;
-    final credential = GoogleAuthProvider.credential(
-        idToken: gAuth.idToken, accessToken: gAuth.accessToken);
-    await instance.signInWithCredential(credential);
-    await syncUser();
+    try {
+      final gUser = await GoogleSignIn().signIn();
+      final gAuth = await gUser!.authentication;
+      final credential = GoogleAuthProvider.credential(
+          idToken: gAuth.idToken, accessToken: gAuth.accessToken);
+      await instance.signInWithCredential(credential);
+      await syncUser();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   Future<void> signOut() async {

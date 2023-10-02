@@ -10,7 +10,7 @@ import 'package:samsarah/util/tools/extensions.dart';
 import 'package:samsarah/models/product_info.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
-import '../../../util/product_info/product_preview_page/fields/ppp_floating_button.dart';
+import '../../../../util/product_info/product_preview_page/fields/ppp_floating_button.dart';
 
 class ProductSnackBar extends StatelessWidget {
   final Widget widget;

@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:samsarah/services/database_service.dart';
-import 'package:samsarah/pages/tab/Discovery_tab/discovery_header.dart';
-import 'package:samsarah/pages/tab/Discovery_tab/product_snackbar.dart';
+import 'package:samsarah/pages/tab/tabs/Discovery_tab/discovery_header.dart';
+import 'package:samsarah/pages/tab/tabs/Discovery_tab/product_snackbar.dart';
 import 'package:samsarah/util/product_info/product_preview_page.dart';
 import 'package:samsarah/util/product_info/product_preview_page/fields/ppp_floating_button.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
-import '../../../models/product_info.dart';
+import '../../../../models/product_info.dart';
 
 class DiscoveryTab extends StatefulWidget {
   const DiscoveryTab({super.key});

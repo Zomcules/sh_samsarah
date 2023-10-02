@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:samsarah/pages/tab/auth_flow/auth_controller.dart';
 import 'package:samsarah/pages/tab/auth_flow/profile_photo.dart';
-import 'package:samsarah/pages/tab/auth_flow/sign_in.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/pages/tab/drawer.dart';
 import 'package:samsarah/util/tools/my_button.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
-
-import 'auth_flow/my_profile_page.dart';
 import 'chat_app/messages_page.dart';
-import 'Discovery_tab/discovery_tab.dart';
-import 'Account_tab/account_tab.dart';
-import 'map_tab/map_tab.dart';
+import 'tabs/Discovery_tab/discovery_tab.dart';
+import 'tabs/Account_tab/account_tab.dart';
+import 'tabs/map_tab/map_tab.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -79,20 +77,18 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             StreamBuilder(
-                stream: auth.instance.userChanges(),
-                builder: (context, snapshot) {
-                  return IconButton(
-                      onPressed: () {
-                        if (snapshot.hasData) {
-                          push(context, const MyProfilePage());
-                        } else {
-                          push(context, const SignInPage());
-                        }
-                      },
-                      icon: snapshot.hasData
-                          ? const UserThumbnail()
-                          : const Icon(Icons.person));
-                }),
+              stream: auth.instance.userChanges(),
+              builder: (context, snapshot) {
+                return IconButton(
+                  onPressed: () {
+                    push(context, const AuthController());
+                  },
+                  icon: snapshot.hasData
+                      ? const UserThumbnail()
+                      : const Icon(Icons.person),
+                );
+              },
+            ),
           ],
           title: const Text("Samsarah",
               style:
@@ -100,28 +96,29 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         drawer: const MyDrawer(),
         body: DefaultTabController(
-            length: myTabs.length,
-            child: Column(
-              children: [
-                const Expanded(
-                  child: TabBarView(
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                      DiscoveryTab(),
-                      MapTab(),
-                      AccountTab(),
-                    ],
-                  ),
+          length: myTabs.length,
+          child: Column(
+            children: [
+              const Expanded(
+                child: TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [
+                    DiscoveryTab(),
+                    MapTab(),
+                    AccountTab(),
+                  ],
                 ),
-                TabBar(
-                  tabs: myTabs,
-                  isScrollable: false,
-                  indicatorColor: const Color.fromARGB(255, 0, 0, 255),
-                  unselectedLabelColor: Colors.grey,
-                  labelColor: const Color.fromARGB(255, 0, 0, 255),
-                ),
-              ],
-            )),
+              ),
+              TabBar(
+                tabs: myTabs,
+                isScrollable: false,
+                indicatorColor: const Color.fromARGB(255, 0, 0, 255),
+                unselectedLabelColor: Colors.grey,
+                labelColor: const Color.fromARGB(255, 0, 0, 255),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:samsarah/pages/tab/chat_app/profile.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/chat_service.dart';
 import 'package:samsarah/models/account_info.dart';
@@ -62,7 +63,13 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
                     fontWeight: FontWeight.bold,
                     color: Color.fromARGB(255, 0, 146, 5)),
               )
-            : Text(widget.info!.producer["username"]);
+            : GestureDetector(
+                onTap: () => push(
+                    context,
+                    ProfilePage(
+                      id: widget.info!.producer["globalId"],
+                    )),
+                child: Text(widget.info!.producer["username"]));
       case PPPType.viewInternal:
         return const Text("تعديل العرض");
       default:

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:samsarah/pages/tab/auth_flow/activate_voucher.dart';
-import 'package:samsarah/pages/tab/auth_flow/sign_in.dart';
+import 'package:samsarah/pages/tab/auth_flow/auth_controller.dart';
 import 'package:samsarah/pages/tab/chat_app/chat_page/choose_product_page.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/util/product_info/product_preview_page.dart';
@@ -11,14 +11,9 @@ import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 import '../../util/account/account_header.dart';
 import '../../util/product_info/product_preview_page/fields/ppp_floating_button.dart';
 
-class MyDrawer extends StatefulWidget {
+class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
 
-  @override
-  State<MyDrawer> createState() => _MyDrawerState();
-}
-
-class _MyDrawerState extends State<MyDrawer> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -65,7 +60,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 )
               : Center(
                   child: GestureDetector(
-                    onTap: () => push(context, const SignInPage()),
+                    onTap: () => push(context, const AuthController()),
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.blue,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/database_service.dart';
-import 'package:samsarah/pages/tab/Discovery_tab/product_snackbar.dart';
+import 'package:samsarah/pages/tab/tabs/Discovery_tab/product_snackbar.dart';
 import 'package:samsarah/util/product_info/product_preview_page.dart';
 import 'package:samsarah/util/product_info/product_preview_page/fields/ppp_floating_button.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
@@ -104,7 +104,7 @@ class ChooseProductPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("اختر عرض للارسال")),
+        appBar: AppBar(title: const Text("العروض")),
         body: FutureBuilder(
           future: widgetList(context),
           builder: (context, snapshot) =>
