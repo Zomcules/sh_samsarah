@@ -28,9 +28,7 @@ class ChooseProductPage extends StatelessWidget {
       onTap: (context, info) => push(
         context,
         ProductPreviewPage(
-          type: info.producer["globalId"] == AuthService().uid
-              ? PPPType.viewInternal
-              : PPPType.viewExternal,
+          type: PPPType.viewExternal,
           info: info,
         ),
       ),
@@ -42,9 +40,7 @@ class ChooseProductPage extends StatelessWidget {
       onTap: (context, info) => push(
         context,
         ProductPreviewPage(
-          type: info.producer["globalId"] == AuthService().uid
-              ? PPPType.viewInternal
-              : PPPType.viewExternal,
+          type: PPPType.viewExternal,
           info: info,
         ),
       ),

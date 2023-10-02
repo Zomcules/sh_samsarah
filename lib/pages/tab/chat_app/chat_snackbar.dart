@@ -17,7 +17,8 @@ class ChatSnackBar extends StatefulWidget {
   State<ChatSnackBar> createState() => _ChatSnackBarState();
 }
 
-class _ChatSnackBarState extends State<ChatSnackBar> {
+class _ChatSnackBarState extends State<ChatSnackBar>
+    with AutomaticKeepAliveClientMixin {
   final _store = Database();
   late Future<AccountInfo> future;
   @override
@@ -28,39 +29,61 @@ class _ChatSnackBarState extends State<ChatSnackBar> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return FutureBuilder(
-        future: future,
-        builder: (context, snapshot) {
-          return snapshot.hasData
-              ? Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () => push(
-                          context,
-                          ProfilePage(
-                            account: snapshot.data!,
-                          )),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ProfilePhoto(
-                            username: snapshot.data!.username,
-                            radius: 30,
-                            imagePath: snapshot.data!.imagePath),
+      future: future,
+      builder: (context, snapshot) {
+        return snapshot.hasData
+            ? Row(
+                children: [
+                  GestureDetector(
+                    onTap: () => push(
+                      context,
+                      ProfilePage(
+                        account: snapshot.data!,
                       ),
                     ),
-                    GestureDetector(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ProfilePhoto(
+                          username: snapshot.data!.username,
+                          radius: 30,
+                          imagePath: snapshot.data!.imagePath),
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
                       behavior: HitTestBehavior.translucent,
-                      onTap: () =>
-                          push(context, ChatPage(reciever: snapshot.data!)),
-                      child: Expanded(
-                        child: Text(
-                          snapshot.data!.username,
+                      onTap: () => push(
+                        context,
+                        ChatPage(reciever: snapshot.data!),
+                      ),
+                      child: SizedBox(
+                        height: 80,
+                        child: Row(
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  snapshot.data!.username,
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                    )
-                  ],
-                )
-              : const SizedBox(height: 80, child: CircularProgressIndicator());
-        });
+                    ),
+                  )
+                ],
+              )
+            : const SizedBox(
+                height: 80, child: Center(child: CircularProgressIndicator()));
+      },
+    );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

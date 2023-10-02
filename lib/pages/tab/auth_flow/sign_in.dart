@@ -36,10 +36,7 @@ class _SignInPageState extends State<SignInPage> {
         ),
         body: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: children
-            /////////////////////////////////////////////////////////////////////////
-
-            ),
+            children: children),
       ),
     );
   }
@@ -99,7 +96,7 @@ class _SignInPageState extends State<SignInPage> {
 
   List<Widget> get children {
     if (createNew) {
-      [
+      return [
         Expanded(
           child: ListView(
             children: [

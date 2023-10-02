@@ -38,24 +38,26 @@ class _MessagesPageState extends State<MessagesPage>
           const AccountHeader(),
           Expanded(
             child: StreamBuilder(
-                stream: _stream,
-                builder: (context, rooms) {
-                  if (rooms.hasError) {
-                    return Text(
-                        "Error MessagesPage: ${rooms.error.toString()}");
-                  }
-                  if (rooms.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  }
-                  return ListView.builder(
-                      itemCount: rooms.data!.size,
-                      itemBuilder: (context, index) => ChatSnackBar(
-                            chatter: (rooms.data!.docs[index].data()["chatters"]
-                                    as List<dynamic>)
-                                .cast<String>()
-                                .firstWhere((element) => element != _auth.uid),
-                          ));
-                }),
+              stream: _stream,
+              builder: (context, rooms) {
+                if (rooms.hasError) {
+                  return Text("Error MessagesPage: ${rooms.error.toString()}");
+                }
+                if (rooms.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return ListView.builder(
+                  itemCount: rooms.data!.size,
+                  itemBuilder: (context, index) => ChatSnackBar(
+                    chatter: (rooms.data!.docs[index].data()["chatters"]
+                            as List<dynamic>)
+                        .cast<String>()
+                        .firstWhere((element) => element != _auth.uid),
+                    key: UniqueKey(),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),

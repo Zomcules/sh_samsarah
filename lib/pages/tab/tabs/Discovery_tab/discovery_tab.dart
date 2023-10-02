@@ -39,7 +39,7 @@ class _DiscoveryTabState extends State<DiscoveryTab>
               return const Text("Error");
             }
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator());
             }
             return ListView.builder(
               physics: const BouncingScrollPhysics(

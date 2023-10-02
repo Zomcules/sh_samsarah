@@ -32,7 +32,7 @@ class _ChatBodyState extends State<ChatBody> {
             return const Text("Error ChatPage");
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           }
           return ListView.builder(
             reverse: true,
