@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:samsarah/auth_flow/profile_photo.dart';
-import 'package:samsarah/auth_flow/sign_in.dart';
+import 'package:samsarah/pages/tab/auth_flow/profile_photo.dart';
+import 'package:samsarah/pages/tab/auth_flow/sign_in.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
-import '../../auth_flow/my_profile_page.dart';
+import '../../pages/tab/auth_flow/my_profile_page.dart';
 
 class AccountHeader extends StatefulWidget {
   const AccountHeader({
@@ -21,7 +21,7 @@ class _AccountHeaderState extends State<AccountHeader> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: auth.firebaseAuth.userChanges(),
+        stream: auth.instance.userChanges(),
         builder: (context, snapshot) {
           return snapshot.hasData
               ? GestureDetector(
@@ -39,12 +39,11 @@ class _AccountHeaderState extends State<AccountHeader> {
                       children: [
                         ProfilePhoto(
                             imagePath:
-                                auth.firebaseAuth.currentUser?.photoURL ?? "",
+                                auth.instance.currentUser?.photoURL ?? "",
                             radius: 50,
-                            username:
-                                auth.firebaseAuth.currentUser!.displayName),
+                            username: auth.instance.currentUser!.displayName),
                         Text(
-                          auth.firebaseAuth.currentUser?.displayName ?? "",
+                          auth.instance.currentUser?.displayName ?? "",
                           style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -61,7 +60,7 @@ class _AccountHeaderState extends State<AccountHeader> {
                         Container(
                           margin: const EdgeInsets.all(10),
                           child: StreamBuilder(
-                              stream: auth.firebaseAuth.userChanges(),
+                              stream: auth.instance.userChanges(),
                               builder: (context, snapshot) => snapshot.hasData
                                   ? ProfilePhoto(
                                       imagePath: snapshot.data!.photoURL ?? "",

@@ -1,42 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:samsarah/services/auth_service.dart';
 
-import '../../../models/message_data.dart';
+import '../../../../../models/message_data.dart';
 import '../message_products_preview.dart';
 
-class Message extends StatefulWidget {
+class Message extends StatelessWidget {
   final MessageData data;
-  const Message({super.key, required this.data});
+  Message({super.key, required this.data});
 
-  @override
-  State<Message> createState() => _MessageState();
-}
-
-class _MessageState extends State<Message> {
-  late List<String> ids;
   final auth = AuthService();
-  @override
-  initState() {
-    super.initState();
-    ids = List.from(widget.data.appendedProductsIds);
-  }
 
   List<Widget> getContent() {
     List<Widget> temp = [];
 
-    if (ids.isNotEmpty) {
-      temp.add(MessageProductsPreview(ids: ids));
+    if (data.appendedProductsIds.isNotEmpty) {
+      temp.add(MessageProductsPreview(
+        ids: data.appendedProductsIds,
+        key: UniqueKey(),
+      ));
     }
 
     temp.add(Text(
-      //ids.toString(),
-      widget.data.content,
+      data.content,
       style: const TextStyle(fontSize: 20, color: Colors.white),
       textWidthBasis: TextWidthBasis.parent,
     ));
 
     temp.add(Text(
-      "${widget.data.timeStamp.toDate().hour}:${widget.data.timeStamp.toDate().minute}",
+      "${data.timeStamp.toDate().hour}:${data.timeStamp.toDate().minute}",
       style: const TextStyle(
           color: Color.fromARGB(255, 218, 218, 218), fontSize: 12),
     ));
@@ -46,7 +37,7 @@ class _MessageState extends State<Message> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: widget.data.from == auth.uid
+      mainAxisAlignment: data.from == auth.uid
           ? MainAxisAlignment.end
           : MainAxisAlignment.start,
       children: [
@@ -56,20 +47,20 @@ class _MessageState extends State<Message> {
           margin: const EdgeInsets.only(top: 4, bottom: 4, right: 20, left: 20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
-                topLeft: widget.data.from == auth.uid
+                topLeft: data.from == auth.uid
                     ? const Radius.circular(12)
                     : Radius.zero,
                 topRight: const Radius.circular(12),
                 bottomLeft: const Radius.circular(12),
-                bottomRight: widget.data.from != auth.uid
+                bottomRight: data.from != auth.uid
                     ? const Radius.circular(12)
                     : Radius.zero),
-            color: widget.data.from == auth.uid ? Colors.green : Colors.blue,
+            color: data.from == auth.uid ? Colors.green : Colors.blue,
           ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
-              crossAxisAlignment: widget.data.from != auth.uid
+              crossAxisAlignment: data.from != auth.uid
                   ? CrossAxisAlignment.start
                   : CrossAxisAlignment.end,
               children: getContent(),

@@ -14,6 +14,7 @@ class ActivateVoucherPage extends StatefulWidget {
 
 class _ActivateVoucherPageState extends State<ActivateVoucherPage> {
   String code = "";
+  bool isLoading = false;
   final key = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -39,8 +40,17 @@ class _ActivateVoucherPageState extends State<ActivateVoucherPage> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: MyButton(
-                onPressed: tryActivateVoucher, raised: true, title: "تفعيل"),
+            child: !isLoading
+                ? MyButton(
+                    onPressed: () {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      tryActivateVoucher();
+                    },
+                    raised: true,
+                    title: "تفعيل")
+                : const CircularProgressIndicator(),
           )
         ],
       ),
@@ -54,7 +64,7 @@ class _ActivateVoucherPageState extends State<ActivateVoucherPage> {
       var value = await store.voucherValue(code);
       if (value == 0) {
         if (mounted) {
-          alert(context, "هذا الكود غير صحيح ");
+          await alert(context, "هذا الكود غير صحيح ");
         }
       } else {
         await store.updateCurrency(value);
@@ -68,7 +78,10 @@ class _ActivateVoucherPageState extends State<ActivateVoucherPage> {
         }
       }
     } else {
-      alert(context, "الحقل فارغ");
+      await alert(context, "الحقل فارغ");
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 }

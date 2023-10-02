@@ -14,7 +14,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "1073917965870-ak5acmjfn59lbgpuliki6viashk06a94.apps.googleusercontent.com",
+          "client_id": "1073917965870-0hk8uvhqj177bighfv5s63qlpu8ufgka.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shomous.samsarah",
+            "certificate_hash": "bbb25906cb46c63987da98e1b763150701fd52c1"
+          }
+        },
+        {
+          "client_id": "1073917965870-l7nhdhduhnrvgptq63qqgso1u8hrjrcd.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

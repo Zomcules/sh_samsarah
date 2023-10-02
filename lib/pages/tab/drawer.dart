@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:samsarah/auth_flow/activate_voucher.dart';
-import 'package:samsarah/auth_flow/sign_in.dart';
-import 'package:samsarah/chat_app/chat_page/choose_product_page.dart';
+import 'package:samsarah/pages/tab/auth_flow/activate_voucher.dart';
+import 'package:samsarah/pages/tab/auth_flow/sign_in.dart';
+import 'package:samsarah/pages/tab/chat_app/chat_page/choose_product_page.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/util/product_info/product_preview_page.dart';
+import 'package:samsarah/util/product_info/product_preview_page/controller.dart';
+import 'package:samsarah/util/product_info/search_page.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
 import '../../util/account/account_header.dart';
@@ -20,7 +22,7 @@ class _MyDrawerState extends State<MyDrawer> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: AuthService().firebaseAuth.userChanges(),
+      stream: AuthService().instance.userChanges(),
       builder: (context, snapshot) {
         return Drawer(
           child: snapshot.hasData
@@ -31,10 +33,14 @@ class _MyDrawerState extends State<MyDrawer> {
                     ),
                     const AccountHeader(),
                     DrawerTile(
-                      title: "اضافة منتج",
-                      icon: Icons.add_location_alt,
-                      onTap: () => push(context,
-                          const ProductPreviewPage(type: PPPType.createNew)),
+                      title: "البحث",
+                      icon: Icons.search,
+                      onTap: () => push(
+                        context,
+                        SearchPage(
+                          pc: ProductController(),
+                        ),
+                      ),
                     ),
                     DrawerTile(
                       title: "منتجاتي",
@@ -45,9 +51,16 @@ class _MyDrawerState extends State<MyDrawer> {
                       ),
                     ),
                     DrawerTile(
+                      title: "اضافة منتج",
+                      icon: Icons.add_location_alt,
+                      onTap: () => push(context,
+                          const ProductPreviewPage(type: PPPType.createNew)),
+                    ),
+                    DrawerTile(
                         title: "شحن الرصيد",
                         icon: Icons.monetization_on_outlined,
-                        onTap: () => push(context, const ActivateVoucherPage()))
+                        onTap: () =>
+                            push(context, const ActivateVoucherPage())),
                   ],
                 )
               : Center(

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:samsarah/chat_app/chat_page/page_contents/message.dart';
+import 'package:samsarah/pages/tab/chat_app/chat_page/page_contents/message.dart';
 
-import '../../../models/message_data.dart';
-import '../../../services/chat_service.dart';
+import '../../../../../models/message_data.dart';
+import '../../../../../services/chat_service.dart';
 
 class ChatBody extends StatefulWidget {
   final String reciever;
@@ -37,8 +37,10 @@ class _ChatBodyState extends State<ChatBody> {
           return ListView.builder(
             reverse: true,
             itemCount: snapshot.data!.size,
-            itemBuilder: (context, index) =>
-                Message(data: snapshot.data!.docs[index].data()),
+            itemBuilder: (context, index) => Message(
+              data: snapshot.data!.docs[index].data(),
+              key: UniqueKey(),
+            ),
           );
         },
       ),

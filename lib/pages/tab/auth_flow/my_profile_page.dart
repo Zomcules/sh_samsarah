@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:samsarah/auth_flow/activate_voucher.dart';
-import 'package:samsarah/auth_flow/profile_photo.dart';
-import 'package:samsarah/auth_flow/sign_in.dart';
+import 'package:samsarah/pages/tab/auth_flow/activate_voucher.dart';
+import 'package:samsarah/pages/tab/auth_flow/profile_photo.dart';
+import 'package:samsarah/pages/tab/auth_flow/sign_in.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/database_service.dart';
 import 'package:samsarah/services/storage_service.dart';
@@ -19,7 +19,7 @@ class MyProfilePage extends StatefulWidget {
 }
 
 class _MyProfilePageState extends State<MyProfilePage> {
-  final auth = AuthService().firebaseAuth;
+  final auth = AuthService();
   final store = Database();
   @override
   Widget build(BuildContext context) {
@@ -49,9 +49,9 @@ class _MyProfilePageState extends State<MyProfilePage> {
               Stack(
                 children: [
                   ProfilePhoto(
-                      username: auth.currentUser!.displayName,
+                      username: auth.displayName,
                       radius: MediaQuery.of(context).size.width * 3 / 10,
-                      imagePath: auth.currentUser!.photoURL),
+                      imagePath: auth.photoURL),
                   Positioned(
                     bottom: 0,
                     right: 0,
@@ -81,7 +81,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Text(
-                auth.currentUser!.displayName!,
+                auth.displayName!,
                 style: const TextStyle(fontSize: 25, color: Colors.black87),
               ),
               IconButton(onPressed: editUserName, icon: const Icon(Icons.edit))
@@ -144,10 +144,8 @@ class _MyProfilePageState extends State<MyProfilePage> {
                 onPressed: () async {
                   if (key.currentState!.validate()) {
                     key.currentState!.save();
-                    await auth.currentUser!.updateDisplayName(value);
-                    await store.accountCollection
-                        .doc(auth.currentUser!.uid)
-                        .update({"username": auth.currentUser!.displayName!});
+                    await auth.updateName(value);
+                    await AuthService().syncUser();
                     if (context.mounted) {
                       pop(context, null);
                     }
@@ -163,7 +161,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
               Form(
                 key: key,
                 child: MyTextFormField(
-                    initialValue: auth.currentUser!.displayName,
+                    initialValue: auth.displayName,
                     onSaved: (result) {
                       value = result!;
                     },

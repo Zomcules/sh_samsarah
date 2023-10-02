@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:samsarah/auth_flow/profile_photo.dart';
+import 'package:samsarah/pages/tab/auth_flow/profile_photo.dart';
 import 'package:samsarah/services/database_service.dart';
-import '../models/account_info.dart';
-import '../util/tools/poppers_and_pushers.dart';
+import '../../../models/account_info.dart';
+import '../../../util/tools/poppers_and_pushers.dart';
 import 'chat_page/chat_page.dart';
 
 class ChatSnackBar extends StatefulWidget {

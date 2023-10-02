@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:samsarah/auth_flow/profile_photo.dart';
-import 'package:samsarah/auth_flow/sign_in.dart';
+import 'package:samsarah/pages/tab/auth_flow/profile_photo.dart';
+import 'package:samsarah/pages/tab/auth_flow/sign_in.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/pages/tab/drawer.dart';
 import 'package:samsarah/util/tools/my_button.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
-import '../../auth_flow/my_profile_page.dart';
-import '../../chat_app/messages_page.dart';
+import 'auth_flow/my_profile_page.dart';
+import 'chat_app/messages_page.dart';
 import 'Discovery_tab/discovery_tab.dart';
 import 'Account_tab/account_tab.dart';
 import 'map_tab/map_tab.dart';
@@ -59,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // backgroundColor: Colors.white
           actions: [
             StreamBuilder(
-              stream: auth.firebaseAuth.userChanges(),
+              stream: auth.instance.userChanges(),
               builder: (context, snapshot) {
                 return IconButton(
                   onPressed: snapshot.data != null
@@ -79,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             StreamBuilder(
-                stream: auth.firebaseAuth.userChanges(),
+                stream: auth.instance.userChanges(),
                 builder: (context, snapshot) {
                   return IconButton(
                       onPressed: () {
@@ -140,7 +140,7 @@ class _UserThumbnailState extends State<UserThumbnail> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: auth.firebaseAuth.userChanges(),
+        stream: auth.instance.userChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ProfilePhoto(

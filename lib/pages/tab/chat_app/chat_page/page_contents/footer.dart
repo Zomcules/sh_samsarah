@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:samsarah/chat_app/chat_page/choose_product_page.dart';
+import 'package:samsarah/pages/tab/chat_app/chat_page/choose_product_page.dart';
 import 'package:samsarah/models/message_data.dart';
-import 'package:samsarah/chat_app/chat_page/page_contents/product_appendix.dart';
+import 'package:samsarah/pages/tab/chat_app/chat_page/page_contents/product_appendix.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/chat_service.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
-import '../../../models/product_info.dart';
+import '../../../../../models/product_info.dart';
 
 class ChatFooter extends StatefulWidget {
   final String reciever;
@@ -111,6 +111,7 @@ class _ChatFooterState extends State<ChatFooter> {
           widget.reciever);
       textController.clear();
       appendedProducts.clear();
+      setState(() {});
     }
   }
 }

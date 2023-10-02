@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:samsarah/auth_flow/profile_photo.dart';
+import 'package:samsarah/pages/tab/auth_flow/profile_photo.dart';
 import 'package:samsarah/models/account_info.dart';
 
 class UAccountListTile extends StatefulWidget {

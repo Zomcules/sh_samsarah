@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:samsarah/chat_app/chat_snackbar.dart';
+import 'package:samsarah/pages/tab/chat_app/chat_snackbar.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/chat_service.dart';
 import 'package:samsarah/util/account/account_header.dart';

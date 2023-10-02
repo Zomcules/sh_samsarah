@@ -8,7 +8,7 @@ import 'package:samsarah/models/account_info.dart';
 import 'package:samsarah/util/database/fetchers.dart';
 import 'package:samsarah/util/product_info/product_preview_page/controller.dart';
 import 'package:samsarah/models/product_info.dart';
-import '../../chat_app/chat_page/chat_page.dart';
+import '../../pages/tab/chat_app/chat_page/chat_page.dart';
 import '../tools/my_text_form_field.dart';
 import '../tools/poppers_and_pushers.dart';
 import 'product_preview_page/fields/location_preview.dart';

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:samsarah/auth_flow/activate_voucher.dart';
+import 'package:samsarah/pages/tab/auth_flow/activate_voucher.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:samsarah/util/tools/my_button.dart';
@@ -11,6 +11,20 @@ import '../models/product_info.dart';
 class Database {
   FirebaseFirestore get instance => FirebaseFirestore.instance;
   get auth => AuthService();
+
+  Future<ProductInfo?> getProductPreferCache(String id) async {
+    try {
+      return (await productCollection
+              .doc(id)
+              .get(const GetOptions(source: Source.cache)))
+          .data();
+    } catch (e) {
+      return (await productCollection
+              .doc(id)
+              .get(const GetOptions(source: Source.server)))
+          .data();
+    }
+  }
 
   CollectionReference<AccountInfo> get accountCollection =>
       instance.collection("Accounts").withConverter<AccountInfo>(

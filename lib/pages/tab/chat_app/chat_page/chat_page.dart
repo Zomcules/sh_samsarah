@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:samsarah/chat_app/chat_page/page_contents/body.dart';
-import 'package:samsarah/chat_app/chat_page/page_contents/footer.dart';
-import 'package:samsarah/chat_app/chat_page/page_contents/header.dart';
+import 'package:samsarah/pages/tab/chat_app/chat_page/page_contents/body.dart';
+import 'package:samsarah/pages/tab/chat_app/chat_page/page_contents/footer.dart';
+import 'package:samsarah/pages/tab/chat_app/chat_page/page_contents/header.dart';
 import 'package:samsarah/models/account_info.dart';
 import 'package:samsarah/models/product_info.dart';
 

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:samsarah/auth_flow/profile_photo.dart';
+import 'package:samsarah/pages/tab/auth_flow/profile_photo.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/database_service.dart';
 import 'package:samsarah/util/product_info/product_preview_page/controller.dart';
@@ -74,13 +74,16 @@ class ProductSnackBar extends StatelessWidget {
       if (diff.compareTo(const Duration(days: 1)) <= 0) {
         return "اليوم";
       }
+      if (diff.compareTo(const Duration(days: 3)) <= 0) {
+        return "منذ يومين";
+      }
       if (diff.compareTo(const Duration(days: 6)) <= 0) {
         return "منذ ${diff.inDays.toString()} أيام";
       }
       if (diff.compareTo(const Duration(days: 8)) <= 0) {
         return "منذ أسبوع";
       }
-      return date.toString();
+      return "${date.day}-${date.month}-${date.year}";
     }
 
     return ProductSnackBar._(

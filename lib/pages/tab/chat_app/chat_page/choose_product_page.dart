@@ -6,7 +6,7 @@ import 'package:samsarah/util/product_info/product_preview_page.dart';
 import 'package:samsarah/util/product_info/product_preview_page/fields/ppp_floating_button.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
-import '../../models/product_info.dart';
+import '../../../../models/product_info.dart';
 
 class ChooseProductPage extends StatelessWidget {
   final Function(BuildContext context, ProductInfo info) onTap;
