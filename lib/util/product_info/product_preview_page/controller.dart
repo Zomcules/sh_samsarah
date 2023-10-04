@@ -81,10 +81,8 @@ class ProductController {
       searchMap["withFurniture"] = withFurniture;
     }
 
-    var docs = (await store.productCollection.get()).docs;
-
     var products =
-        List<ProductInfo>.generate(docs.length, (index) => docs[index].data());
+        (await store.productCollection.get()).docs.map((e) => e.data());
 
     products = products.where(
       (element) {
@@ -101,8 +99,8 @@ class ProductController {
     if (geopoint != null) {
       products = products
           .where((element) =>
-              TwoPoints(first: geopoint!, second: element.geopoint)
-                  .closerThan(radius))
+              TwoPoints(first: geopoint!, second: element.geopoint).distance <=
+              radius)
           .toList();
     }
     products = products
@@ -110,6 +108,6 @@ class ProductController {
             element.price <= (maxPrice ?? double.infinity) &&
             element.price >= (minPrice ?? 0))
         .toList();
-    return products;
+    return products.toList();
   }
 }

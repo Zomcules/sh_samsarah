@@ -49,10 +49,27 @@ class ChatService {
       var doc =
           _store.instance.collection("ChatRooms").doc(_chatRoomIdOf(reciever));
       await doc.collection("Messages").add(message.toFireStore());
-      await doc.update({"timeStamp": FieldValue.serverTimestamp()});
+      await doc.update(
+        {
+          "timeStamp": FieldValue.serverTimestamp(),
+        },
+      );
       return true;
     } catch (e) {
       return false;
     }
+  }
+
+  Future<void> leaveChat(String reciever) async {
+    await _store.instance
+        .collection("ChatRooms")
+        .doc(_chatRoomIdOf(reciever))
+        .update(
+      {
+        "chatters": FieldValue.arrayRemove(
+          [_auth.uid],
+        )
+      },
+    );
   }
 }

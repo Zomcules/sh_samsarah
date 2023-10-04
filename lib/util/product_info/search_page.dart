@@ -27,6 +27,19 @@ class _SearchPageState extends State<SearchPage>
           type: PPPType.search,
           validator: (geoPoint) => null,
         ),
+        MyTextFormField(
+            onSaved: (value) {
+              if (value != null && value != "") {
+                widget.pc.radius = double.parse(value);
+              } else {
+                widget.pc.radius = 50;
+              }
+            },
+            initialValue: widget.pc.radius.ceil().toString(),
+            validator: validateIntNullable,
+            keyboardType: TextInputType.number,
+            labelText: "محيط البحث بالكيلومترات",
+            pppType: PPPType.createNew),
         TwoChoices(
             pc: widget.pc,
             type: PPPType.search,
@@ -124,21 +137,25 @@ class _SearchResultsState extends State<SearchResults> {
       body: FutureBuilder(
         future: widget.list,
         builder: (context, snapshot) =>
-            snapshot.connectionState == ConnectionState.done
-                ? ListView(
-                    children: List<ProductSnackBar>.generate(
-                        snapshot.data!.length,
-                        (index) => ProductSnackBar.post(
-                              product: snapshot.data![index],
-                              onTap: (info) => push(
-                                  context,
-                                  ProductPreviewPage(
-                                    type: PPPType.viewExternal,
-                                    info: info,
-                                  )),
-                            )),
+            snapshot.connectionState == ConnectionState.waiting
+                ? const Center(
+                    child: CircularProgressIndicator(),
                   )
-                : const CircularProgressIndicator(),
+                : ListView(
+                    children: List<ProductSnackBar>.generate(
+                      snapshot.data!.length,
+                      (index) => ProductSnackBar.post(
+                        product: snapshot.data![index],
+                        onTap: (info) => push(
+                          context,
+                          ProductPreviewPage(
+                            type: PPPType.viewExternal,
+                            info: info,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
       ),
     );
   }

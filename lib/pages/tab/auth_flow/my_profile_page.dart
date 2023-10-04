@@ -28,16 +28,17 @@ class _MyProfilePageState extends State<MyProfilePage> {
         title: const Text("الصفحة الشخصية"),
         actions: [
           IconButton(
-              onPressed: () async {
-                await auth.signOut();
-                if (mounted) {
-                  pushReplacement(context, const SignInPage());
-                }
-              },
-              icon: const Icon(
-                Icons.logout,
-                color: Colors.red,
-              ))
+            onPressed: () async {
+              await AuthService().signOut();
+              if (mounted) {
+                pushReplacement(context, const SignInPage());
+              }
+            },
+            icon: const Icon(
+              Icons.logout,
+              color: Colors.red,
+            ),
+          )
         ],
       ),
       body: Column(
@@ -66,7 +67,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                       },
                       backgroundColor: Colors.green,
                       shape: const CircleBorder(),
-                      heroTag: "GOGOGAGA",
+                      heroTag: UniqueKey(),
                       child: const Icon(
                         Icons.camera_alt,
                         color: Colors.white,
@@ -117,6 +118,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                           push(context, const ActivateVoucherPage()),
                       backgroundColor: Colors.green,
                       shape: const CircleBorder(),
+                      heroTag: UniqueKey(),
                       child: const Icon(Icons.add, color: Colors.white),
                     )
                   ],
@@ -135,44 +137,47 @@ class _MyProfilePageState extends State<MyProfilePage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-          actions: [
-            MyButton(
-                onPressed: () => pop(context, null),
-                raised: false,
-                title: "رجوع"),
-            MyButton(
-                onPressed: () async {
-                  if (key.currentState!.validate()) {
-                    key.currentState!.save();
-                    await auth.updateName(value);
-                    await AuthService().syncUser();
-                    if (context.mounted) {
-                      pop(context, null);
-                    }
+        actions: [
+          MyButton(
+              onPressed: () => pop(context, null),
+              raised: false,
+              title: "رجوع"),
+          MyButton(
+              onPressed: () async {
+                if (key.currentState!.validate()) {
+                  key.currentState!.save();
+                  await auth.updateName(value);
+                  await AuthService().syncUser();
+                  if (context.mounted) {
+                    pop(context, null);
                   }
-                },
-                raised: true,
-                title: "تغيير الاسم"),
+                }
+              },
+              raised: true,
+              title: "تغيير الاسم"),
+        ],
+        title: const Text("تغيير الاسم"),
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Form(
+              key: key,
+              child: MyTextFormField(
+                  initialValue: auth.displayName,
+                  onSaved: (result) {
+                    value = result!;
+                  },
+                  validator: (value) =>
+                      value == null || value == "" ? "هذا الحقل فارغ" : null,
+                  keyboardType: TextInputType.name,
+                  labelText: "الاسم الجديد",
+                  pppType: PPPType.createNew),
+            ),
           ],
-          title: const Text("تغيير الاسم"),
-          content: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Form(
-                key: key,
-                child: MyTextFormField(
-                    initialValue: auth.displayName,
-                    onSaved: (result) {
-                      value = result!;
-                    },
-                    validator: (value) =>
-                        value == null || value == "" ? "هذا الحقل فارغ" : null,
-                    keyboardType: TextInputType.name,
-                    labelText: "الاسم الجديد",
-                    pppType: PPPType.createNew),
-              ),
-            ],
-          )),
+        ),
+      ),
     );
   }
 }
+
+class ProfileContent {}

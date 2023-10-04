@@ -77,15 +77,6 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
           ),
         );
       }
-      // mapController.addMarker(
-      //     await mapController.getCurrentPositionAdvancedPositionPicker(),
-      //     markerIcon: const MarkerIcon(
-      //       icon: Icon(
-      //         Icons.location_on,
-      //         size: 80,
-      //         color: Colors.red,
-      //       ),
-      //     ));
       mapController.cancelAdvancedPositionPicker();
     }
   }

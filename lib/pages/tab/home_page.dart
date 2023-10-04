@@ -7,7 +7,7 @@ import 'package:samsarah/util/tools/my_button.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 import 'chat_app/messages_page.dart';
 import 'tabs/Discovery_tab/discovery_tab.dart';
-import 'tabs/Account_tab/account_tab.dart';
+// import 'tabs/Account_tab/account_tab.dart';
 import 'tabs/map_tab/map_tab.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -22,7 +22,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Widget> myTabs = [
     const Tab(child: Icon(Icons.search)),
     const Tab(child: Icon(Icons.map)),
-    const Tab(child: Icon(Icons.person)),
+    // const Tab(child: Icon(Icons.person)),
   ];
 
   @override
@@ -38,11 +38,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: GestureDetector(
-                      onTap: () => pop(context, true),
-                      child: const Text(
-                        "نعم",
-                        style: TextStyle(fontSize: 20),
-                      )),
+                    onTap: () => pop(context, true),
+                    child: const Text(
+                      "نعم",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
                 ),
                 MyButton(
                     onPressed: () => pop(context, false),
@@ -62,13 +63,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 return IconButton(
                   onPressed: snapshot.data != null
                       ? () {
-                          Navigator.push(
+                          push(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return const MessagesPage();
-                              },
-                            ),
+                            const MessagesPage(),
                           );
                         }
                       : null,
@@ -105,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     DiscoveryTab(),
                     MapTab(),
-                    AccountTab(),
+                    // AccountTab(),
                   ],
                 ),
               ),
@@ -137,16 +134,17 @@ class _UserThumbnailState extends State<UserThumbnail> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: auth.instance.userChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return ProfilePhoto(
-              imagePath: snapshot.data!.photoURL ?? "",
-              radius: 20,
-              username: snapshot.data!.displayName,
-            );
-          }
-          return const CircularProgressIndicator();
-        });
+      stream: auth.instance.userChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return ProfilePhoto(
+            imagePath: snapshot.data!.photoURL ?? "",
+            radius: 20,
+            username: snapshot.data!.displayName,
+          );
+        }
+        return const CircularProgressIndicator();
+      },
+    );
   }
 }
