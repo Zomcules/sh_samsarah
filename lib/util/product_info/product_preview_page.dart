@@ -78,16 +78,20 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
   }
 
   void messageProducer(String uid) async {
-    if (_auth.isSignedIn && uid != _auth.uid) {
-      await _msg.initiateNewChat(uid);
-      if (mounted) {
-        push(
-          context,
-          ChatPage(
-              reciever: await store.getAccount(uid),
-              appendedProduct: widget.info),
-        );
+    if (_auth.isSignedIn) {
+      if (uid != _auth.uid) {
+        await _msg.initiateNewChat(uid);
+        if (mounted) {
+          push(
+            context,
+            ChatPage(
+                reciever: await store.getAccount(uid),
+                appendedProduct: widget.info),
+          );
+        }
       }
+    } else {
+      alert(context, "سجل الدخول في التطبيق لتتمكن من مراسلة المستخدمين");
     }
   }
 

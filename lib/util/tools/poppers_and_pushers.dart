@@ -25,7 +25,10 @@ Future<void> alert(BuildContext context, String message) async {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      content: Text(message),
+      content: Text(
+        message,
+        textDirection: TextDirection.rtl,
+      ),
     ),
   );
 }

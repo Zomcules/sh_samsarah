@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:samsarah/pages/tab/auth_flow/activate_voucher.dart';
 import 'package:samsarah/pages/tab/auth_flow/profile_photo.dart';
-import 'package:samsarah/pages/tab/auth_flow/sign_in.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/database_service.dart';
 import 'package:samsarah/services/storage_service.dart';
@@ -28,12 +27,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
         title: const Text("الصفحة الشخصية"),
         actions: [
           IconButton(
-            onPressed: () async {
-              await AuthService().signOut();
-              if (mounted) {
-                pushReplacement(context, const SignInPage());
-              }
-            },
+            onPressed: trySignOut,
             icon: const Icon(
               Icons.logout,
               color: Colors.red,
@@ -177,6 +171,29 @@ class _MyProfilePageState extends State<MyProfilePage> {
         ),
       ),
     );
+  }
+
+  void trySignOut() async {
+    bool? result = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("تسجيل الخروج"),
+        content: Text("هل انت متأكد"),
+        actions: [
+          MyButton(
+              onPressed: () => pop(context, false),
+              raised: true,
+              title: "العودة"),
+          MyButton(
+              onPressed: () => pop(context, true), raised: false, title: "نعم")
+        ],
+      ),
+    );
+    if (result != null) {
+      if (result) {
+        await auth.signOut();
+      }
+    }
   }
 }
 
