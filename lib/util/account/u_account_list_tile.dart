@@ -36,18 +36,20 @@ class _UAccountListTileState extends State<UAccountListTile> {
                 )),
           ),
           IconButton(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              icon: const Text("رجوع"))
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+            icon: const Text("رجوع"),
+          )
         ],
       ),
-    ).then((value) async {
-      if (value!) {
-        widget.info.delete();
-        widget.refresh();
-      }
-    });
+    ).then(
+      (value) async {
+        if (value!) {
+          widget.refresh();
+        }
+      },
+    );
   }
 
   @override
@@ -57,8 +59,6 @@ class _UAccountListTileState extends State<UAccountListTile> {
       title: Text(widget.info.username),
       onTap: () async {
         Navigator.pop(context);
-
-        widget.info.delete();
       },
       leading: ProfilePhoto(
         imagePath: widget.info.imagePath ?? "",
@@ -66,11 +66,12 @@ class _UAccountListTileState extends State<UAccountListTile> {
         username: widget.info.username,
       ),
       trailing: IconButton(
-          onPressed: () => confirmDelete(context),
-          icon: const Icon(
-            Icons.delete_outlined,
-            color: Colors.red,
-          )),
+        onPressed: () => confirmDelete(context),
+        icon: const Icon(
+          Icons.delete_outlined,
+          color: Colors.red,
+        ),
+      ),
     );
   }
 }

@@ -1,7 +1,6 @@
 import 'dart:math';
-import 'package:hive/hive.dart';
 
-class AccountInfo extends HiveObject {
+class AccountInfo {
   String username;
   String? imagePath;
   String globalId;

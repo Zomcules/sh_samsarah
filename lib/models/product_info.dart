@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart' as osm;
-import 'package:hive/hive.dart';
 
 import 'account_info.dart';
 
-class ProductInfo extends HiveObject {
+class ProductInfo {
   final Map<String, dynamic> producer;
   final String globalId;
   List<String> likers;

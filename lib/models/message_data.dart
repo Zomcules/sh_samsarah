@@ -1,10 +1,9 @@
 // ignore_for_file: sized_box_for_whitespace
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hive/hive.dart';
 import 'package:samsarah/services/auth_service.dart';
 
-class MessageData extends HiveObject {
+class MessageData {
   final String from;
   final String content;
   bool isRead;

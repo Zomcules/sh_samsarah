@@ -177,8 +177,8 @@ class _MyProfilePageState extends State<MyProfilePage> {
     bool? result = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("تسجيل الخروج"),
-        content: Text("هل انت متأكد"),
+        title: const Text("تسجيل الخروج"),
+        content: const Text("هل انت متأكد"),
         actions: [
           MyButton(
               onPressed: () => pop(context, false),
