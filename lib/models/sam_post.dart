@@ -29,26 +29,22 @@ class SamPost {
         "timeStamp": Timestamp.fromDate(time),
       };
 
-  List<PostElement> getElements(String source) {
-    var temp = <PostElement>[];
+  List<Widget> getElements(String source) {
+    var temp = <Widget>[];
     var elemStart = 0;
     for (int i = 0; i < source.length; i++) {
       if (source[i] == "*") {
         temp.add(
           PostElement(
-            start: elemStart,
-            end: i,
             content: source.substring(elemStart, i),
-          ),
+          ).display(),
         );
         elemStart = i + 1;
       } else if (i == source.length - 1) {
         temp.add(
           PostElement(
-            start: elemStart,
-            end: i,
             content: source.substring(elemStart, i + 1),
-          ),
+          ).display(),
         );
       }
     }
@@ -57,18 +53,14 @@ class SamPost {
 
   Widget format() {
     return Column(
-      children: getElements(content).map((e) => e.display()).toList(),
+      children: getElements(content),
     );
   }
 }
 
 class PostElement {
-  int start;
-  int end;
   String content;
   PostElement({
-    required this.start,
-    required this.end,
     required this.content,
   });
 
@@ -112,22 +104,25 @@ class PostElement {
         future: future,
         builder: (context, snapshot) =>
             snapshot.connectionState == ConnectionState.done
-                ? GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () => push(
-                        context,
-                        ProfilePage(
-                          account: snapshot.data!,
-                        )),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        ProfilePhoto(
-                            username: snapshot.data!.username,
-                            radius: 80,
-                            imagePath: snapshot.data!.imagePath),
-                        Text(snapshot.data!.username),
-                      ],
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () => push(
+                          context,
+                          ProfilePage(
+                            account: snapshot.data!,
+                          )),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          ProfilePhoto(
+                              username: snapshot.data!.username,
+                              radius: 80,
+                              imagePath: snapshot.data!.imagePath),
+                          Text(snapshot.data!.username),
+                        ],
+                      ),
                     ),
                   )
                 : const SizedBox(
@@ -139,7 +134,10 @@ class PostElement {
       );
     }
     if (isText) {
-      return Text(content);
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(content),
+      );
     }
     return const Placeholder();
   }

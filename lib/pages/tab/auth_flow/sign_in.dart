@@ -20,10 +20,10 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   final key = GlobalKey<FormState>();
   final auth = AuthService().instance;
-  String email = "";
-  String password = "";
-  String password2 = "";
-  String username = "";
+  final emailControl = TextEditingController();
+  final passwordController = TextEditingController();
+  final password2Controller = TextEditingController();
+  final usernameController = TextEditingController();
   bool createNew = false;
   bool isLoading = false;
   @override
@@ -44,7 +44,8 @@ class _SignInPageState extends State<SignInPage> {
   void trySignIn() async {
     key.currentState!.save();
     try {
-      await auth.signInWithEmailAndPassword(email: email, password: password);
+      await auth.signInWithEmailAndPassword(
+          email: emailControl.text, password: passwordController.text);
       if (mounted) {
         pushReplacement(context, const MyProfilePage());
       }
@@ -60,23 +61,18 @@ class _SignInPageState extends State<SignInPage> {
     setState(() {
       isLoading = true;
     });
-    key.currentState!.save();
-    if (password == password2) {
+    if (passwordController.text == password2Controller.text) {
       try {
         await auth.createUserWithEmailAndPassword(
-            email: email, password: password);
-        await auth.currentUser!.updateDisplayName(username);
-        await Database()
-            .accountCollection
-            .doc(auth.currentUser!.uid)
-            .set(AccountInfo(
-              username: username,
-              globalId: auth.currentUser!.uid,
-              currency: 0,
-            ));
-        if (mounted) {
-          pushReplacement(context, const MyProfilePage());
-        }
+            email: emailControl.text, password: passwordController.text);
+        await auth.currentUser!.updateDisplayName(usernameController.text);
+        await Database().accountCollection.doc(auth.currentUser!.uid).set(
+              AccountInfo(
+                username: usernameController.text,
+                globalId: auth.currentUser!.uid,
+                currency: 0,
+              ),
+            );
       } on FirebaseAuthException catch (e) {
         await alert(context, handleError(e));
         setState(() {
@@ -85,9 +81,11 @@ class _SignInPageState extends State<SignInPage> {
       }
     } else {
       await alert(context, "كلمة السر غير متطابقة");
-      setState(() {
-        isLoading = false;
-      });
+      setState(
+        () {
+          isLoading = false;
+        },
+      );
     }
   }
 
@@ -105,7 +103,8 @@ class _SignInPageState extends State<SignInPage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: MyTextFormField(
-                        onSaved: (value) => username = value!,
+                        controller: usernameController,
+                        onSaved: (_) {},
                         validator: validator,
                         keyboardType: TextInputType.name,
                         labelText: "الاسم",
@@ -114,7 +113,8 @@ class _SignInPageState extends State<SignInPage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: MyTextFormField(
-                        onSaved: (value) => email = value!,
+                        controller: emailControl,
+                        onSaved: (value) {},
                         validator: validator,
                         keyboardType: TextInputType.emailAddress,
                         labelText: "البريد الالكتروني",
@@ -123,8 +123,8 @@ class _SignInPageState extends State<SignInPage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: MyTextFormField(
-                        onChanged: (value) => password = value ?? "",
-                        onSaved: (value) => password = value!,
+                        controller: passwordController,
+                        onSaved: (value) {},
                         validator: validator,
                         keyboardType: TextInputType.name,
                         labelText: "كلمة السر",
@@ -133,15 +133,17 @@ class _SignInPageState extends State<SignInPage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: MyTextFormField(
-                        onSaved: (value) => password2 = value!,
-                        validator: (value) =>
-                            password == value ? null : "كلمة السر غير متطابقة",
+                        controller: password2Controller,
+                        onSaved: (value) => password2Controller.text = value!,
+                        validator: (value) => passwordController.text == value
+                            ? null
+                            : "كلمة السر غير متطابقة",
                         keyboardType: TextInputType.name,
                         labelText: "أعد كتابة كلمة السر",
                         pppType: PPPType.createNew),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),
@@ -182,7 +184,8 @@ class _SignInPageState extends State<SignInPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: MyTextFormField(
-                    onSaved: (value) => email = value!,
+                    controller: emailControl,
+                    onSaved: (value) {},
                     validator: validator,
                     keyboardType: TextInputType.emailAddress,
                     labelText: "عنوان البريد الالكتروني",
@@ -191,7 +194,8 @@ class _SignInPageState extends State<SignInPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: MyTextFormField(
-                    onSaved: (value) => password = value!,
+                    controller: passwordController,
+                    onSaved: (value) {},
                     validator: validator,
                     keyboardType: TextInputType.visiblePassword,
                     labelText: "كلمة السر",
@@ -215,8 +219,9 @@ class _SignInPageState extends State<SignInPage> {
                   width: 65,
                   height: 65,
                   decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(20)),
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                   child: const Center(
                     child: Text(
                       "G",

@@ -10,6 +10,7 @@ class MyTextFormField extends StatefulWidget {
   final String? Function(String? value) validator;
   final TextInputType keyboardType;
   final String labelText;
+  final TextEditingController? controller;
 
   const MyTextFormField(
       {super.key,
@@ -19,7 +20,8 @@ class MyTextFormField extends StatefulWidget {
       required this.keyboardType,
       required this.labelText,
       this.initialValue,
-      required this.pppType});
+      required this.pppType,
+      this.controller});
 
   @override
   State<MyTextFormField> createState() => _MyTextFormFieldState();
@@ -45,6 +47,7 @@ class _MyTextFormFieldState extends State<MyTextFormField>
         onSaved: widget.onSaved,
         autovalidateMode: AutovalidateMode.always,
         validator: widget.validator,
+        controller: widget.controller,
       ),
     );
   }
