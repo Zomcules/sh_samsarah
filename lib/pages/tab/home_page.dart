@@ -7,7 +7,7 @@ import 'package:samsarah/util/tools/my_button.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 import 'chat_app/messages_page.dart';
 import 'tabs/Discovery_tab/discovery_tab.dart';
-// import 'tabs/Account_tab/account_tab.dart';
+import 'tabs/Feed_tab/feed_tab.dart';
 import 'tabs/map_tab/map_tab.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -22,7 +22,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Widget> myTabs = [
     const Tab(child: Icon(Icons.search)),
     const Tab(child: Icon(Icons.map)),
-    // const Tab(child: Icon(Icons.person)),
+    const Tab(child: Icon(Icons.newspaper)),
   ];
 
   @override
@@ -102,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     DiscoveryTab(),
                     MapTab(),
-                    // AccountTab(),
+                    FeedTab(),
                   ],
                 ),
               ),

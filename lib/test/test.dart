@@ -1,28 +1,55 @@
 // ignore_for_file: avoid_print
-import 'dart:math';
 
 void main() {
-  print(distance);
+  var list = (getElements("Hello!*uid-123123*pid-65465"));
+  for (var element in list) {
+    print("${element.content} - ${element.type}");
+  }
 }
 
-double lat1 = 19.177271584050118;
-double lon1 = 30.4558128118515;
+List<PostElement> getElements(String source) {
+  var temp = <PostElement>[];
+  var elemStart = 0;
+  for (int i = 0; i < source.length; i++) {
+    if (source[i] == "*") {
+      temp.add(
+        PostElement(
+          start: elemStart,
+          end: i,
+          content: source.substring(elemStart, i),
+        ),
+      );
+      elemStart = i + 1;
+    } else if (i == source.length - 1) {
+      temp.add(
+        PostElement(
+          start: elemStart,
+          end: i,
+          content: source.substring(elemStart, i + 1),
+        ),
+      );
+    }
+  }
+  return temp;
+}
 
-double lat2 = 19.17724102122608;
-double lon2 = 30.45327930419944;
+class PostElement {
+  int start;
+  int end;
+  String content;
+  PostElement({
+    required this.start,
+    required this.end,
+    required this.content,
+  });
 
-double radius = 6399.5;
+  bool get isProduct => content.startsWith("pid-");
+  bool get isAcc => content.startsWith("uid-");
+  bool get isText => !isProduct && !isAcc;
 
-num haversine(fi) => pow(sin(fi / 2), 2);
-double radians(double angle) => angle * pi / 180;
-double get distance {
-  var latChange = radians(lat2 - lat1);
-  var radLat1 = radians(lat1);
-  var radLat2 = radians(lat2);
-  var longChange = radians(lon2 - lon1);
-
-  double a = haversine(latChange) +
-      cos(radLat1) * cos(radLat2) * haversine(longChange);
-  double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-  return radius * c;
+  String get type {
+    if (isProduct) return "prod";
+    if (isAcc) return "acc";
+    return "txt";
+  }
 }

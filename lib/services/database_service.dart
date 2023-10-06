@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:samsarah/models/sam_post.dart';
 import 'package:samsarah/pages/tab/auth_flow/activate_voucher.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:flutter/material.dart';
@@ -231,4 +232,16 @@ class Database {
       }
     }
   }
+
+  Future<QuerySnapshot<SamPost>> getFeed() => instance
+      .collection("AppData")
+      .doc("SamPosts")
+      .collection("Posts")
+      .withConverter<SamPost>(
+        fromFirestore: (snapshot, options) =>
+            SamPost.fromFirestore(snapshot.data()!),
+        toFirestore: (value, options) => value.toFirestore(),
+      )
+      .orderBy("timeStamp", descending: true)
+      .get();
 }
