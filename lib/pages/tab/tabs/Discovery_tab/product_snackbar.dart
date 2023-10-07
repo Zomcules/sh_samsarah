@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:samsarah/pages/tab/auth_flow/profile_photo.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/database_service.dart';
+import 'package:samsarah/util/product_info/product_preview_page.dart';
 import 'package:samsarah/util/product_info/product_preview_page/controller.dart';
 import 'package:samsarah/util/product_info/product_preview_page/fields/location_preview.dart';
 import 'package:samsarah/util/tools/my_text.dart';
@@ -12,7 +13,7 @@ import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 import '../../../../util/product_info/product_preview_page/fields/ppp_floating_button.dart';
 
 class ProductSnackBar extends StatelessWidget {
-  final Widget widget;
+  final Widget Function(BuildContext) widget;
   final void Function(ProductInfo product)? onTap;
   final ProductInfo product;
 
@@ -25,36 +26,76 @@ class ProductSnackBar extends StatelessWidget {
     return ProductSnackBar._(
       onTap: onTap,
       product: product,
-      widget: Padding(
+      widget: (context) => Padding(
         padding: const EdgeInsets.all(8.0),
-        child: GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: () => onTap != null ? onTap(product) : null,
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [
-                  BoxShadow(
-                      blurRadius: 5,
-                      color: Colors.black.withOpacity(0.15),
-                      blurStyle: BlurStyle.outer)
-                ]),
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                children: [
-                  MyText(
-                    text: product.forSale ? "للبيع" : "للشراء",
-                    color: product.forSale ? Colors.red : Colors.blue,
+        child: Row(
+          children: [
+            Expanded(
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () => onTap != null ? onTap(product) : null,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(
+                          blurRadius: 5,
+                          color: Colors.black.withOpacity(0.15),
+                          blurStyle: BlurStyle.outer)
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(product.price.annotate()),
-                  )
-                ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Row(
+                      children: [
+                        MyText(
+                          text: product.forSale ? "للبيع" : "للشراء",
+                          color: product.forSale ? Colors.red : Colors.blue,
+                        ),
+                        () {
+                          switch (product.zone) {
+                            case ZoneType.agricultural:
+                              return const MyText(
+                                text: "زراعية",
+                                color: Colors.green,
+                              );
+                            case ZoneType.commercial:
+                              return const MyText(
+                                text: "تجارية",
+                                color: Colors.orange,
+                              );
+                            case ZoneType.residential:
+                              return const MyText(
+                                text: "سكنية",
+                                color: Colors.cyan,
+                              );
+                            default:
+                              return const SizedBox();
+                          }
+                        }(),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(product.price.annotate()),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
+            IconButton(
+              onPressed: () => push(
+                  context,
+                  ProductPreviewPage(
+                    type: PPPType.viewExternal,
+                    info: product,
+                  )),
+              icon: const Icon(
+                Icons.remove_red_eye_outlined,
+                color: Colors.black38,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -66,7 +107,7 @@ class ProductSnackBar extends StatelessWidget {
     return ProductSnackBar._(
       onTap: onTap,
       product: product,
-      widget: GestureDetector(
+      widget: (context) => GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () => onTap != null ? onTap(product) : null,
         child: Container(
@@ -112,10 +153,12 @@ class ProductSnackBar extends StatelessWidget {
                     padding: const EdgeInsets.all(5),
                     margin: const EdgeInsets.only(bottom: 10),
                     decoration: BoxDecoration(
-                        color: Colors.amber.shade300,
-                        borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(10),
-                            bottomLeft: Radius.circular(10))),
+                      color: Colors.amber.shade300,
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        bottomLeft: Radius.circular(10),
+                      ),
+                    ),
                     child: Row(
                       children: [
                         const Text(
@@ -147,9 +190,10 @@ class ProductSnackBar extends StatelessWidget {
                   ),
                   Expanded(
                     child: Wrap(
-                        //alignment: WrapAlignment.end,
-                        textDirection: TextDirection.rtl,
-                        children: getAttributes(product)),
+                      //alignment: WrapAlignment.end,
+                      textDirection: TextDirection.rtl,
+                      children: getAttributes(product),
+                    ),
                   )
                 ],
               ),
@@ -180,7 +224,7 @@ class ProductSnackBar extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) => widget;
+  Widget build(BuildContext context) => widget(context);
 }
 
 class Likes extends StatefulWidget {
@@ -205,30 +249,31 @@ class _LikesState extends State<Likes> {
           child: Text(widget.product.likers.length.annotate()),
         ),
         IconButton(
-            onPressed: () async {
-              if (auth.isSignedIn) {
-                if (isOn) {
-                  await store.unlikeProduct(widget.product.globalId);
-                  widget.product.likers.remove(uid!);
-                } else {
-                  await store.likeProduct(widget.product.globalId);
-                  widget.product.likers.add(uid!);
-                }
-                setState(() {});
+          onPressed: () async {
+            if (auth.isSignedIn) {
+              if (isOn) {
+                await store.unlikeProduct(widget.product.globalId);
+                widget.product.likers.remove(uid!);
               } else {
-                alert(context,
-                    "الرجاء تسجيل الدخول للتمكن من حفظ والاعجاب بالمعروضات");
+                await store.likeProduct(widget.product.globalId);
+                widget.product.likers.add(uid!);
               }
-            },
-            icon: isOn
-                ? const Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                  )
-                : const Icon(
-                    Icons.favorite_border,
-                    color: Colors.grey,
-                  )),
+              setState(() {});
+            } else {
+              alert(context,
+                  "الرجاء تسجيل الدخول للتمكن من حفظ والاعجاب بالمعروضات");
+            }
+          },
+          icon: isOn
+              ? const Icon(
+                  Icons.favorite,
+                  color: Colors.red,
+                )
+              : const Icon(
+                  Icons.favorite_border,
+                  color: Colors.grey,
+                ),
+        ),
       ],
     );
   }
@@ -250,29 +295,30 @@ class _BookmarkState extends State<Bookmark> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-        onPressed: () async {
-          if (auth.isSignedIn) {
-            if (isOn) {
-              await store.removeFromSaved(widget.product.globalId);
-              widget.product.bookmarkers.remove(uid!);
-            } else {
-              await store.addToSaved(widget.product.globalId);
-              widget.product.bookmarkers.add(uid!);
-            }
-            setState(() {});
+      onPressed: () async {
+        if (auth.isSignedIn) {
+          if (isOn) {
+            await store.removeFromSaved(widget.product.globalId);
+            widget.product.bookmarkers.remove(uid!);
           } else {
-            alert(context,
-                "الرجاء تسجيل الدخول للتمكن من حفظ والاعجاب بالمعروضات");
+            await store.addToSaved(widget.product.globalId);
+            widget.product.bookmarkers.add(uid!);
           }
-        },
-        icon: isOn
-            ? const Icon(
-                Icons.bookmark,
-                color: Colors.yellow,
-              )
-            : const Icon(
-                Icons.bookmark_add_outlined,
-                color: Colors.grey,
-              ));
+          setState(() {});
+        } else {
+          alert(
+              context, "الرجاء تسجيل الدخول للتمكن من حفظ والاعجاب بالمعروضات");
+        }
+      },
+      icon: isOn
+          ? const Icon(
+              Icons.bookmark,
+              color: Colors.yellow,
+            )
+          : const Icon(
+              Icons.bookmark_add_outlined,
+              color: Colors.grey,
+            ),
+    );
   }
 }

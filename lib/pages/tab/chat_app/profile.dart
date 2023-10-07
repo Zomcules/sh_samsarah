@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:samsarah/models/account_info.dart';
 import 'package:samsarah/pages/tab/auth_flow/profile_photo.dart';
+import 'package:samsarah/pages/tab/chat_app/chat_page/chat_page.dart';
 import 'package:samsarah/pages/tab/chat_app/chat_page/choose_product_page.dart';
+import 'package:samsarah/services/chat_service.dart';
 import 'package:samsarah/services/database_service.dart';
 import 'package:samsarah/util/tools/my_button.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
@@ -19,6 +21,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage>
     with AutomaticKeepAliveClientMixin {
   bool isLoading = false;
+  final msg = ChatService();
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -65,6 +68,16 @@ class _ProfilePageState extends State<ProfilePage>
                         ],
                       ),
                     ],
+                  ),
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: () =>
+                        push(context, ChatPage(reciever: snapshot.data!)),
+                    backgroundColor: Colors.green,
+                    shape: const CircleBorder(),
+                    child: const Icon(
+                      Icons.message,
+                      color: Colors.white,
+                    ),
                   ),
                 )
               : Container(

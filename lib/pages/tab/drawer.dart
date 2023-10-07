@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:samsarah/pages/tab/auth_flow/activate_voucher.dart';
 import 'package:samsarah/pages/tab/auth_flow/auth_controller.dart';
 import 'package:samsarah/pages/tab/chat_app/chat_page/choose_product_page.dart';
+import 'package:samsarah/pages/tab/other/contact_us.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/util/product_info/product_preview_page.dart';
 import 'package:samsarah/util/product_info/product_preview_page/controller.dart';
@@ -56,6 +57,10 @@ class MyDrawer extends StatelessWidget {
                         icon: Icons.monetization_on_outlined,
                         onTap: () =>
                             push(context, const ActivateVoucherPage())),
+                    DrawerTile(
+                        title: "اتصل بنا",
+                        icon: Icons.support_agent,
+                        onTap: () => push(context, const ContactUs()))
                   ],
                 )
               : Center(

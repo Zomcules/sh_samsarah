@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:samsarah/models/app_info.dart';
 import 'package:samsarah/models/sam_post.dart';
 import 'package:samsarah/pages/tab/auth_flow/activate_voucher.dart';
 import 'package:samsarah/services/auth_service.dart';
@@ -244,4 +245,16 @@ class Database {
       )
       .orderBy("timeStamp", descending: true)
       .get();
+
+  Future<DocumentSnapshot<AppInfo>> getAppInfo() {
+    return instance
+        .collection("AppData")
+        .doc("AppInfo")
+        .withConverter(
+          fromFirestore: (snapshot, options) =>
+              AppInfo.fromFirestore(snapshot.data()!),
+          toFirestore: (value, options) => {},
+        )
+        .get(const GetOptions(source: Source.server));
+  }
 }

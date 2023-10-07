@@ -161,6 +161,7 @@ class PostElement {
         child: Text(
           content,
           style: const TextStyle(fontSize: 16),
+          textDirection: TextDirection.rtl,
         ),
       );
     }
