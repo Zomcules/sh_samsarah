@@ -66,8 +66,11 @@ class _DiscoveryTabState extends State<DiscoveryTab>
               _future = getFuture();
             }),
             heroTag: "Refresh",
-            shape: const CircleBorder(),
-            child: const Icon(Icons.refresh),
+            backgroundColor: Colors.blue,
+            child: const Icon(
+              Icons.refresh,
+              color: Colors.white,
+            ),
           ),
         );
       },

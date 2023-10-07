@@ -6,6 +6,7 @@ import 'package:samsarah/pages/tab/tabs/Discovery_tab/product_snackbar.dart';
 import 'package:samsarah/services/database_service.dart';
 import 'package:samsarah/util/product_info/product_preview_page.dart';
 import 'package:samsarah/util/product_info/product_preview_page/fields/ppp_floating_button.dart';
+import 'package:samsarah/util/tools/extensions.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
 class SamPost {
@@ -31,6 +32,27 @@ class SamPost {
 
   List<Widget> getElements(String source) {
     var temp = <Widget>[];
+    temp.add(
+      Column(
+        children: [
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  time.formatDate(),
+                  style: const TextStyle(color: Colors.grey),
+                ),
+              )
+            ],
+          ),
+          Text(
+            title,
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
     var elemStart = 0;
     for (int i = 0; i < source.length; i++) {
       if (source[i] == "*") {
@@ -135,8 +157,11 @@ class PostElement {
     }
     if (isText) {
       return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(content),
+        padding: const EdgeInsets.all(15.0),
+        child: Text(
+          content,
+          style: const TextStyle(fontSize: 16),
+        ),
       );
     }
     return const Placeholder();

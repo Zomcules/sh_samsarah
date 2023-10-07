@@ -61,7 +61,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                       },
                       backgroundColor: Colors.green,
                       shape: const CircleBorder(),
-                      heroTag: UniqueKey(),
+                      heroTag: "update image",
                       child: const Icon(
                         Icons.camera_alt,
                         color: Colors.white,
@@ -75,10 +75,15 @@ class _MyProfilePageState extends State<MyProfilePage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Text(
-                auth.displayName!,
-                style: const TextStyle(fontSize: 25, color: Colors.black87),
-              ),
+              StreamBuilder(
+                  stream: auth.instance.userChanges(),
+                  builder: (context, snapshot) {
+                    return Text(
+                      auth.displayName ?? "",
+                      style:
+                          const TextStyle(fontSize: 25, color: Colors.black87),
+                    );
+                  }),
               IconButton(onPressed: editUserName, icon: const Icon(Icons.edit))
             ],
           ),
@@ -112,7 +117,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                           push(context, const ActivateVoucherPage()),
                       backgroundColor: Colors.green,
                       shape: const CircleBorder(),
-                      heroTag: UniqueKey(),
+                      heroTag: "add cash",
                       child: const Icon(Icons.add, color: Colors.white),
                     )
                   ],

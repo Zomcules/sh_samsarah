@@ -23,12 +23,26 @@ extension FileTools on File {
   String get extension => fullName.split(".").last;
 }
 
-// extension ListTools<T> on List<T> {
-//   List<R> translate<R>(R Function(T element) translator) {
-//     var list = <R>[];
-//     for (var element in this) {
-//       list.add(translator(element));
-//     }
-//     return list;
-//   }
-// }
+extension DatetimeTool on DateTime {
+  String formatDate() {
+    final date = this;
+    final diff = DateTime.now().difference(date);
+    // if less than hour gives -1
+    if (diff.compareTo(const Duration(hours: 1)) <= 0) {
+      return "الان";
+    }
+    if (diff.compareTo(const Duration(days: 1)) <= 0) {
+      return "اليوم";
+    }
+    if (diff.compareTo(const Duration(days: 3)) <= 0) {
+      return "منذ يومين";
+    }
+    if (diff.compareTo(const Duration(days: 6)) <= 0) {
+      return "منذ ${diff.inDays.toString()} أيام";
+    }
+    if (diff.compareTo(const Duration(days: 8)) <= 0) {
+      return "منذ أسبوع";
+    }
+    return "${date.day}-${date.month}-${date.year}";
+  }
+}

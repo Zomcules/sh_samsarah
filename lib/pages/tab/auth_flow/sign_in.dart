@@ -207,7 +207,11 @@ class _SignInPageState extends State<SignInPage> {
       ),
       GestureDetector(
         onTap: () async {
-          await AuthService().signInWithGoogle();
+          try {
+            await AuthService().signInWithGoogle();
+          } catch (e) {
+            debugPrint("google failed");
+          }
         },
         child: Card(
           child: Column(

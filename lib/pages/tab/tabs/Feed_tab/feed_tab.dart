@@ -28,9 +28,13 @@ class _FeedTabState extends State<FeedTab> with AutomaticKeepAliveClientMixin {
         future: future,
         builder: (context, snapshot) =>
             snapshot.connectionState == ConnectionState.done
-                ? ListView.builder(
+                ? ListView.separated(
                     physics: const BouncingScrollPhysics(),
                     itemCount: snapshot.data?.size ?? 0,
+                    separatorBuilder: (context, index) => const Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Divider(),
+                    ),
                     itemBuilder: (context, index) =>
                         snapshot.data!.docs[index].data().format(),
                   )
@@ -45,6 +49,7 @@ class _FeedTabState extends State<FeedTab> with AutomaticKeepAliveClientMixin {
           },
         ),
         backgroundColor: Colors.blue,
+        heroTag: "Refresh2",
         child: const Icon(
           Icons.refresh,
           color: Colors.white,

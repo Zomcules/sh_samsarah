@@ -12,7 +12,6 @@ class ChatHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      actions: const [IconButton(onPressed: null, icon: Icon(Icons.more_vert))],
       backgroundColor: const Color.fromARGB(255, 233, 233, 233),
       centerTitle: false,
       titleSpacing: 0,
