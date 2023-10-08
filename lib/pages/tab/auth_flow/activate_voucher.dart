@@ -42,14 +42,7 @@ class _ActivateVoucherPageState extends State<ActivateVoucherPage> {
             padding: const EdgeInsets.all(8.0),
             child: !isLoading
                 ? MyButton(
-                    onPressed: () {
-                      setState(() {
-                        isLoading = true;
-                      });
-                      tryActivateVoucher();
-                    },
-                    raised: true,
-                    title: "تفعيل")
+                    onPressed: tryActivateVoucher, raised: true, title: "تفعيل")
                 : const CircularProgressIndicator(),
           )
         ],
@@ -58,23 +51,36 @@ class _ActivateVoucherPageState extends State<ActivateVoucherPage> {
   }
 
   void tryActivateVoucher() async {
+    setState(() {
+      isLoading = true;
+    });
     if (key.currentState!.validate()) {
       key.currentState!.save();
       final store = Database();
-      var value = await store.voucherValue(code);
-      if (value == 0) {
-        if (mounted) {
-          await alert(context, "هذا الكود غير صحيح ");
+      try {
+        var value = await store.voucherValue(code);
+        if (value == 0) {
+          if (mounted) {
+            await alert(context, "هذا الكود غير صحيح ");
+          }
+        } else {
+          await store.updateCurrency(value);
+          await store.deleteVoucher(code);
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  "+$value",
+                  style: const TextStyle(fontSize: 30),
+                ),
+              ),
+            );
+            pop(context, null);
+          }
         }
-      } else {
-        await store.updateCurrency(value);
-        await store.deleteVoucher(code);
+      } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-            "+$value",
-            style: const TextStyle(fontSize: 30),
-          )));
+          await alert(context, "خطأ في الشيكة");
         }
       }
     } else {

@@ -9,7 +9,9 @@ import 'package:samsarah/models/account_info.dart';
 import 'package:samsarah/util/database/fetchers.dart';
 import 'package:samsarah/util/product_info/product_preview_page/controller.dart';
 import 'package:samsarah/models/product_info.dart';
+import '../../pages/tab/auth_flow/activate_voucher.dart';
 import '../../pages/tab/chat_app/chat_page/chat_page.dart';
+import '../tools/my_button.dart';
 import '../tools/my_text_form_field.dart';
 import '../tools/poppers_and_pushers.dart';
 import 'product_preview_page/fields/location_preview.dart';
@@ -100,9 +102,108 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
   Future<void> saveProduct() async {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
-      await pc.trySaveProduct(context);
+      await tryPublishProduct(pc.getProduct());
     } else {
       alert(context, "بعض الحقول فارغة");
+    }
+  }
+
+  Future<void> tryPublishProduct(ProductInfo product) async {
+    var price = 0;
+    var currency = 0;
+
+    bool eligable() => price <= currency;
+
+    Future<void> init() async {
+      try {
+        price = await store.publishPrice();
+        currency = await AuthService().getCurrency();
+      } catch (e) {
+        await alert(context, "خطأ في الشبكة");
+        return;
+      }
+    }
+
+    Future future = init();
+
+    if (context.mounted) {
+      bool? result = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: const Text("نشر العرض"),
+                content: FutureBuilder(
+                    future: future,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return const Text("Error");
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      }
+                      return Column(
+                        children: [
+                          Text(
+                            "${currency.toString()} :رصيدك الان",
+                            style: const TextStyle(fontSize: 24),
+                          ),
+                          Text(
+                            "سعر النشر: ${price.toString()}",
+                            style: const TextStyle(fontSize: 24),
+                          ),
+                          const SizedBox(
+                            height: 50,
+                          ),
+                          eligable()
+                              ? const Text(
+                                  "هل تريد عرض منتجك على التطبيق؟",
+                                  style: TextStyle(
+                                      fontSize: 24, color: Colors.green),
+                                )
+                              : const Text(
+                                  "نأسف ولكن يبدون ان ليس لديك رصيد كافي",
+                                  style: TextStyle(
+                                      fontSize: 24, color: Colors.red),
+                                )
+                        ],
+                      );
+                    }),
+                actions: [
+                  FutureBuilder(
+                      future: future,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const SizedBox();
+                        }
+                        if (snapshot.hasError) {
+                          return const SizedBox();
+                        }
+                        return eligable()
+                            ? MyButton(
+                                onPressed: () => pop(context, true),
+                                raised: true,
+                                title: "موافق")
+                            : MyButton(
+                                onPressed: () =>
+                                    push(context, const ActivateVoucherPage()),
+                                raised: true,
+                                title: "شحن رصيد");
+                      }),
+                  MyButton(
+                      onPressed: () => pop(context, false),
+                      raised: false,
+                      title: "الرجوع")
+                ],
+              ));
+      if (result != null) {
+        if (result) {
+          store.saveProduct(product);
+          store.updateCurrency(0 - price);
+          if (context.mounted) {
+            pop(context);
+          }
+        }
+      }
     }
   }
 

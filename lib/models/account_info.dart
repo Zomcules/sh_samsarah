@@ -13,16 +13,14 @@ class AccountInfo {
     required this.currency,
   });
 
-  factory AccountInfo.firestore(Map<String, dynamic> map) {
-    return AccountInfo(
-      username: map["username"],
-      globalId: map["globalId"],
-      imagePath: map["imagePath"],
-      currency: map["currency"],
-    );
-  }
+  factory AccountInfo.firestore(Map<String, dynamic> map) => AccountInfo(
+        username: map["username"],
+        globalId: map["globalId"],
+        imagePath: map["imagePath"],
+        currency: map["currency"],
+      );
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toFirestore() {
     return {
       "username": username,
       "globalId": globalId,

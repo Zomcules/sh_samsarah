@@ -106,7 +106,7 @@ class ProductInfo {
 
   factory ProductInfo.blank() {
     return ProductInfo(
-        producer: AccountInfo.blank().toMap(),
+        producer: AccountInfo.blank().toFirestore(),
         geopoint: osm.GeoPoint(latitude: 0, longitude: 0),
         price: 0,
         timeStamp: Timestamp.now(),

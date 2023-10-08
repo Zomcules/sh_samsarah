@@ -82,7 +82,7 @@ class _DiscoveryTabState extends State<DiscoveryTab>
     if (index == 0) {
       return const DisHeader();
     }
-    if (index == snapshot.data!.size + 1) {
+    if (index == snapshot.data!.size + 1 && snapshot.data!.size == batchSize) {
       return SizedBox(
         height: 250,
         child: Column(

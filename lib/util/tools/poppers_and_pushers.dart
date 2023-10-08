@@ -17,7 +17,7 @@ Future<void> pushReplacement(BuildContext context, Widget page) async {
       ));
 }
 
-pop(BuildContext context, dynamic result) {
+pop(BuildContext context, [dynamic result]) {
   Navigator.pop(context, result);
 }
 

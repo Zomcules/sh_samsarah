@@ -1,11 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:samsarah/models/app_info.dart';
 import 'package:samsarah/models/sam_post.dart';
-import 'package:samsarah/pages/tab/auth_flow/activate_voucher.dart';
 import 'package:samsarah/services/auth_service.dart';
-import 'package:flutter/material.dart';
-import 'package:samsarah/util/tools/my_button.dart';
-import 'package:samsarah/util/tools/poppers_and_pushers.dart';
 
 import '../models/account_info.dart';
 import '../models/product_info.dart';
@@ -33,7 +29,7 @@ class Database {
             fromFirestore: (snapshot, options) {
               return AccountInfo.firestore(snapshot.data()!);
             },
-            toFirestore: (value, options) => value.toMap(),
+            toFirestore: (value, options) => value.toFirestore(),
           );
 
   CollectionReference<ProductInfo> get productCollection =>
@@ -80,19 +76,21 @@ class Database {
   Stream<DocumentSnapshot<AccountInfo>> accountStreamOf(String uid) =>
       accountCollection.doc(uid).snapshots();
 
-  saveProduct(ProductInfo temp) async {
+  Future<void> saveProduct(ProductInfo temp) async {
     await productCollection.doc(temp.globalId).set(temp);
   }
 
   Future<int> voucherValue(String code) async {
-    return (await instance
-                .collection("AppData")
-                .doc("Vouchers")
-                .collection("Vouchers")
-                .doc(code)
-                .get())
-            .data()?["value"] ??
-        0;
+    var val = await instance
+        .collection("AppData")
+        .doc("Vouchers")
+        .collection("Vouchers")
+        .doc(code)
+        .get(
+          const GetOptions(source: Source.server),
+        );
+
+    return val.data()?["value"] ?? 0;
   }
 
   Future<void> deleteVoucher(String code) async {
@@ -105,7 +103,10 @@ class Database {
   }
 
   Future<int> publishPrice() async {
-    return (await instance.collection("AppData").doc("Prices").get())
+    return (await instance
+            .collection("AppData")
+            .doc("Prices")
+            .get(const GetOptions(source: Source.server)))
         .data()!["publishPrice"];
   }
 
@@ -137,101 +138,6 @@ class Database {
     await productCollection.doc(globalId).update({
       "bookmarkers": FieldValue.arrayRemove([auth.uid])
     });
-  }
-
-  Future<void> tryPublishProduct(
-      BuildContext context, ProductInfo product) async {
-    var price = 0;
-    var currency = 0;
-
-    bool eligable() => price <= currency;
-
-    Future<void> init() async {
-      price = await publishPrice();
-      currency = await AuthService().getCurrency();
-    }
-
-    Future future = init();
-
-    if (context.mounted) {
-      bool? result = await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-                title: const Text("نشر العرض"),
-                content: FutureBuilder(
-                    future: future,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return const Text("Error");
-                      }
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      }
-                      return Column(
-                        children: [
-                          Text(
-                            "${currency.toString()} :رصيدك الان",
-                            style: const TextStyle(fontSize: 24),
-                          ),
-                          Text(
-                            "سعر النشر: ${price.toString()}",
-                            style: const TextStyle(fontSize: 24),
-                          ),
-                          const SizedBox(
-                            height: 50,
-                          ),
-                          eligable()
-                              ? const Text(
-                                  "هل تريد عرض منتجك على التطبيق؟",
-                                  style: TextStyle(
-                                      fontSize: 24, color: Colors.green),
-                                )
-                              : const Text(
-                                  "نأسف ولكن يبدون ان ليس لديك رصيد كافي",
-                                  style: TextStyle(
-                                      fontSize: 24, color: Colors.red),
-                                )
-                        ],
-                      );
-                    }),
-                actions: [
-                  FutureBuilder(
-                      future: future,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const SizedBox();
-                        }
-                        if (snapshot.hasError) {
-                          return const SizedBox();
-                        }
-                        return eligable()
-                            ? MyButton(
-                                onPressed: () => pop(context, true),
-                                raised: true,
-                                title: "موافق")
-                            : MyButton(
-                                onPressed: () =>
-                                    push(context, const ActivateVoucherPage()),
-                                raised: true,
-                                title: "شحن رصيد");
-                      }),
-                  MyButton(
-                      onPressed: () => pop(context, false),
-                      raised: false,
-                      title: "الرجوع")
-                ],
-              ));
-      if (result != null) {
-        if (result) {
-          saveProduct(product);
-          updateCurrency(0 - price);
-          if (context.mounted) {
-            pop(context, null);
-          }
-        }
-      }
-    }
   }
 
   Future<QuerySnapshot<SamPost>> getFeed() => instance

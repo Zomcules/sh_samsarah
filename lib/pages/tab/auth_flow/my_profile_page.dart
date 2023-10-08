@@ -186,11 +186,11 @@ class _MyProfilePageState extends State<MyProfilePage> {
         content: const Text("هل انت متأكد"),
         actions: [
           MyButton(
+              onPressed: () => pop(context, true), raised: false, title: "نعم"),
+          MyButton(
               onPressed: () => pop(context, false),
               raised: true,
               title: "العودة"),
-          MyButton(
-              onPressed: () => pop(context, true), raised: false, title: "نعم")
         ],
       ),
     );
