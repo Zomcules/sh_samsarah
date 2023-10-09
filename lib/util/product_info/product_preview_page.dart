@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:samsarah/models/prices_model.dart';
 import 'package:samsarah/pages/tab/chat_app/profile.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/chat_service.dart';
@@ -109,22 +110,11 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
   }
 
   Future<void> tryPublishProduct(ProductInfo product) async {
-    var price = 0;
-    var currency = 0;
-
-    bool eligable() => price <= currency;
-
-    Future<void> init() async {
-      try {
-        price = await store.publishPrice();
-        currency = await AuthService().getCurrency();
-      } catch (e) {
-        await alert(context, "خطأ في الشبكة");
-        return;
-      }
+    Future<PricesModel> getFuture() {
+      return store.getPrices();
     }
 
-    Future future = init();
+    Future<PricesModel> future = getFuture();
 
     if (context.mounted) {
       bool? result = await showDialog<bool>(
@@ -135,7 +125,7 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
                     future: future,
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
-                        return const Text("Error");
+                        return const Text("خطأ في الشبكة");
                       }
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const CircularProgressIndicator();
@@ -143,17 +133,17 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
                       return Column(
                         children: [
                           Text(
-                            "${currency.toString()} :رصيدك الان",
+                            "${snapshot.data!.currency.toString()} :رصيدك الان",
                             style: const TextStyle(fontSize: 24),
                           ),
                           Text(
-                            "سعر النشر: ${price.toString()}",
+                            "سعر النشر: ${snapshot.data!.publishPrice.toString()}",
                             style: const TextStyle(fontSize: 24),
                           ),
                           const SizedBox(
                             height: 50,
                           ),
-                          eligable()
+                          snapshot.data!.publishPrice <= snapshot.data!.currency
                               ? const Text(
                                   "هل تريد عرض منتجك على التطبيق؟",
                                   style: TextStyle(
@@ -178,9 +168,15 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
                         if (snapshot.hasError) {
                           return const SizedBox();
                         }
-                        return eligable()
+                        return snapshot.data!.publishPrice <=
+                                snapshot.data!.currency
                             ? MyButton(
-                                onPressed: () => pop(context, true),
+                                onPressed: () {
+                                  pop(context, true);
+                                  store.saveProduct(product);
+                                  store.updateCurrency(
+                                      0 - snapshot.data!.publishPrice);
+                                },
                                 raised: true,
                                 title: "موافق")
                             : MyButton(
@@ -197,11 +193,7 @@ class _ProductPreviewPageState extends State<ProductPreviewPage> {
               ));
       if (result != null) {
         if (result) {
-          store.saveProduct(product);
-          store.updateCurrency(0 - price);
-          if (context.mounted) {
-            pop(context);
-          }
+          if (mounted) pop(context);
         }
       }
     }

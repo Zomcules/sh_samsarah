@@ -82,34 +82,50 @@ class _DiscoveryTabState extends State<DiscoveryTab>
     if (index == 0) {
       return const DisHeader();
     }
-    if (index == snapshot.data!.size + 1 && snapshot.data!.size == batchSize) {
-      return SizedBox(
+    if (index == snapshot.data!.size + 1) {
+      if (snapshot.data!.size == batchSize) {
+        return SizedBox(
+          height: 250,
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: MyButton(
+                        onPressed: () {
+                          setState(
+                            () {
+                              _future =
+                                  getFuture(snapshot.data?.docs.lastOrNull);
+                            },
+                          );
+                        },
+                        raised: true,
+                        title: "عرض المزيد"),
+                  )
+                ],
+              )
+            ],
+          ),
+        );
+      }
+      return const SizedBox(
         height: 250,
-        child: Column(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: MyButton(
-                      onPressed: () {
-                        setState(
-                          () {
-                            _future = getFuture(snapshot.data?.docs.lastOrNull);
-                          },
-                        );
-                      },
-                      raised: true,
-                      title: "عرض المزيد"),
-                )
-              ],
-            )
+            Text(
+              "-----------نهاية العروض-----------",
+              style: TextStyle(color: Colors.grey),
+            ),
           ],
         ),
       );
     }
     return ProductSnackBar.post(
+      key: UniqueKey(),
       product: snapshot.data!.docs[index - 1].data(),
       onTap: (info) => push(
         context,

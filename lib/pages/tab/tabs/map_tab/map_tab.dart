@@ -1,6 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart' as fstore;
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
-import 'package:samsarah/models/product_info.dart';
+import 'package:samsarah/pages/tab/other/distributor_page.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/services/database_service.dart';
 import 'package:samsarah/util/product_info/product_preview_page.dart';
@@ -26,11 +27,12 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
   );
 
   Future<void> addGeoPoints() async {
-    var points = (await Database().productCollection.get())
+    var prods = (await Database().productCollection.get())
         .docs
-        .map((element) => element.data().geopoint);
-    for (var element in points) {
-      mapController.addMarker(element,
+        .map((e) => e.data())
+        .toList();
+    for (var element in prods) {
+      mapController.addMarker(element.geopoint,
           markerIcon: const MarkerIcon(
             icon: Icon(
               Icons.location_on,
@@ -38,6 +40,20 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
               color: Colors.red,
             ),
           ));
+    }
+
+    var distr = await Database().getDistributers();
+    for (var element in distr) {
+      mapController.addMarker(
+        element.geoPoint,
+        markerIcon: const MarkerIcon(
+          icon: Icon(
+            Icons.shopping_basket_outlined,
+            size: 45,
+            color: Colors.yellow,
+          ),
+        ),
+      );
     }
   }
 
@@ -125,20 +141,7 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
             ),
           ),
           //enableRotationByGesture: true,
-          onGeoPointClicked: (geoPoint) async => push(
-            context,
-            ProductPreviewPage(
-              type: PPPType.viewExternal,
-              info: (await Database()
-                          .productCollection
-                          .where("geopointMap", isEqualTo: geoPoint.toMap())
-                          .get())
-                      .docs
-                      .firstOrNull
-                      ?.data() ??
-                  ProductInfo.blank(),
-            ),
-          ),
+          onGeoPointClicked: onGeoPointClicked,
           controller: mapController,
         ),
         Positioned(
@@ -196,5 +199,39 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
         ),
       ],
     );
+  }
+
+  void onGeoPointClicked(GeoPoint p1) async {
+    var prod = (await Database()
+            .productCollection
+            .where("geopointMap", isEqualTo: p1.toMap())
+            .get(const fstore.GetOptions(source: fstore.Source.cache)))
+        .docs
+        .firstOrNull
+        ?.data();
+    if (prod != null) {
+      if (mounted) {
+        push(
+          context,
+          ProductPreviewPage(
+            type: PPPType.viewExternal,
+            info: prod,
+          ),
+        );
+      }
+    } else if (mounted) {
+      push(
+        context,
+        DistrPage(
+          distr: (await Database()
+                  .distrCollection
+                  .where("geopointMap", isEqualTo: p1.toMap())
+                  .get(const fstore.GetOptions(source: fstore.Source.cache)))
+              .docs
+              .first
+              .data(),
+        ),
+      );
+    }
   }
 }

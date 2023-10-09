@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:samsarah/models/app_info.dart';
+import 'package:samsarah/models/distributer.dart';
+import 'package:samsarah/models/prices_model.dart';
 import 'package:samsarah/models/sam_post.dart';
 import 'package:samsarah/services/auth_service.dart';
 
@@ -93,14 +95,12 @@ class Database {
     return val.data()?["value"] ?? 0;
   }
 
-  Future<void> deleteVoucher(String code) async {
-    await instance
-        .collection("AppData")
-        .doc("Vouchers")
-        .collection("Vouchers")
-        .doc(code)
-        .delete();
-  }
+  Future<void> deleteVoucher(String code) => instance
+      .collection("AppData")
+      .doc("Vouchers")
+      .collection("Vouchers")
+      .doc(code)
+      .delete();
 
   Future<int> publishPrice() async {
     return (await instance
@@ -152,7 +152,7 @@ class Database {
       .orderBy("timeStamp", descending: true)
       .get();
 
-  Future<DocumentSnapshot<AppInfo>> getAppInfo() {
+  Future<DocumentSnapshot<AppInfo>> getContacts() {
     return instance
         .collection("AppData")
         .doc("AppInfo")
@@ -163,4 +163,23 @@ class Database {
         )
         .get(const GetOptions(source: Source.server));
   }
+
+  Future<List<Distributer>> getDistributers() async {
+    return (await distrCollection.get()).docs.map((e) => e.data()).toList();
+  }
+
+  Future<PricesModel> getPrices() async {
+    return PricesModel(
+        currency: await auth.getCurrency(), publishPrice: await publishPrice());
+  }
+
+  CollectionReference<Distributer> get distrCollection => instance
+      .collection("AppData")
+      .doc("Distributers")
+      .collection("Distributers")
+      .withConverter<Distributer>(
+        fromFirestore: (snapshot, options) =>
+            Distributer.fromMap(snapshot.data()!),
+        toFirestore: (value, options) => {},
+      );
 }

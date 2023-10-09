@@ -14,7 +14,7 @@ class ContactUs extends StatefulWidget {
 class _ContactUsState extends State<ContactUs> {
   late Future<DocumentSnapshot<AppInfo>> future;
   Future<DocumentSnapshot<AppInfo>> getFuture() {
-    return Database().getAppInfo();
+    return Database().getContacts();
   }
 
   @override

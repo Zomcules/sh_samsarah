@@ -18,7 +18,10 @@ class ProductSnackBar extends StatelessWidget {
   final ProductInfo product;
 
   const ProductSnackBar._(
-      {required this.onTap, required this.product, required this.widget});
+      {super.key,
+      required this.onTap,
+      required this.product,
+      required this.widget});
 
   factory ProductSnackBar.simple(
       {required void Function(ProductInfo info)? onTap,
@@ -102,9 +105,11 @@ class ProductSnackBar extends StatelessWidget {
   }
 
   factory ProductSnackBar.post(
-      {required void Function(ProductInfo info)? onTap,
+      {Key? key,
+      required void Function(ProductInfo info)? onTap,
       required ProductInfo product}) {
     return ProductSnackBar._(
+      key: key,
       onTap: onTap,
       product: product,
       widget: (context) => GestureDetector(
