@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:samsarah/pages/tab/home_page.dart';
+import 'package:samsarah/util/tools/uri_handler.dart';
 
 import 'util/tools/my_button.dart';
 import 'util/tools/poppers_and_pushers.dart';
@@ -11,8 +12,27 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final handler = UriHandler();
+
+  @override
+  void initState() {
+    super.initState();
+    handler.initUniLinks(context);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    handler.cancel();
+  }
 
   @override
   Widget build(BuildContext context) {
