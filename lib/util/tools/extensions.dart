@@ -19,7 +19,10 @@ extension IntTools on int {
 }
 
 extension FileTools on File {
+  ///full name with extension
   String get fullName => path.split(Platform.pathSeparator).last;
+
+  /// the last bit annotatin file type, without da dot
   String get extension => fullName.split(".").last;
 }
 

@@ -1,15 +1,16 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:samsarah/test/app.dart';
+// ignore_for_file: avoid_print, prefer_const_constructors
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+import 'dart:async';
 
-  await Firebase.initializeApp();
+void main() async {}
 
-  runApp(
-    const MaterialApp(
-      home: TestHome(),
-    ),
-  );
+StreamSubscription fun() {
+  return Stream.periodic(Duration(seconds: 1)).listen((event) {
+    print("hi");
+  });
 }
+
+StreamSubscription sub = fun();
+
+String name = "hahaha";
+String ha = name.substring(0);

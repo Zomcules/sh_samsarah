@@ -26,8 +26,8 @@ class MyText extends StatelessWidget {
   }
 }
 
-List<Widget> getAttributes(ProductInfo productInfo) {
-  List<Widget> temp = [];
+List<MyText> getAttributes(ProductInfo productInfo) {
+  List<MyText> temp = [];
   switch (productInfo.zone) {
     case ZoneType.agricultural:
       temp.add(

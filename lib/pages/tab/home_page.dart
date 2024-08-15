@@ -1,9 +1,13 @@
+// import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:samsarah/pages/tab/auth_flow/auth_controller.dart';
 import 'package:samsarah/pages/tab/auth_flow/profile_photo.dart';
 import 'package:samsarah/services/auth_service.dart';
 import 'package:samsarah/pages/tab/drawer.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
+import '../../services/uri_handler.dart';
+import '../../util/tools/my_button.dart';
 import 'chat_app/messages_page.dart';
 import 'tabs/Discovery_tab/discovery_tab.dart';
 import 'tabs/Feed_tab/feed_tab.dart';
@@ -23,6 +27,21 @@ class _MyHomePageState extends State<MyHomePage> {
     const Tab(child: Icon(Icons.map)),
     const Tab(child: Icon(Icons.newspaper)),
   ];
+
+  // late StreamSubscription<Uri?> stream;
+
+  @override
+  void initState() {
+    super.initState();
+    initUniLinks(context);
+    // stream = uriStream(context);
+  }
+
+  // @override
+  // void dispose() {
+  //   stream.cancel();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -104,18 +123,45 @@ class _UserThumbnailState extends State<UserThumbnail> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: auth.instance.userChanges(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return ProfilePhoto(
-            imagePath: snapshot.data!.photoURL ?? "",
-            radius: 20,
-            username: snapshot.data!.displayName,
-          );
-        }
-        return const CircularProgressIndicator();
-      },
+    return WillPopScope(
+      onWillPop: () async =>
+          await showDialog<bool>(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text("الخروج من التطبيق"),
+              content: const Text("هل انت متأكد؟"),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: () => pop(context, true),
+                    child: const Text(
+                      "نعم",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ),
+                MyButton(
+                    onPressed: () => pop(context, false),
+                    raised: true,
+                    title: "العودة"),
+              ],
+            ),
+          ) ??
+          false,
+      child: StreamBuilder(
+        stream: auth.instance.userChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ProfilePhoto(
+              imagePath: snapshot.data!.photoURL ?? "",
+              radius: 20,
+              username: snapshot.data!.displayName,
+            );
+          }
+          return const CircularProgressIndicator();
+        },
+      ),
     );
   }
 }

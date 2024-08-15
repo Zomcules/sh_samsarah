@@ -136,26 +136,34 @@ class _SearchResultsState extends State<SearchResults> {
       ),
       body: FutureBuilder(
         future: widget.list,
-        builder: (context, snapshot) =>
-            snapshot.connectionState == ConnectionState.waiting
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : ListView(
-                    children: List<ProductSnackBar>.generate(
-                      snapshot.data!.length,
-                      (index) => ProductSnackBar.post(
-                        product: snapshot.data![index],
-                        onTap: (info) => push(
-                          context,
-                          ProductPreviewPage(
-                            type: PPPType.viewExternal,
-                            info: info,
-                          ),
-                        ),
-                      ),
-                    ),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text("خطأ في الشبكة"),
+            );
+          }
+
+          return ListView(
+            children: List<ProductSnackBar>.generate(
+              snapshot.data!.length,
+              (index) => ProductSnackBar.post(
+                product: snapshot.data![index],
+                onTap: (info) => push(
+                  context,
+                  ProductPreviewPage(
+                    type: PPPType.viewExternal,
+                    info: info,
                   ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

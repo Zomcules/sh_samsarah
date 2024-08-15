@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:samsarah/pages/tab/auth_flow/profile_photo.dart';
 import 'package:samsarah/models/account_info.dart';
+import 'package:samsarah/pages/tab/chat_app/profile.dart';
 import 'package:samsarah/services/database_service.dart';
 import '../../../../../util/tools/poppers_and_pushers.dart';
 
@@ -38,7 +39,13 @@ class ChatHeader extends StatelessWidget {
               ),
             ),
           ),
-          Text(reciever.username),
+          GestureDetector(
+              onTap: () => push(
+                  context,
+                  ProfilePage(
+                    account: reciever,
+                  )),
+              child: Text(reciever.username)),
         ],
       ),
     );

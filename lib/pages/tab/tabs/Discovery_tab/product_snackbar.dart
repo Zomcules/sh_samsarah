@@ -9,6 +9,7 @@ import 'package:samsarah/util/tools/my_text.dart';
 import 'package:samsarah/util/tools/extensions.dart';
 import 'package:samsarah/models/product_info.dart';
 import 'package:samsarah/util/tools/poppers_and_pushers.dart';
+import 'package:share_plus/share_plus.dart' as sh;
 
 import '../../../../util/product_info/product_preview_page/fields/ppp_floating_button.dart';
 
@@ -31,74 +32,80 @@ class ProductSnackBar extends StatelessWidget {
       product: product,
       widget: (context) => Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () => onTap != null ? onTap(product) : null,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(
-                          blurRadius: 5,
-                          color: Colors.black.withOpacity(0.15),
-                          blurStyle: BlurStyle.outer)
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => onTap != null ? onTap(product) : null,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                    blurRadius: 5,
+                    color: Colors.black.withOpacity(0.15),
+                    blurStyle: BlurStyle.outer)
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      MyText(
+                        text: product.forSale ? "للبيع" : "للشراء",
+                        color: product.forSale ? Colors.red : Colors.blue,
+                      ),
+                      () {
+                        switch (product.zone) {
+                          case ZoneType.agricultural:
+                            return const MyText(
+                              text: "زراعية",
+                              color: Colors.green,
+                            );
+                          case ZoneType.commercial:
+                            return const MyText(
+                              text: "تجارية",
+                              color: Colors.orange,
+                            );
+                          case ZoneType.residential:
+                            return const MyText(
+                              text: "سكنية",
+                              color: Colors.cyan,
+                            );
+                          default:
+                            return const SizedBox();
+                        }
+                      }(),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(product.price.annotate()),
+                      )
                     ],
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Row(
-                      children: [
-                        MyText(
-                          text: product.forSale ? "للبيع" : "للشراء",
-                          color: product.forSale ? Colors.red : Colors.blue,
-                        ),
-                        () {
-                          switch (product.zone) {
-                            case ZoneType.agricultural:
-                              return const MyText(
-                                text: "زراعية",
-                                color: Colors.green,
-                              );
-                            case ZoneType.commercial:
-                              return const MyText(
-                                text: "تجارية",
-                                color: Colors.orange,
-                              );
-                            case ZoneType.residential:
-                              return const MyText(
-                                text: "سكنية",
-                                color: Colors.cyan,
-                              );
-                            default:
-                              return const SizedBox();
-                          }
-                        }(),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(product.price.annotate()),
-                        )
-                      ],
-                    ),
+                  const Divider(
+                    color: Colors.grey,
                   ),
-                ),
+                  Row(
+                    children: [
+                      View(
+                        product: product,
+                      ),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Share(product: product),
+                            Bookmark(product: product),
+                            Likes(product: product),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            IconButton(
-              onPressed: () => push(
-                  context,
-                  ProductPreviewPage(
-                    type: PPPType.viewExternal,
-                    info: product,
-                  )),
-              icon: const Icon(
-                Icons.remove_red_eye_outlined,
-                color: Colors.black38,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -215,6 +222,7 @@ class ProductSnackBar extends StatelessWidget {
                   ),
                   Row(
                     children: [
+                      Share(product: product),
                       Bookmark(product: product),
                       Likes(product: product)
                     ],
@@ -324,6 +332,45 @@ class _BookmarkState extends State<Bookmark> {
               Icons.bookmark_add_outlined,
               color: Colors.grey,
             ),
+    );
+  }
+}
+
+class Share extends StatelessWidget {
+  final ProductInfo product;
+  const Share({super.key, required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        onPressed: () {
+          sh.Share.share(product.toString());
+        },
+        icon: const Icon(
+          Icons.share,
+          color: Colors.grey,
+          size: 20,
+        ));
+  }
+}
+
+class View extends StatelessWidget {
+  final ProductInfo product;
+  const View({super.key, required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () => push(
+          context,
+          ProductPreviewPage(
+            type: PPPType.viewExternal,
+            info: product,
+          )),
+      icon: const Icon(
+        Icons.remove_red_eye_outlined,
+        color: Colors.black38,
+      ),
     );
   }
 }

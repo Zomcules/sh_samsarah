@@ -1,7 +1,8 @@
 // ignore_for_file: avoid_print
 
 main() {
-  final uri = Uri.parse('samsarahapp://accounts/find?id=abcdefg123');
+  final uri = Uri.parse(
+      "samsarahapp:///accounts?globalId='fJigueE6ljOq6zwNcaSHbqomAPx1'");
   print("uri.authority");
   print(uri.authority);
   print("uri.data");
@@ -10,8 +11,8 @@ main() {
   print(uri.fragment);
   print("uri.host");
   print(uri.host);
-  // print("uri.origin");
-  // print(uri.origin);
+  print("uri.origin");
+  print(uri.origin);
   print("uri.path");
   print(uri.path);
   print("uri.pathSegments");

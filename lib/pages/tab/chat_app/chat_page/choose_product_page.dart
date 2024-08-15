@@ -100,15 +100,25 @@ class ChooseProductPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("العروض")),
-        body: FutureBuilder(
-          future: widgetList(context),
-          builder: (context, snapshot) =>
-              snapshot.connectionState == ConnectionState.done
-                  ? ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) => snapshot.data![index])
-                  : const CircularProgressIndicator(),
-        ));
+      appBar: AppBar(title: const Text("العروض")),
+      body: FutureBuilder(
+        future: widgetList(context),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text("خطأ في الشبكة"),
+            );
+          }
+          return ListView.builder(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) => Padding(
+                padding: const EdgeInsets.all(8), child: snapshot.data![index]),
+          );
+        },
+      ),
+    );
   }
 }

@@ -31,61 +31,67 @@ class _ProfilePageState extends State<ProfilePage>
             ? Future.value(acc)
             : Database().getAccount(widget.id ?? ""),
         builder: (context, snapshot) {
-          return snapshot.connectionState == ConnectionState.done
-              ? Scaffold(
-                  appBar: AppBar(
-                    title: Text(snapshot.data!.username),
-                  ),
-                  body: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          ProfilePhoto(
-                              username: snapshot.data!.username,
-                              radius:
-                                  MediaQuery.of(context).size.width * 3 / 10,
-                              imagePath: snapshot.data!.imagePath),
-                          !isLoading
-                              ? MyButton(
-                                  onPressed: () async {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-                                    await push(
-                                        context,
-                                        ChooseProductPage.selectFromProducts(
-                                            await Database().getProductsOf(
-                                                snapshot.data!.globalId)));
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-                                  },
-                                  raised: true,
-                                  title: "الذهاب الى المعروضات")
-                              : const CircularProgressIndicator()
-                        ],
-                      ),
-                    ],
-                  ),
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: () =>
-                        push(context, ChatPage(reciever: snapshot.data!)),
-                    backgroundColor: Colors.green,
-                    shape: const CircleBorder(),
-                    child: const Icon(
-                      Icons.message,
-                      color: Colors.white,
-                    ),
-                  ),
-                )
-              : Container(
-                  color: Colors.white,
-                  child: const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Container(
+                color: Colors.white,
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ));
+          }
+          if (snapshot.hasError) {
+            Container(
+                color: Colors.white,
+                child: const Center(
+                  child: Text("Error"),
+                ));
+          }
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(snapshot.data!.username),
+            ),
+            body: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ProfilePhoto(
+                        username: snapshot.data!.username,
+                        radius: MediaQuery.of(context).size.width * 3 / 10,
+                        imagePath: snapshot.data!.imagePath),
+                    !isLoading
+                        ? MyButton(
+                            onPressed: () async {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              await push(
+                                  context,
+                                  ChooseProductPage.selectFromProducts(
+                                      await Database().getProductsOf(
+                                          snapshot.data!.globalId)));
+                              setState(() {
+                                isLoading = false;
+                              });
+                            },
+                            raised: true,
+                            title: "الذهاب الى المعروضات")
+                        : const CircularProgressIndicator()
+                  ],
+                ),
+              ],
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () =>
+                  push(context, ChatPage(reciever: snapshot.data!)),
+              backgroundColor: Colors.green,
+              shape: const CircleBorder(),
+              child: const Icon(
+                Icons.message,
+                color: Colors.white,
+              ),
+            ),
+          );
         });
   }
 

@@ -56,7 +56,7 @@ class ProductController {
         certified: certified ?? true,
         //////////
         zone: zone ?? ZoneType.residential,
-///////////////////////
+        ///////////////
         roomsNum: roomsNum ?? 1,
         wholeHouse: wholeHouse ?? false,
         withFurniture: withFurniture ?? false,
@@ -71,9 +71,9 @@ class ProductController {
 
   Future<List<ProductInfo>> search() async {
     var searchMap = {};
-    if (forSale != null) {
-      searchMap["forSale"] = forSale;
-    }
+
+    searchMap["forSale"] = forSale ?? false;
+
     if (withFurniture != null) {
       searchMap["withFurniture"] = withFurniture;
     }

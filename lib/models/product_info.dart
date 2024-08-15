@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart' as osm;
+import 'package:samsarah/util/tools/my_text.dart';
 
 import 'account_info.dart';
 
@@ -113,6 +114,12 @@ class ProductInfo {
         globalId: "",
         likers: [],
         bookmarkers: []);
+  }
+
+  @override
+  String toString() {
+    var atr = getAttributes(this).map((e) => e.text).join("\n");
+    return "عرض جديد من تطبيق سمسرة \n \n $atr \n----------------------------------------------\n قم بتنزيل التطبيق الان لرؤية اخر العروض";
   }
 }
 
